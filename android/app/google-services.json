@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "434298692437",
+    "project_id": "flowchat-cc136",
+    "storage_bucket": "flowchat-cc136.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:434298692437:android:a06001183e6ce79c2785dc",
+        "android_client_info": {
+          "package_name": "com.example.flow_chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjwo4Z9LeeIQ6RFzi4tz7N-YO_1ON9Jxg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
