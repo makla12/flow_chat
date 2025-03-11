@@ -1,3 +1,4 @@
+import 'package:flow_chat/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/menu_item_widget.dart';
@@ -8,7 +9,7 @@ import 'account_settings_screen.dart';
 import 'privacy_and_security_screen.dart';
 import 'notifications_screen.dart';
 import 'appearance_screen.dart';
-import 'logout_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FlowChatScreen extends StatelessWidget {
   const FlowChatScreen({Key? key}) : super(key: key);
@@ -120,10 +121,11 @@ class FlowChatScreen extends StatelessWidget {
                   text: 'Wyloguj się',
                   color: logoutColor,
                   onTap: () {
-                    Navigator.push(
+                    FirebaseAuth.instance.signOut();
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LogoutScreen(),
+                        builder: (context) => const WelcomeScreen(),
                       ),
                     );
                   },
