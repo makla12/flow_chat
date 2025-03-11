@@ -1,4 +1,6 @@
+import 'package:flow_chat/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flow_chat/screens/friends_screen.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -39,7 +41,19 @@ class CustomBottomNavigationBar extends StatelessWidget {
             BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
           ],
           onTap: (index) {
-            // Dodaj logikę nawigacji, jeśli jest potrzebna
+            if (index == 1) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => FriendsScreen()),
+              );
+            }
+            else if (index == 2) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => FlowChatScreen()),
+                );
+            }
+
           },
         ),
       ),
