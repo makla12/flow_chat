@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/bottom_nav_bar.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  static const Color backgroundColor = Color(0xFF0F172A);
+  static const Color appBarColor = Color(0xFF1E3A8A);
+  static const Color containerColor = Color(0xFF1F2937);
+  static const Color dividerColor = Color(0xFF2F3A4B);
+  static const Color logoutColor = Color(0xFFE53935);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: const Color(0xff1E3A8A),
-        title: const Text('FlowChat', style: TextStyle(fontSize: 20)),
+        backgroundColor: appBarColor,
+        title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
+        centerTitle: false,
         actions: [
-          IconButton(icon: const Icon(Icons.account_circle), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.person, color: Colors.white),
+            onPressed: () {},
+          ),
         ],
       ),
       body: Column(
@@ -57,16 +69,12 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        currentIndex: 0,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.groups), label: 'Teams'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Friends'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
-        ],
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 0, // Podświetlamy przycisk "Menu"
+        backgroundColor: backgroundColor,
+        selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
+        unselectedItemColor: Colors.white70,
+        dividerColor: dividerColor,
       ),
     );
   }
