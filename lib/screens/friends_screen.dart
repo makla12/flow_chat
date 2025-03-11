@@ -14,7 +14,6 @@ class FriendsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      // Pasek górny
       appBar: AppBar(
         backgroundColor: appBarColor,
         title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
@@ -23,6 +22,22 @@ class FriendsScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.person, color: Colors.white),
             onPressed: () {},
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.green,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const FriendsScreen()),
+              );
+            },
+            child: const Text(
+              'Friends',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -54,7 +69,7 @@ class FriendsScreen extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 1, // Podświetlamy przycisk "Menu"
+        currentIndex: 1,
         backgroundColor: backgroundColor,
         selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
@@ -76,24 +91,24 @@ class ChatItem extends StatelessWidget {
         backgroundColor: Colors.purple,
         child: Icon(Icons.person, color: Colors.white),
       ),
-      title: Text('Lorem Ipsum $index'),
+      title: Text('Lorem Ipsum \$index'),
       trailing:
-          index == 0
-              ? Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '99+',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              )
-              : null,
+      index == 0
+          ? Container(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          '99+',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      )
+          : null,
     );
   }
 }

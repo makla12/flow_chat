@@ -2,6 +2,7 @@ import 'package:flow_chat/screens/grup_chat_screen.dart';
 import 'package:flow_chat/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flow_chat/screens/friends_screen.dart';
+import 'package:flutter/material.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -66,3 +67,30 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 }
+
+class BottomNavBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      backgroundColor: Colors.black,
+      selectedItemColor: Colors.blue,
+      unselectedItemColor: Colors.white,
+      currentIndex: 1,
+      items: [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.group),
+          label: 'Teams',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Friends',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.menu),
+          label: 'Menu',
+        ),
+      ],
+    );
+  }
+}
+
