@@ -39,7 +39,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
           ],
           onTap: (index) {
-            // Dodaj logikę nawigacji, jeśli jest potrzebna
+            // Logika nawigacji dla dolnej nawigacji (nie modyfikujemy Friends i Teams)
           },
         ),
       ),
