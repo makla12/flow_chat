@@ -8,7 +8,7 @@ class FlowChatApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
+      theme: ThemeData(scaffoldBackgroundColor: const Color(0xFF0F172A)),
       home: const FlowChatScreen(),
     );
   }

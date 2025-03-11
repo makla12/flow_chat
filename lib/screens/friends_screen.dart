@@ -77,19 +77,23 @@ class ChatItem extends StatelessWidget {
         child: Icon(Icons.person, color: Colors.white),
       ),
       title: Text('Lorem Ipsum $index'),
-      trailing: index == 0
-          ? Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          '99+',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-      )
-          : null,
+      trailing:
+          index == 0
+              ? Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '99+',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+              : null,
     );
   }
 }
