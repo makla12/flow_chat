@@ -5,11 +5,11 @@ class PrivateChat extends StatefulWidget {
   const PrivateChat({super.key});
 
   @override
-  _PrivateChatState createState() => _PrivateChatState();
+  PrivateChatState createState() => PrivateChatState();
 }
 
-class _PrivateChatState extends State<PrivateChat> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class PrivateChatState extends State<PrivateChat> {
+  final TextEditingController textController = TextEditingController();
   final String chatName = "Kajetan kraska";
   final List<Map<String, String>> messages = [
     {
@@ -38,7 +38,6 @@ class _PrivateChatState extends State<PrivateChat> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFF0F172A),
-
       body: SafeArea(
         child: Column(
           children: [
@@ -47,8 +46,11 @@ class _PrivateChatState extends State<PrivateChat> {
               child: Row(
                 spacing: 10,
                 children: [
-                  IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back)), 
-                  CircleAvatar(backgroundColor: Colors.purple, child: Text(chatName[0]),),
+                  IconButton(onPressed: () {}, icon: Icon(Icons.arrow_back)),
+                  CircleAvatar(
+                    backgroundColor: Colors.purple,
+                    child: Text(chatName[0]),
+                  ),
                   Text(chatName, style: TextStyle(fontSize: 20)),
                 ],
               ),
@@ -62,7 +64,7 @@ class _PrivateChatState extends State<PrivateChat> {
                 ),
                 child: ListView.separated(
                   reverse: true,
-                  itemCount: messages.length, 
+                  itemCount: messages.length,
                   itemBuilder: (context, index) {
                     return ChatMessage(
                       name: messages[index]["name"]!,
@@ -75,31 +77,36 @@ class _PrivateChatState extends State<PrivateChat> {
               ),
             ),
 
-            Form(
-              key: _formKey,
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(left: 10, right: 10, bottom: 5, top: 5),
-                          filled: true,
-                          fillColor: Color(0xff36343b),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.all(Radius.circular(15))
-                          ),
-                          
-                          hintText: "Message"
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: textController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          bottom: 5,
+                          top: 5,
                         ),
+                        filled: true,
+                        fillColor: Color(0xff36343b),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                        ),
+
+                        hintText: "Message",
                       ),
                     ),
-                    IconButton(onPressed: (){}, icon: Icon(Icons.send))
-                  ],
-                ),
+                  ),
+                  IconButton(onPressed: () {}, icon: Icon(Icons.send)),
+                ],
               ),
             ),
           ],
