@@ -29,7 +29,7 @@ class FriendsScreen extends StatelessWidget {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(12.0),
             child: TextField(
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
@@ -37,7 +37,7 @@ class FriendsScreen extends StatelessWidget {
                 fillColor: Colors.grey.shade900,
                 filled: true,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(25),
                   borderSide: BorderSide.none,
                 ),
               ),
