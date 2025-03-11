@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/settings.dart';
+import 'screens/settings_screen.dart';
 
 class FlowChatApp extends StatelessWidget {
   const FlowChatApp({Key? key}) : super(key: key);
