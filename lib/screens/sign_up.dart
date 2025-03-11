@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'grup_chat_screen.dart';
 
 class SignUp extends StatelessWidget {
   SignUp({super.key});
@@ -26,7 +27,8 @@ class SignUp extends StatelessWidget {
       } catch (firestoreError) {
         print("Error adding user to Firestore: $firestoreError");
       }
-      print(credential.user);
+
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context).showSnackBar(
