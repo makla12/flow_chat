@@ -1,6 +1,6 @@
+import 'package:flow_chat/screens/grup_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flow_chat/screens/pivate_chat.dart';
 
 class LogIn extends StatelessWidget {
   LogIn({super.key});
@@ -14,13 +14,17 @@ class LogIn extends StatelessWidget {
     print("Email: $email, Password: $password");
     try{
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PrivateChat()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
       print(credential.user);
     } on FirebaseAuthException catch (e) {
       if(e.code == 'user-not-found') {
-        print("No user found for that email.");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("No user found for that email."))
+        );
       } else if (e.code == 'wrong-password') {
-        print("Wrong password provided for that user.");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Wrong password provided for that user."))
+        );
       }
     } catch (e) {
       print("Error: $e");
