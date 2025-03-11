@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
+import '../widgets/bottom_nav_bar.dart';
 
-class FlowChatScreen extends StatelessWidget {
-  const FlowChatScreen({super.key});
+class FriendsScreen extends StatelessWidget {
+  const FriendsScreen({super.key});
+
+  static const Color backgroundColor = Color(0xFF0F172A);
+  static const Color appBarColor = Color(0xFF1E3A8A);
+  static const Color containerColor = Color(0xFF1F2937);
+  static const Color dividerColor = Color(0xFF2F3A4B);
+  static const Color logoutColor = Color(0xFFE53935);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
+      // Pasek górny
       appBar: AppBar(
-        title: Text('FlowChat'),
-        backgroundColor: Colors.blue[900],
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.account_circle))],
+        backgroundColor: appBarColor,
+        title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
+        centerTitle: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person, color: Colors.white),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -38,16 +53,12 @@ class FlowChatScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF10142c),
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.white,
-        currentIndex: 1,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.groups), label: 'Teams'),
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Friends'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
-        ],
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 1, // Podświetlamy przycisk "Menu"
+        backgroundColor: backgroundColor,
+        selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
+        unselectedItemColor: Colors.white70,
+        dividerColor: dividerColor,
       ),
     );
   }
