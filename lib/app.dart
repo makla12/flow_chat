@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/welcome_screen.dart';
-import 'screens/friends_screen.dart';
+import 'screens/chats/friends_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FlowChatApp extends StatelessWidget {
