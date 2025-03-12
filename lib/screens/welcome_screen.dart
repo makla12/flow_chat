@@ -30,8 +30,7 @@ class WelcomeScreen extends StatelessWidget {
   void _signInWithGoogle(BuildContext context) async {
     try {
       final userCredential = await signInWithGoogle();
-      print("User: ${userCredential.user}");
-      AuthUtils.addUserToFirestore(userCredential);
+      AuthUtils.addUserToFirestore(userCredential.user!.uid, userCredential.user!.email!, userCredential.user!.displayName!);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
