@@ -1,4 +1,4 @@
-import 'package:flow_chat/screens/grup_chat_screen.dart';
+import 'package:flow_chat/screens/chat/grup_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow_chat/utils/auth_utils.dart';

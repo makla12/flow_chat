@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow_chat/utils/auth_utils.dart';
-import 'grup_chat_screen.dart';
+import '../chat/grup_chat_screen.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});

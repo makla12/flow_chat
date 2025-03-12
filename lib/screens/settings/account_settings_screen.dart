@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../widgets/menu_item_widget.dart';
-import '../widgets/custom_divider.dart';
+import '../../widgets/menu_item_widget.dart';
+import '../../widgets/custom_divider.dart';
 
 import 'change_username_screen.dart';
 import 'change_profile_picture_screen.dart';
