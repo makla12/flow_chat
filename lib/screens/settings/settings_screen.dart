@@ -1,8 +1,8 @@
 import 'package:flow_chat/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
-import '../widgets/bottom_nav_bar.dart';
-import '../widgets/menu_item_widget.dart';
-import '../widgets/custom_divider.dart';
+import '../../widgets/bottom_nav_bar.dart';
+import '../../widgets/menu_item_widget.dart';
+import '../../widgets/custom_divider.dart';
 
 import 'profile_screen.dart';
 import 'account_settings_screen.dart';

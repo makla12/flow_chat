@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../screens/chat_screen.dart';
+import 'chat_screen.dart';
 
-import '../widgets/bottom_nav_bar.dart';
+import '../../widgets/bottom_nav_bar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
