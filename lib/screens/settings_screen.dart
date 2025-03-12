@@ -17,9 +17,9 @@ class FlowChatScreen extends StatelessWidget {
   // Definicje kolorów
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color containerColor = Color(0xFF1F2937);
-  static const Color dividerColor = Color(0xFF2F3A4B);
-  static const Color logoutColor = Color(0xFFE53935);
+  static const Color containerColor = Color(0xff211f26);
+  static const Color dividerColor = Color(0xff4F4F4F);
+  static const Color logoutColor = Color.fromARGB(255, 253, 63, 60);
 
   @override
   Widget build(BuildContext context) {
