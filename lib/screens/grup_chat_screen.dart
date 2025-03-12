@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/chat_screen.dart';
 
 import '../widgets/bottom_nav_bar.dart';
 
@@ -49,17 +50,30 @@ class HomeScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 return ListTile(
                   leading: const CircleAvatar(backgroundColor: Colors.grey),
-                  title: Container(
-                    height: 30,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade900,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Nazwa grupy',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                  title: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => ChatScreen(
+                                groupName: 'Name',
+                              ), // tutaj jest nazwa grupy po kliknieciu
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: 30,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Nazwa grupy', // tutaj po prostu nazwa
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
                       ),
                     ),
                   ),
