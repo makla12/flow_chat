@@ -3,13 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow_chat/utils/auth_utils.dart';
 
-class LogIn extends StatelessWidget {
-  LogIn({super.key});
+class LogIn extends StatefulWidget {
+  const LogIn({super.key});
+
+  @override
+  LogInState createState() => LogInState();
+}
+class LogInState extends State<LogIn> {
+  bool _isLoading = false;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   void _logIn(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
     final String email = emailController.text;
     final String password = passwordController.text;
     try{
@@ -29,7 +38,9 @@ class LogIn extends StatelessWidget {
     } catch (e) {
       print("Error: $e");
     }
-    
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -40,15 +51,18 @@ class LogIn extends StatelessWidget {
         backgroundColor: Color(0xFF0F172A),
         title: Text("Log in"),
       ),
-      body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 20,
-                children: [
-                  TextField(
-                    controller: emailController,
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 20,
+                    children: [
+                      TextField(
+                        controller: emailController,
                     decoration: InputDecoration(
                       labelText: "Email",
                       hintText: "Email",

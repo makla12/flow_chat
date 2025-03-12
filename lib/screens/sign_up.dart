@@ -3,14 +3,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow_chat/utils/auth_utils.dart';
 import 'grup_chat_screen.dart';
 
-class SignUp extends StatelessWidget {
-  SignUp({super.key});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
+
+  @override
+  SignUpState createState() => SignUpState();
+}
+class SignUpState extends State<SignUp> {
+  bool _isLoading = false;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   void _signUp(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
     final String email = emailController.text;
     final String password = passwordController.text;
     final String username = usernameController.text;
@@ -32,6 +41,9 @@ class SignUp extends StatelessWidget {
     } catch (e) {
       print("Error: $e");
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -42,16 +54,19 @@ class SignUp extends StatelessWidget {
         backgroundColor: Color(0xFF0F172A),
         title: Text("Sign up"),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 20,
-            children: [
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 20,
+                    children: [
+                      TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
                   labelText: "Email",
                   hintText: "Email",
                 ),
