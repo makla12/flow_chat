@@ -11,6 +11,7 @@ class AuthUtils {
           'email': email,
           'username': displayName,
           'friends': [],
+          'avatarUrl':"https://i.pravatar.cc/150?img=1", 
         });
       }
     } catch (e) {
