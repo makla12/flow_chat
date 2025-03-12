@@ -6,9 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
     if (user == null) {
@@ -17,6 +15,5 @@ void main() async {
       print('User is signed in!');
     }
   });
-
   runApp(const FlowChatApp());
 }
