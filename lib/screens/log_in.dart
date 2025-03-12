@@ -1,6 +1,7 @@
 import 'package:flow_chat/screens/grup_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flow_chat/utils/auth_utils.dart';
 
 class LogIn extends StatelessWidget {
   LogIn({super.key});
@@ -11,11 +12,10 @@ class LogIn extends StatelessWidget {
   void _logIn(BuildContext context) async {
     final String email = emailController.text;
     final String password = passwordController.text;
-    print("Email: $email, Password: $password");
     try{
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-      print(credential.user);
+      AuthUtils.addUserToFirestore(credential);
     } on FirebaseAuthException catch (e) {
       if(e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(
