@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/bottom_nav_bar.dart';
-import 'AddingFriendsScreen.dart'; // Import nowego ekranu
+import 'adding_friends_screen.dart'; // Import nowego ekranu
 
 class FriendsScreen extends StatelessWidget {
   const FriendsScreen({super.key});
