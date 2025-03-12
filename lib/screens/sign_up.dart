@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flow_chat/utils/auth_utils.dart';
 import 'grup_chat_screen.dart';
 
 class SignUp extends StatelessWidget {
@@ -17,17 +17,7 @@ class SignUp extends StatelessWidget {
     try {
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
       credential.user!.updateDisplayName(username);
-      try {
-        await FirebaseFirestore.instance.collection('users').doc(credential.user!.uid).set({
-          'username': username,
-          'email': email,
-          'friends': [],
-        });
-        print("User added to Firestore successfully");
-      } catch (firestoreError) {
-        print("Error adding user to Firestore: $firestoreError");
-      }
-
+      AuthUtils.addUserToFirestore(credential);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
