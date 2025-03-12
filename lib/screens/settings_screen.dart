@@ -1,7 +1,15 @@
+import 'package:flow_chat/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/menu_item_widget.dart';
 import '../widgets/custom_divider.dart';
+
+import 'profile_screen.dart';
+import 'account_settings_screen.dart';
+import 'privacy_and_security_screen.dart';
+import 'notifications_screen.dart';
+import 'appearance_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FlowChatScreen extends StatelessWidget {
   const FlowChatScreen({Key? key}) : super(key: key);
@@ -29,7 +37,7 @@ class FlowChatScreen extends StatelessWidget {
           ),
         ],
       ),
-      // Główna część ekranu
+      // Główna część ekranu z menu
       body: Center(
         child: Container(
           margin: const EdgeInsets.only(top: 16),
@@ -43,37 +51,95 @@ class FlowChatScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                MenuItemWidget(icon: Icons.person, text: 'Pokaż profil'),
+                MenuItemWidget(
+                  icon: Icons.person,
+                  text: 'Pokaż profil',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProfileScreen(),
+                      ),
+                    );
+                  },
+                ),
                 const CustomDivider(dividerColor: dividerColor),
-                MenuItemWidget(icon: Icons.settings, text: 'Ustawienia konta'),
+                MenuItemWidget(
+                  icon: Icons.settings,
+                  text: 'Ustawienia konta',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AccountSettingsScreen(),
+                      ),
+                    );
+                  },
+                ),
                 const CustomDivider(dividerColor: dividerColor),
                 MenuItemWidget(
                   icon: Icons.security,
                   text: 'Prywatność i bezpieczeństwo',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PrivacyAndSecurityScreen(),
+                      ),
+                    );
+                  },
                 ),
                 const CustomDivider(dividerColor: dividerColor),
                 MenuItemWidget(
                   icon: Icons.notifications,
                   text: 'Powiadomienia',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationsScreen(),
+                      ),
+                    );
+                  },
                 ),
                 const CustomDivider(dividerColor: dividerColor),
-                MenuItemWidget(icon: Icons.star, text: 'Wygląd'),
+                MenuItemWidget(
+                  icon: Icons.star,
+                  text: 'Wygląd',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AppearanceScreen(),
+                      ),
+                    );
+                  },
+                ),
                 const CustomDivider(dividerColor: dividerColor),
                 MenuItemWidget(
                   icon: Icons.logout,
                   text: 'Wyloguj się',
                   color: logoutColor,
+                  onTap: () {
+                    FirebaseAuth.instance.signOut();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const WelcomeScreen(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
           ),
         ),
       ),
-      // Dolne menu
+      // Dolna nawigacja (Friends, Teams, Menu)
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 2, // Podświetlamy przycisk "Menu"
+        currentIndex: 2, // Podświetlenie przycisku "Menu"
         backgroundColor: backgroundColor,
-        selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
+        selectedItemColor: appBarColor,
         unselectedItemColor: Colors.white70,
         dividerColor: dividerColor,
       ),
