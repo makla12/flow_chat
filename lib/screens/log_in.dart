@@ -15,7 +15,7 @@ class LogIn extends StatelessWidget {
     try{
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-      AuthUtils.addUserToFirestore(credential);
+      AuthUtils.addUserToFirestore(credential.user!.uid, credential.user!.email!, credential.user!.displayName!);
     } on FirebaseAuthException catch (e) {
       if(e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -16,8 +16,8 @@ class SignUp extends StatelessWidget {
     final String username = usernameController.text;
     try {
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-      credential.user!.updateDisplayName(username);
-      AuthUtils.addUserToFirestore(credential);
+      await credential.user!.updateDisplayName(username);
+      AuthUtils.addUserToFirestore(credential.user!.uid, email, username);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
