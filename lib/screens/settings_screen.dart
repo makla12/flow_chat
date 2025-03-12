@@ -139,7 +139,7 @@ class FlowChatScreen extends StatelessWidget {
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 2, // Podświetlenie przycisku "Menu"
         backgroundColor: backgroundColor,
-        selectedItemColor: appBarColor,
+        selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
         dividerColor: dividerColor,
       ),

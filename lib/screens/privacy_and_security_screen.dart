@@ -28,6 +28,25 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
   bool _isLoading = false;
   String? _emailError;
   String? _passwordError;
+  String?
+  _loginProvider; // Zmienna do przechowywania informacji o dostawcy logowania
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginProvider(); // Sprawdzamy, jakim dostawcą jest użytkownik
+  }
+
+  /// Funkcja sprawdzająca, jakim dostawcą (provider) jest zalogowany użytkownik.
+  Future<void> _checkLoginProvider() async {
+    final user = _auth.currentUser;
+    if (user != null && user.providerData.isNotEmpty) {
+      setState(() {
+        _loginProvider =
+            user.providerData.first.providerId; // 'google.com' lub 'password'
+      });
+    }
+  }
 
   /// Funkcja sprawdzająca, jakim dostawcą (provider) jest zalogowany użytkownik,
   /// a następnie przeprowadzająca reautoryzację.
@@ -97,21 +116,24 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
         );
       }
 
-      // Reautoryzacja (dla Email/Password - hasło z _emailPasswordController,
-      // dla Google - ponowne GoogleSignIn).
+      // Reautoryzacja (dla Email/Password - hasło z _emailPasswordController, dla Google - GoogleSignIn)
       await _reauthenticateUser(
         currentPassword: _emailPasswordController.text.trim(),
       );
 
-      // Bezpośrednia aktualizacja emaila (pomijamy verifyBeforeUpdateEmail).
-      await user.updateEmail(_newEmailController.text.trim());
-      await user.reload();
+      // Wysyłanie maila weryfikacyjnego i aktualizacja emaila po potwierdzeniu
+      await user.verifyBeforeUpdateEmail(_newEmailController.text.trim());
 
+      // Ważne! Nowy email nie jest od razu zapisany, więc użytkownik musi potwierdzić go w skrzynce pocztowej.
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email został pomyślnie zaktualizowany.')),
+        const SnackBar(
+          content: Text(
+            'Wysłano link weryfikacyjny na nowy adres email. Kliknij w link, aby potwierdzić zmianę.',
+          ),
+        ),
       );
 
-      // Czyścimy pola po sukcesie
+      // Opróżnienie pól po sukcesie
       _newEmailController.clear();
       _emailPasswordController.clear();
     } on FirebaseAuthException catch (e) {
@@ -225,163 +247,172 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // =========================
-                    // SEKCJA AKTUALIZACJI EMAILA
-                    // =========================
-                    const Text(
-                      'Aktualizacja emaila',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    if (_loginProvider == 'google.com') ...[
+                      // Informacja, że nie można zmieniać emaila i hasła, jeśli użytkownik jest zalogowany przez Google
+                      const Text(
+                        'Nie możesz zmienić hasła ani emaila, ponieważ jesteś zalogowany przez Google.',
+                        style: TextStyle(color: Colors.red),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Podaj nowy email. Jeśli korzystasz z Email/Password, musisz wpisać także swoje obecne hasło. '
-                      'Jeśli jesteś zalogowany przez Google, zostaniesz poproszony o ponowne zalogowanie w Google.',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _newEmailController,
-                      keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Nowy email',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        hintText: 'Wprowadź nowy email',
-                        hintStyle: const TextStyle(color: Colors.white54),
-                        filled: true,
-                        fillColor: const Color(0xFF1F2937),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
+                      const SizedBox(height: 32),
+                    ] else ...[
+                      // =========================
+                      // SEKCJA AKTUALIZACJI EMAILA
+                      // =========================
+                      const Text(
+                        'Aktualizacja emaila',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _emailPasswordController,
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Hasło (Email/Password)',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        hintText: 'Wprowadź hasło, jeśli logujesz się mailem',
-                        hintStyle: const TextStyle(color: Colors.white54),
-                        filled: true,
-                        fillColor: const Color(0xFF1F2937),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    if (_emailError != null) ...[
                       const SizedBox(height: 8),
-                      Text(
-                        _emailError!,
-                        style: const TextStyle(color: Colors.red),
+                      const Text(
+                        'Podaj nowy email. Jeśli korzystasz z Email/Password, musisz wpisać także swoje obecne hasło. '
+                        'Jeśli jesteś zalogowany przez Google, zostaniesz poproszony o ponowne zalogowanie w Google.',
+                        style: TextStyle(color: Colors.white70),
                       ),
-                    ],
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _updateEmail,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: appBarColor,
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _newEmailController,
+                        keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: 'Nowy email',
+                          labelStyle: const TextStyle(color: Colors.white),
+                          hintText: 'Wprowadź nowy email',
+                          hintStyle: const TextStyle(color: Colors.white54),
+                          filled: true,
+                          fillColor: const Color(0xFF1F2937),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
                       ),
-                      child: const Text('Zmień email'),
-                    ),
-                    const SizedBox(height: 32),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _emailPasswordController,
+                        obscureText: true,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: 'Hasło (Email/Password)',
+                          labelStyle: const TextStyle(color: Colors.white),
+                          hintText: 'Wprowadź hasło, jeśli logujesz się mailem',
+                          hintStyle: const TextStyle(color: Colors.white54),
+                          filled: true,
+                          fillColor: const Color(0xFF1F2937),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                      if (_emailError != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          _emailError!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ],
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _updateEmail,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: appBarColor,
+                        ),
+                        child: const Text('Zmień email'),
+                      ),
+                      const SizedBox(height: 32),
 
-                    // =========================
-                    // SEKCJA AKTUALIZACJI HASŁA
-                    // =========================
-                    const Text(
-                      'Aktualizacja hasła',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Jeśli jesteś zalogowany kontem Email/Password, podaj obecne hasło, a następnie wprowadź nowe hasło dwukrotnie. '
-                      'Dla Google Sign-In zostaniesz poproszony o ponowne zalogowanie w Google.',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _currentPasswordForPasswordController,
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Obecne hasło (Email/Password)',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        hintText:
-                            'Wprowadź obecne hasło (jeśli logujesz się mailem)',
-                        hintStyle: const TextStyle(color: Colors.white54),
-                        filled: true,
-                        fillColor: const Color(0xFF1F2937),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
+                      // =========================
+                      // SEKCJA AKTUALIZACJI HASŁA
+                      // =========================
+                      const Text(
+                        'Aktualizacja hasła',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _newPasswordController,
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Nowe hasło',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        hintText: 'Wprowadź nowe hasło',
-                        hintStyle: const TextStyle(color: Colors.white54),
-                        filled: true,
-                        fillColor: const Color(0xFF1F2937),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _confirmNewPasswordController,
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Potwierdź nowe hasło',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        hintText: 'Powtórz nowe hasło',
-                        hintStyle: const TextStyle(color: Colors.white54),
-                        filled: true,
-                        fillColor: const Color(0xFF1F2937),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    if (_passwordError != null) ...[
                       const SizedBox(height: 8),
-                      Text(
-                        _passwordError!,
-                        style: const TextStyle(color: Colors.red),
+                      const Text(
+                        'Jeśli jesteś zalogowany kontem Email/Password, podaj obecne hasło, a następnie wprowadź nowe hasło dwukrotnie. '
+                        'Dla Google Sign-In zostaniesz poproszony o ponowne zalogowanie w Google.',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _currentPasswordForPasswordController,
+                        obscureText: true,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: 'Obecne hasło (Email/Password)',
+                          labelStyle: const TextStyle(color: Colors.white),
+                          hintText:
+                              'Wprowadź obecne hasło (jeśli logujesz się mailem)',
+                          hintStyle: const TextStyle(color: Colors.white54),
+                          filled: true,
+                          fillColor: const Color(0xFF1F2937),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _newPasswordController,
+                        obscureText: true,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: 'Nowe hasło',
+                          labelStyle: const TextStyle(color: Colors.white),
+                          hintText: 'Wprowadź nowe hasło',
+                          hintStyle: const TextStyle(color: Colors.white54),
+                          filled: true,
+                          fillColor: const Color(0xFF1F2937),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _confirmNewPasswordController,
+                        obscureText: true,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: 'Potwierdź nowe hasło',
+                          labelStyle: const TextStyle(color: Colors.white),
+                          hintText: 'Powtórz nowe hasło',
+                          hintStyle: const TextStyle(color: Colors.white54),
+                          filled: true,
+                          fillColor: const Color(0xFF1F2937),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                      if (_passwordError != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          _passwordError!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ],
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _updatePassword,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: appBarColor,
+                        ),
+                        child: const Text('Zmień hasło'),
                       ),
                     ],
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _updatePassword,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: appBarColor,
-                      ),
-                      child: const Text('Zmień hasło'),
-                    ),
                   ],
                 ),
               ),
