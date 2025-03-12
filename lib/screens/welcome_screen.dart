@@ -6,8 +6,15 @@ import 'package:flow_chat/screens/log_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
+
+  @override
+  WelcomeScreenState createState() => WelcomeScreenState();
+}
+
+class WelcomeScreenState extends State<WelcomeScreen> {
+  bool _isLoading = false;
 
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
@@ -28,10 +35,12 @@ class WelcomeScreen extends StatelessWidget {
   }
 
   void _signInWithGoogle(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       final userCredential = await signInWithGoogle();
-      print("User: ${userCredential.user}");
-      AuthUtils.addUserToFirestore(userCredential);
+      AuthUtils.addUserToFirestore(userCredential.user!.uid, userCredential.user!.email!, userCredential.user!.displayName!);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -39,6 +48,9 @@ class WelcomeScreen extends StatelessWidget {
     } catch (e) {
       print("Error: $e");
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -46,15 +58,18 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFF0F172A),
 
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Image(image: AssetImage("images/logo.png"), width: 128),
-                
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SafeArea(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Image(image: AssetImage("images/logo.png"), width: 128),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     "Chat with ",
