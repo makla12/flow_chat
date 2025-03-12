@@ -29,11 +29,11 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
   String? _emailError;
   String? _passwordError;
 
-  /// Funkcja sprawdzająca, jakim dostawcą jest zalogowany użytkownik,
+  /// Funkcja sprawdzająca, jakim dostawcą (provider) jest zalogowany użytkownik,
   /// a następnie przeprowadzająca reautoryzację.
   ///
-  /// Dla Email/Password prosimy o hasło.
-  /// Dla Google Sign-In wywołujemy ponowne GoogleSignIn.
+  /// - Dla Email/Password prosimy o hasło.
+  /// - Dla Google Sign-In wywołujemy ponowne GoogleSignIn().
   Future<void> _reauthenticateUser({String? currentPassword}) async {
     final user = _auth.currentUser;
     if (user == null) {
@@ -44,19 +44,16 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
     }
 
     // Sprawdzamy, jakim dostawcą jest zalogowany użytkownik.
-    // Jeżeli w user.providerData jest 'google.com', to znaczy, że zalogował się przez Google.
-    // Jeżeli 'password', to znaczy, że zalogował się przez Email/Password.
     final providerId =
         user.providerData.isNotEmpty
             ? user.providerData.first.providerId
-            : 'password';
-    // domyślnie załóżmy password, jeśli pusto
+            : 'password'; // jeśli pusto, zakładamy password
 
     if (providerId == 'google.com') {
       // Reautoryzacja z Google
       final googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        // Użytkownik przerwał logowanie w oknie Google
+        // Użytkownik anulował logowanie w oknie Google
         throw FirebaseAuthException(
           message: 'Reautoryzacja Google nie powiodła się (anulowana).',
           code: 'google-reauth-cancelled',
@@ -69,7 +66,7 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
       );
       await user.reauthenticateWithCredential(credential);
     } else {
-      // Zakładamy, że to email/password
+      // Email/Password
       if (user.email == null) {
         throw FirebaseAuthException(
           message: 'Brak adresu email. Nie można zreautoryzować.',
@@ -84,7 +81,7 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
     }
   }
 
-  /// Zmiana emaila
+  /// Zmiana emaila (bez verifyBeforeUpdateEmail)
   Future<void> _updateEmail() async {
     setState(() {
       _emailError = null;
@@ -101,14 +98,12 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
       }
 
       // Reautoryzacja (dla Email/Password - hasło z _emailPasswordController,
-      // dla Google - automatyczne GoogleSignIn).
+      // dla Google - ponowne GoogleSignIn).
       await _reauthenticateUser(
         currentPassword: _emailPasswordController.text.trim(),
       );
 
-      // Aktualizacja emaila (dotyczy tylko email/password,
-      // ale jeśli user jest z Google, to Firebase też pozwoli
-      // na updateEmail, o ile email jest unikalny i dopuszczony).
+      // Bezpośrednia aktualizacja emaila (pomijamy verifyBeforeUpdateEmail).
       await user.updateEmail(_newEmailController.text.trim());
       await user.reload();
 
@@ -243,7 +238,8 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Podaj nowy email. Jeśli korzystasz z Email/Password, musisz podać też swoje aktualne hasło w celu reautoryzacji. Jeśli jesteś zalogowany przez Google, zostaniesz poproszony o ponowne zalogowanie w Google.',
+                      'Podaj nowy email. Jeśli korzystasz z Email/Password, musisz wpisać także swoje obecne hasło. '
+                      'Jeśli jesteś zalogowany przez Google, zostaniesz poproszony o ponowne zalogowanie w Google.',
                       style: TextStyle(color: Colors.white70),
                     ),
                     const SizedBox(height: 16),
@@ -270,10 +266,9 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       obscureText: true,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        labelText: 'Obecne hasło (Email/Password)',
+                        labelText: 'Hasło (Email/Password)',
                         labelStyle: const TextStyle(color: Colors.white),
-                        hintText:
-                            'Wprowadź swoje hasło, jeśli logujesz się mailem',
+                        hintText: 'Wprowadź hasło, jeśli logujesz się mailem',
                         hintStyle: const TextStyle(color: Colors.white54),
                         filled: true,
                         fillColor: const Color(0xFF1F2937),
@@ -313,7 +308,8 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Jeśli jesteś zalogowany kontem Email/Password, podaj obecne hasło, a następnie wprowadź nowe hasło dwukrotnie. Dla Google Sign-In zostaniesz poproszony o ponowne zalogowanie w Google.',
+                      'Jeśli jesteś zalogowany kontem Email/Password, podaj obecne hasło, a następnie wprowadź nowe hasło dwukrotnie. '
+                      'Dla Google Sign-In zostaniesz poproszony o ponowne zalogowanie w Google.',
                       style: TextStyle(color: Colors.white70),
                     ),
                     const SizedBox(height: 16),
