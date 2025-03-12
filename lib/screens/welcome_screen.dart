@@ -45,6 +45,9 @@ class WelcomeScreenState extends State<WelcomeScreen> {
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
       );
+      while(Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
     } catch (e) {
       print("Error: $e");
     }

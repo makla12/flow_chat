@@ -23,8 +23,11 @@ class LogInState extends State<LogIn> {
     final String password = passwordController.text;
     try{
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
       AuthUtils.addUserToFirestore(credential.user!.uid, credential.user!.email!, credential.user!.displayName!);
+      while(Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } on FirebaseAuthException catch (e) {
       if(e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(
