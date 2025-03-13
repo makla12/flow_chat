@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'chanels_screen.dart';
 import 'create_server_screen.dart';
+import 'notifications.dart'; // Import nowego ekranu
 
 import '../../widgets/bottom_nav_bar.dart';
 
@@ -10,7 +11,13 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
   final Stream<QuerySnapshot> _serversStream =
-      FirebaseFirestore.instance.collection('teams').where("members", arrayContains: FirebaseAuth.instance.currentUser!.uid).snapshots();
+      FirebaseFirestore.instance
+          .collection('teams')
+          .where(
+            "members",
+            arrayContains: FirebaseAuth.instance.currentUser!.uid,
+          )
+          .snapshots();
 
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
@@ -29,7 +36,12 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications, color: Colors.white),
             onPressed: () {
-              // Dodaj akcję dla dzwonka
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NotificationsScreen(),
+                ), // Poprawiony ekran docelowy
+              );
             },
           ),
           IconButton(
@@ -80,7 +92,7 @@ class HomeScreen extends StatelessWidget {
                             MaterialPageRoute(
                               builder:
                                   (context) =>
-                                      ChannelsScreen(serverId: server.id,),
+                                      ChannelsScreen(serverId: server.id),
                             ),
                           );
                         },
