@@ -34,7 +34,12 @@ class FlowChatScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications, color: Colors.white),
             onPressed: () {
-              // Dodaj akcję dla powiadomien
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NotificationsScreen(),
+                ), // Poprawiona nawigacja
+              );
             },
           ),
           IconButton(
