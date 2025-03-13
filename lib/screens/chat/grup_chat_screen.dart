@@ -27,6 +27,12 @@ class HomeScreen extends StatelessWidget {
         centerTitle: false,
         actions: [
           IconButton(
+            icon: const Icon(Icons.notifications, color: Colors.white),
+            onPressed: () {
+              // Dodaj akcję dla dzwonka
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.add_home, color: Colors.white),
             onPressed: () {
               Navigator.push(
