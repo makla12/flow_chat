@@ -32,6 +32,9 @@ class SignUpState extends State<SignUp> {
       }
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } on FirebaseAuthException catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("The password provided is too weak."))
@@ -43,10 +46,10 @@ class SignUpState extends State<SignUp> {
       }
     } catch (e) {
       print("Error: $e");
+      setState(() {
+        _isLoading = false;
+      });
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
