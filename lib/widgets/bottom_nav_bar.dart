@@ -1,7 +1,7 @@
-import 'package:flow_chat/screens/grup_chat_screen.dart';
-import 'package:flow_chat/screens/settings_screen.dart';
+import 'package:flow_chat/screens/chat/grup_chat_screen.dart';
+import 'package:flow_chat/screens/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flow_chat/screens/friends_screen.dart';
+import 'package:flow_chat/screens/chat/friends_screen.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/bottom_nav_bar.dart';
 
 class AddingFriendsScreen extends StatelessWidget {
   const AddingFriendsScreen({super.key});
@@ -52,13 +51,6 @@ class AddingFriendsScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 1,
-        backgroundColor: backgroundColor,
-        selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
-        unselectedItemColor: Colors.white70,
-        dividerColor: dividerColor,
-      ),
     );
   }
 }
@@ -75,7 +67,10 @@ class FriendRequestItem extends StatelessWidget {
         backgroundColor: Colors.purple,
         child: Icon(Icons.person, color: Colors.white),
       ),
-      title: Text('Nickname ${index + 1}', style: TextStyle(color: Colors.white)),
+      title: Text(
+        'Nickname ${index + 1}',
+        style: TextStyle(color: Colors.white),
+      ),
       trailing: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: AddingFriendsScreen.buttonColor,

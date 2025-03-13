@@ -1,8 +1,8 @@
-import 'package:flow_chat/screens/grup_chat_screen.dart';
+import 'package:flow_chat/screens/chat/grup_chat_screen.dart';
 import 'package:flow_chat/utils/auth_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flow_chat/screens/sign_up.dart';
-import 'package:flow_chat/screens/log_in.dart';
+import 'package:flow_chat/screens/auth/sign_up.dart';
+import 'package:flow_chat/screens/auth/log_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -50,10 +50,11 @@ class WelcomeScreenState extends State<WelcomeScreen> {
       }
     } catch (e) {
       print("Error: $e");
+      setState(() {
+        _isLoading = false;
+      });
     }
-    setState(() {
-      _isLoading = false;
-    });
+    
   }
 
   @override

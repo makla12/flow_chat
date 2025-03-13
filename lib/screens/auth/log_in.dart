@@ -1,4 +1,4 @@
-import 'package:flow_chat/screens/grup_chat_screen.dart';
+import 'package:flow_chat/screens/chat/grup_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow_chat/utils/auth_utils.dart';
@@ -29,6 +29,9 @@ class LogInState extends State<LogIn> {
       }
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } on FirebaseAuthException catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
       if(e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("No user found for that email."))
@@ -40,10 +43,10 @@ class LogInState extends State<LogIn> {
       }
     } catch (e) {
       print("Error: $e");
+      setState(() {
+        _isLoading = false;
+      });
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override

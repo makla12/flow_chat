@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import '../screens/chat_screen.dart';
+import '../../widgets/bottom_nav_bar.dart';
+import 'adding_friends_screen.dart'; // Import nowego ekranu
 
-import '../widgets/bottom_nav_bar.dart';
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class FriendsScreen extends StatelessWidget {
+  const FriendsScreen({super.key});
 
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
@@ -24,13 +23,17 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications, color: Colors.white),
             onPressed: () {
-              // Dodaj akcję dla dzwonka
+              // Dodaj akcję dla powidadomien
             },
           ),
+
           IconButton(
-            icon: const Icon(Icons.person, color: Colors.white),
+            icon: const Icon(Icons.add, color: Colors.white),
             onPressed: () {
-              // Dodaj akcję dla ikony profilu
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddingFriendsScreen()),
+              );
             },
           ),
         ],
@@ -41,10 +44,10 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: TextField(
               decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
                 hintText: 'Szukaj',
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
                 fillColor: Colors.grey.shade900,
+                filled: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
                   borderSide: BorderSide.none,
@@ -56,48 +59,53 @@ class HomeScreen extends StatelessWidget {
             child: ListView.builder(
               itemCount: 10,
               itemBuilder: (context, index) {
-                return ListTile(
-                  leading: const CircleAvatar(backgroundColor: Colors.grey),
-                  title: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => ChatScreen(
-                                groupName: 'Name',
-                              ), // tutaj jest nazwa grupy po kliknieciu
-                        ),
-                      );
-                    },
-                    child: Container(
-                      height: 30,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade900,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Nazwa grupy', // tutaj po prostu nazwa
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
+                return ChatItem(index: index);
               },
             ),
           ),
         ],
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 0, // Podświetlamy przycisk "Menu"
+        currentIndex: 1, // Podświetlamy przycisk "Menu"
         backgroundColor: backgroundColor,
         selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
         dividerColor: dividerColor,
       ),
+    );
+  }
+}
+
+class ChatItem extends StatelessWidget {
+  final int index;
+
+  const ChatItem({super.key, required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: Colors.purple,
+        child: Icon(Icons.person, color: Colors.white),
+      ),
+      title: Text('Lorem Ipsum $index'),
+      trailing:
+          index == 0
+              ? Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '99+',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+              : null,
     );
   }
 }
