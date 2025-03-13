@@ -32,7 +32,7 @@ class NotificationsScreen extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _buildMenuItem(Icons.notifications, 'Włącz powiadomienia'),
+              _buildMenuItem(Icons.notifications_active, 'Włącz powiadomienia'),
               _buildMenuItem(Icons.email, 'Powiadomienia e-mail'),
               _buildMenuItem(Icons.sms, 'Powiadomienia SMS'),
               _buildMenuItem(Icons.vibration, 'Wibracje'),
@@ -45,12 +45,19 @@ class NotificationsScreen extends StatelessWidget {
   }
 
   Widget _buildMenuItem(IconData icon, String title) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.white),
-      title: Text(title, style: const TextStyle(color: Colors.white)),
-      onTap: () {
-        // TODO: Dodaj funkcję dla każdej opcji powiadomień
-      },
+    return Column(
+      children: [
+        ListTile(
+          leading: Icon(icon, color: Colors.white),
+          title: Text(title, style: const TextStyle(color: Colors.white)),
+          trailing: Switch(
+            value: false, // Możesz tu dodać logikę do obsługi zmiany
+            onChanged: (bool value) {},
+            activeColor: Colors.blue,
+          ),
+        ),
+        Divider(color: dividerColor, height: 1),
+      ],
     );
   }
 }
