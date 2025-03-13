@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'chat_screen.dart';
+import 'chanels_screen.dart';
 import 'create_server_screen.dart';
 
 import '../../widgets/bottom_nav_bar.dart';
@@ -16,7 +16,6 @@ class HomeScreen extends StatelessWidget {
   static const Color appBarColor = Color(0xFF1E3A8A);
   static const Color containerColor = Color(0xFF1F2937);
   static const Color dividerColor = Color(0xFF2F3A4B);
-  static const Color logoutColor = Color(0xFFE53935);
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +74,7 @@ class HomeScreen extends StatelessWidget {
                             MaterialPageRoute(
                               builder:
                                   (context) =>
-                                      ChatScreen(groupName: server['name']),
+                                      ChannelsScreen(serverId: server.id,),
                             ),
                           );
                         },
