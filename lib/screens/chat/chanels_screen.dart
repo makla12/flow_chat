@@ -29,18 +29,16 @@ class ChannelsScreen extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (!snapshot.hasData) {
-          return const Center(child: Text('No channels'));
+        if (!snapshot.hasData || snapshot.data!.data() == null) {
+          return const Center(child: Text('Sever does not exist'));
         }
 
         final data = snapshot.data!.data() as Map<String, dynamic>;
-        print(data["channels"]);
         final channels = data['channels'] as List<dynamic>;
         return ListView.builder(
           itemCount: channels.length,
           itemBuilder: (context, index) {
             final channel = channels[index] as Map<String, dynamic>;
-            print(channel);
             return ListTile(
               title: Text(channel['name']),
               onTap: () {
