@@ -76,7 +76,7 @@ class ChatScreenState extends State<ChatScreen> {
                     reverse: true,
                     itemCount: messages.length,
                     itemBuilder: (context, index) {
-                      final message = messages[index] as Map<String, dynamic>;
+                      final message = messages[messages.length - 1 - index] as Map<String, dynamic>;
                       return ChatMessage(
                         name: message['name'],
                         time: message['time'],
