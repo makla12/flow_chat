@@ -1,10 +1,9 @@
+import 'package:flow_chat/screens/chat/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../widgets/bottom_nav_bar.dart';
-import '../settings/notifications_screen.dart';
 import 'adding_friends_screen.dart';
-import 'chat_screen.dart';
 
 class FriendsScreen extends StatelessWidget {
   const FriendsScreen({super.key});
@@ -95,10 +94,7 @@ class FriendsScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ChatScreen(
-                              friendId: friend.id,
-                              friendName: friendData['name'] ?? 'No Name',
-                            ),
+                            builder: (context) => Text("Chat with ${friendData['name']}"),
                           ),
                         );
                       },
