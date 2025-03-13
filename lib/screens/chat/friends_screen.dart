@@ -6,7 +6,13 @@ import '../../widgets/bottom_nav_bar.dart';
 import 'adding_friends_screen.dart';
 
 class FriendsScreen extends StatelessWidget {
-  const FriendsScreen({super.key});
+  FriendsScreen({super.key});
+
+  final Stream<DocumentSnapshot> _friendsStream =
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .snapshots();
 
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
@@ -16,12 +22,6 @@ class FriendsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Stream<QuerySnapshot> _friendsStream = FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('friends')
-        .snapshots();
-
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -67,35 +67,56 @@ class FriendsScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
+            child: StreamBuilder<DocumentSnapshot>(
               stream: _friendsStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('No friends found', style: TextStyle(color: Colors.white)));
+                if (!snapshot.hasData || snapshot.data!.data() == null) {
+                  return const Center(
+                    child: Text(
+                      'No friends found',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
                 }
-                final friends = snapshot.data!.docs;
-                print('Friends: ${friends.map((doc) => doc.data()).toList()}'); // Debug statement
+                final data = snapshot.data!.data()! as Map<String, dynamic>;
+                final friends = data['friends'] as List<dynamic>;
                 return ListView.builder(
                   itemCount: friends.length,
                   itemBuilder: (context, index) {
-                    final friend = friends[index];
-                    final friendData = friend.data() as Map<String, dynamic>;
-                    print('Friend Data: $friendData'); // Debug statement
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.purple,
-                        child: Icon(Icons.person, color: Colors.white),
-                      ),
-                      title: Text(friendData['name'] ?? 'No Name', style: TextStyle(color: Colors.white)),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Text("Chat with ${friendData['name']}"),
+                    final friendId = friends[index];
+                    final friendStream = FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(friendId)
+                        .snapshots();
+
+                    return StreamBuilder<DocumentSnapshot>(
+                      stream: friendStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        if (!snapshot.hasData || snapshot.data!.data() == null) {
+                          return Text("Friend data not found");
+                        }
+                        final friendData = snapshot.data!.data()! as Map<String, dynamic>;
+                        final friendName = friendData['username'] as String;
+                        final friendAvatarUrl = friendData['avatarUrl'] as String;
+                        return ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(friendAvatarUrl),
                           ),
+                          title: Text(friendName),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Text("Chat with friend ${friendId}"),
+                              ),
+                            );
+                          },
                         );
                       },
                     );
