@@ -1,16 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'chat_screen.dart';
+import 'chanels_screen.dart';
+import 'create_server_screen.dart';
 
 import '../../widgets/bottom_nav_bar.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+
+  final Stream<QuerySnapshot> _serversStream =
+      FirebaseFirestore.instance.collection('teams').where("members", arrayContains: FirebaseAuth.instance.currentUser!.uid).snapshots();
 
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
   static const Color containerColor = Color(0xFF1F2937);
   static const Color dividerColor = Color(0xFF2F3A4B);
-  static const Color logoutColor = Color(0xFFE53935);
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +33,12 @@ class HomeScreen extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.person, color: Colors.white),
+            icon: const Icon(Icons.add_home, color: Colors.white),
             onPressed: () {
-              // Dodaj akcję dla ikony profilu
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateServerScreen()),
+              );
             },
           ),
         ],
@@ -53,38 +61,49 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: const CircleAvatar(backgroundColor: Colors.grey),
-                  title: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => ChatScreen(
-                                groupName: 'Name',
-                              ), // tutaj jest nazwa grupy po kliknieciu
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _serversStream,
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    final server = snapshot.data!.docs[index];
+                    return ListTile(
+                      leading: const CircleAvatar(backgroundColor: Colors.grey),
+                      title: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      ChannelsScreen(serverId: server.id,),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 30,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade900,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Text(
+                              server['name'],
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                    child: Container(
-                      height: 30,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade900,
-                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Center(
-                        child: Text(
-                          'Nazwa grupy', // tutaj po prostu nazwa
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                      ),
-                    ),
-                  ),
+                    );
+                  },
                 );
               },
             ),
