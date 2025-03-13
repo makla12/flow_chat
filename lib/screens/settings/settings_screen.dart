@@ -1,3 +1,4 @@
+import 'package:flow_chat/screens/chat/notifications.dart';
 import 'package:flow_chat/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/bottom_nav_bar.dart';
@@ -108,7 +109,7 @@ class FlowChatScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const NotificationsScreen(),
+                        builder: (context) => const NotificationsSettingsScreen(),
                       ),
                     );
                   },
