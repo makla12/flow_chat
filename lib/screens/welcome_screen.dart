@@ -50,10 +50,11 @@ class WelcomeScreenState extends State<WelcomeScreen> {
       }
     } catch (e) {
       print("Error: $e");
+      setState(() {
+        _isLoading = false;
+      });
     }
-    setState(() {
-      _isLoading = false;
-    });
+    
   }
 
   @override
