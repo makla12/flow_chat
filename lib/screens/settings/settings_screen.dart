@@ -37,10 +37,6 @@ class FlowChatScreen extends StatelessWidget {
               // Dodaj akcję dla powiadomien
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.person, color: Colors.white),
-            onPressed: () {},
-          ),
         ],
       ),
       // Główna część ekranu z menu
