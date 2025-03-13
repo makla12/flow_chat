@@ -43,10 +43,6 @@ class FlowChatScreen extends StatelessWidget {
               );
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.person, color: Colors.white),
-            onPressed: () {},
-          ),
         ],
       ),
       // Główna część ekranu z menu

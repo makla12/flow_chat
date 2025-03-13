@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../widgets/bottom_nav_bar.dart';
-import 'adding_friends_screen.dart'; // Import nowego ekranu
-import 'notifications.dart'; // Import nowego ekranu
+import '../settings/notifications_screen.dart';
+import 'adding_friends_screen.dart';
+import 'chat_screen.dart';
 
 class FriendsScreen extends StatelessWidget {
   const FriendsScreen({super.key});
@@ -14,6 +17,12 @@ class FriendsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Stream<QuerySnapshot> _friendsStream = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('friends')
+        .snapshots();
+
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -26,9 +35,7 @@ class FriendsScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => NotificationsScreen(),
-                ), // Poprawiona nawigacja
+                MaterialPageRoute(builder: (context) => NotificationsScreen()),
               );
             },
           ),
@@ -61,56 +68,55 @@ class FriendsScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return ChatItem(index: index);
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _friendsStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text('No friends found', style: TextStyle(color: Colors.white)));
+                }
+                final friends = snapshot.data!.docs;
+                print('Friends: ${friends.map((doc) => doc.data()).toList()}'); // Debug statement
+                return ListView.builder(
+                  itemCount: friends.length,
+                  itemBuilder: (context, index) {
+                    final friend = friends[index];
+                    final friendData = friend.data() as Map<String, dynamic>;
+                    print('Friend Data: $friendData'); // Debug statement
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.purple,
+                        child: Icon(Icons.person, color: Colors.white),
+                      ),
+                      title: Text(friendData['name'] ?? 'No Name', style: TextStyle(color: Colors.white)),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatScreen(
+                              friendId: friend.id,
+                              friendName: friendData['name'] ?? 'No Name',
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
               },
             ),
           ),
         ],
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 1, // Podświetlamy przycisk "Menu"
+        currentIndex: 1,
         backgroundColor: backgroundColor,
         selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
         dividerColor: dividerColor,
       ),
-    );
-  }
-}
-
-class ChatItem extends StatelessWidget {
-  final int index;
-
-  const ChatItem({super.key, required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: Colors.purple,
-        child: Icon(Icons.person, color: Colors.white),
-      ),
-      title: Text('Lorem Ipsum $index'),
-      trailing:
-          index == 0
-              ? Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '99+',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              )
-              : null,
     );
   }
 }
