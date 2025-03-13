@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import 'adding_friends_screen.dart'; // Import nowego ekranu
+import 'notifications.dart'; // Import nowego ekranu
 
 class FriendsScreen extends StatelessWidget {
   const FriendsScreen({super.key});
@@ -23,10 +24,14 @@ class FriendsScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications, color: Colors.white),
             onPressed: () {
-              // Dodaj akcję dla powidadomien
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NotificationsScreen(),
+                ), // Poprawiona nawigacja
+              );
             },
           ),
-
           IconButton(
             icon: const Icon(Icons.add, color: Colors.white),
             onPressed: () {
