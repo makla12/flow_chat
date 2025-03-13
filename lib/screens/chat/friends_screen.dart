@@ -21,6 +21,13 @@ class FriendsScreen extends StatelessWidget {
         centerTitle: false,
         actions: [
           IconButton(
+            icon: const Icon(Icons.notifications, color: Colors.white),
+            onPressed: () {
+              // Dodaj akcję dla powidadomien
+            },
+          ),
+
+          IconButton(
             icon: const Icon(Icons.add, color: Colors.white),
             onPressed: () {
               Navigator.push(
@@ -83,22 +90,22 @@ class ChatItem extends StatelessWidget {
       ),
       title: Text('Lorem Ipsum $index'),
       trailing:
-      index == 0
-          ? Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          '99+',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      )
-          : null,
+          index == 0
+              ? Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '99+',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+              : null,
     );
   }
 }
