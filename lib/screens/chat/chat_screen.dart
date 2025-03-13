@@ -68,6 +68,9 @@ class ChatScreenState extends State<ChatScreen> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
+                  if(!snapshot.hasData || snapshot.data!.data() == null){
+                    return const Center(child: Text('Server deos not exist'));
+                  }
 
                   final data = snapshot.data!.data() as Map<String, dynamic>;
                   final channels = data['channels'] as List<dynamic>;
