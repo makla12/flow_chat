@@ -15,10 +15,12 @@ class PrivateChatScreen extends StatefulWidget {
 
 class ChatScreenState extends State<PrivateChatScreen> {
   final TextEditingController textController = TextEditingController();
-  late final Stream<DocumentSnapshot> _messagesStream = FirebaseFirestore.instance
+  late final CollectionReference _messagesRef = FirebaseFirestore.instance
       .collection('private_chats')
       .doc(widget.privateChatId)
-      .snapshots();
+      .collection('messages');
+
+  late final Stream<QuerySnapshot> _messagesStream = _messagesRef.orderBy("time").snapshots();
 
   void _sendMessage() async {
     final message = textController.text;
@@ -32,10 +34,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
       'time': DateTime.now().toIso8601String(),
       'message': message,
     };
-    final docRef = FirebaseFirestore.instance.collection('private_chats').doc(widget.privateChatId);
-    docRef.update({
-      'messages': FieldValue.arrayUnion([messageData])
-    });
+    _messagesRef.doc().set(messageData);
   }
 
   @override
@@ -56,30 +55,33 @@ class ChatScreenState extends State<PrivateChatScreen> {
                 decoration: BoxDecoration(
                   border: Border(bottom: BorderSide(color: Color(0xff2d3748))),
                 ),
-                child: StreamBuilder<DocumentSnapshot>(stream: _messagesStream, builder: (context, snapshot){
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if(!snapshot.hasData || snapshot.data!.data() == null){
-                    return const Center(child: Text('Server deos not exist'));
-                  }
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: _messagesStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return const Center(child: Text('No messages'));
+                    }
+                    final messages = snapshot.data!.docs;
 
-                  final data = snapshot.data!.data() as Map<String, dynamic>;
-                  final messages = data['messages'] as List<dynamic>;
-                  return ListView.separated(
-                    reverse: true,
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      final message = messages[messages.length - 1 - index] as Map<String, dynamic>;
-                      return ChatMessage(
-                        name: message['name'],
-                        time: message['time'],
-                        message: message['message'],
-                      );
-                    },
-                    separatorBuilder: (context, index) => const SizedBox(height: 10),
-                  );
-                }),
+                    return ListView.separated(
+                      reverse: true,
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final message = messages[messages.length - 1 - index];
+                        return ChatMessage(
+                          name: message['name'],
+                          time: message['time'],
+                          message: message['message'],
+                        );
+                      },
+                      separatorBuilder:
+                          (context, index) => const SizedBox(height: 10),
+                    );
+                  },
+                ),
               ),
             ),
 
