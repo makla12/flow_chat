@@ -31,7 +31,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
 
     final messageData = {
       'name': FirebaseAuth.instance.currentUser!.uid,
-      'time': DateTime.now().toIso8601String(),
+      'time': DateTime.now(),
       'message': message,
     };
     _messagesRef.doc().set(messageData);

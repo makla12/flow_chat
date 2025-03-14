@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class ChatMessage extends StatelessWidget {
   ChatMessage({super.key, required this.name, required this.time, required this.message});
   final String name;
-  final String time;
+  final Timestamp time;
   final String message;
   late final _friendStream = FirebaseFirestore.instance.collection('users').doc(name).snapshots();
 
@@ -31,7 +31,7 @@ class ChatMessage extends StatelessWidget {
               children: [
                 Row(
                   spacing: 5,
-                  children: [Text(name, style: TextStyle(fontSize: 16)), Text(time, style: TextStyle(fontSize: 8))],
+                  children: [Text(name, style: TextStyle(fontSize: 16)), Text(time.toDate().toIso8601String(), style: TextStyle(fontSize: 8))],
                 ),
                 Text(message, style: TextStyle(fontSize: 14)),
               ],
