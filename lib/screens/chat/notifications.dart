@@ -10,20 +10,40 @@ class NotificationsScreen extends StatelessWidget {
   static const Color cardColor = Color(0xFF1F2937);
 
   void onAcceptInvite(String inviteId) async {
-    final invite = await FirebaseFirestore.instance.collection('invites').doc(inviteId).get();
-    if(invite['type'] == 'server'){
-      final serverData = await FirebaseFirestore.instance.collection('servers').doc(invite['from']).get();
+    final invite =
+        await FirebaseFirestore.instance
+            .collection('invites')
+            .doc(inviteId)
+            .get();
+    if (invite['type'] == 'server') {
+      final serverData =
+          await FirebaseFirestore.instance
+              .collection('servers')
+              .doc(invite['from'])
+              .get();
       final server = serverData.data() as Map<String, dynamic>;
       final members = List<String>.from(server['members']);
       members.add(FirebaseAuth.instance.currentUser!.uid);
       FirebaseFirestore.instance.runTransaction((transaction) async {
-        transaction.update(FirebaseFirestore.instance.collection('servers').doc(invite['from']), {'members': members});
-        transaction.delete(FirebaseFirestore.instance.collection('invites').doc(inviteId));
+        transaction.update(
+          FirebaseFirestore.instance.collection('servers').doc(invite['from']),
+          {'members': members},
+        );
+        transaction.delete(
+          FirebaseFirestore.instance.collection('invites').doc(inviteId),
+        );
       });
-    }
-    else {
-      final userData = await FirebaseFirestore.instance.collection('users').doc(invite['from']).get();
-      final userData2 = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get();
+    } else {
+      final userData =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(invite['from'])
+              .get();
+      final userData2 =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .get();
       final user = userData.data() as Map<String, dynamic>;
       final friends = List<String>.from(user['friends']);
       friends.add(FirebaseAuth.instance.currentUser!.uid);
@@ -31,9 +51,19 @@ class NotificationsScreen extends StatelessWidget {
       final friends2 = List<String>.from(user2['friends']);
       friends2.add(invite['from']);
       FirebaseFirestore.instance.runTransaction((transaction) async {
-        transaction.update(FirebaseFirestore.instance.collection('users').doc(invite['from']), {'friends': friends});
-        transaction.update(FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid), {'friends': friends2});
-        transaction.delete(FirebaseFirestore.instance.collection('invites').doc(inviteId));
+        transaction.update(
+          FirebaseFirestore.instance.collection('users').doc(invite['from']),
+          {'friends': friends},
+        );
+        transaction.update(
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser!.uid),
+          {'friends': friends2},
+        );
+        transaction.delete(
+          FirebaseFirestore.instance.collection('invites').doc(inviteId),
+        );
       });
     }
   }
@@ -142,6 +172,13 @@ class NotificationsScreen extends StatelessWidget {
                                       style: TextStyle(color: Colors.white),
                                     );
                                   }
+                                  if(!snapshot.hasData || snapshot.data!.data() == null) {
+                                    return const Text(
+                                      "Użytkownik nie istnieje",
+                                      style: TextStyle(color: Colors.white),
+                                    );
+                                  }
+                                  
                                   final userData =
                                       snapshot.data!.data()
                                           as Map<String, dynamic>;
