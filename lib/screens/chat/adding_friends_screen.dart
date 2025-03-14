@@ -18,10 +18,46 @@ class AddingFriendsScreen extends StatefulWidget {
 class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<DocumentSnapshot> searchResults = [];
+  List<String> invites = [];
+
+  void getInvites() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
+    List<String> newInvites = [];
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('invites')
+          .where('to', isEqualTo: currentUser.uid)
+          .get();
+      for (final doc in querySnapshot.docs) {
+        final invite = doc.data();
+        if (invite['type'] == 'friend') {
+          newInvites.add(invite['from'] as String);
+        }
+      }
+
+      final querySnapshot2 = await FirebaseFirestore.instance
+          .collection('invites')
+          .where('from', isEqualTo: currentUser.uid)
+          .get();
+      for (final doc in querySnapshot2.docs) {
+        final invite = doc.data();
+        if (invite['type'] == 'friend') {
+          newInvites.add(invite['to'] as String);
+        }
+      }
+    } catch (e) {
+      print('Błąd pobierania zaproszeń: $e');
+    }
+    setState(() {
+      invites = newInvites;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    getInvites();
     _searchController.addListener(_searchUser);
   }
 
@@ -55,17 +91,20 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
   Future<void> _addFriend(String friendUid) async {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) return;
+    setState(() {
+      invites.add(friendUid);
+    });
 
     try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(currentUser.uid)
-          .update({
-            'friends': FieldValue.arrayUnion([friendUid]),
-          });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Dodano do znajomych!')));
+      await FirebaseFirestore.instance.collection('invites').doc().set({
+        'from': currentUser.uid,
+        'to': friendUid,
+        'timestamp': FieldValue.serverTimestamp(),
+        'type': 'friend',
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Wysłano zaproszenie do znajomych!')),
+      );
     } catch (e) {
       print('Błąd przy dodawaniu znajomego: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -119,6 +158,7 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
                   nickname: userData['username'] ?? 'Brak nazwy',
                   avatarUrl: userData['avatarUrl'] as String?,
                   onAdd: () => _addFriend(friendUid),
+                  canAdd: !invites.contains(friendUid),
                 );
               },
             ),
@@ -134,6 +174,7 @@ class FriendRequestItem extends StatelessWidget {
   final String nickname;
   final String? avatarUrl;
   final VoidCallback onAdd;
+  final bool canAdd;
 
   const FriendRequestItem({
     super.key,
@@ -141,6 +182,7 @@ class FriendRequestItem extends StatelessWidget {
     required this.nickname,
     required this.avatarUrl,
     required this.onAdd,
+    required this.canAdd,
   });
 
   @override
@@ -158,16 +200,19 @@ class FriendRequestItem extends StatelessWidget {
                 : null,
       ),
       title: Text(nickname, style: const TextStyle(color: Colors.white)),
-      trailing: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AddingFriendsScreen.buttonColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        onPressed: onAdd,
-        child: const Text('Add', style: TextStyle(color: Colors.white)),
-      ),
+      trailing:
+          (canAdd
+              ? ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AddingFriendsScreen.buttonColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                onPressed: onAdd,
+                child: const Text('Add', style: TextStyle(color: Colors.white)),
+              )
+              : null),
     );
   }
 }

@@ -84,6 +84,14 @@ class FriendsScreen extends StatelessWidget {
                 }
                 final data = snapshot.data!.data()! as Map<String, dynamic>;
                 final friends = data['friends'] as List<dynamic>;
+                if(friends.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No friends found',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                }
                 return ListView.builder(
                   itemCount: friends.length,
                   itemBuilder: (context, index) {
