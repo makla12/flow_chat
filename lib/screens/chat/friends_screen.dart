@@ -1,4 +1,5 @@
 import 'package:flow_chat/screens/chat/notifications.dart';
+import 'package:flow_chat/screens/chat/private_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -104,6 +105,9 @@ class FriendsScreen extends StatelessWidget {
                         final friendData = snapshot.data!.data()! as Map<String, dynamic>;
                         final friendName = friendData['username'] as String;
                         final friendAvatarUrl = friendData['avatarUrl'] as String;
+                        final privateChatId = [FirebaseAuth.instance.currentUser!.uid, friendId ];
+                        privateChatId.sort();
+                        final privateChatIdString = privateChatId.join('_');
                         return ListTile(
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(friendAvatarUrl),
@@ -113,7 +117,9 @@ class FriendsScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Text("Chat with friend ${friendId}"),
+                                builder: (context) => PrivateChatScreen(
+                                  privateChatId: privateChatIdString,
+                                ),
                               ),
                             );
                           },
