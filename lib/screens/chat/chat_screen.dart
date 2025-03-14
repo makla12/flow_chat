@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flow_chat/widgets/chat_message.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key, required this.serverId, required this.chanelIndex, required this.chanelName});
+  const ChatScreen({super.key, required this.messagesRef, required this.channelName});
 
-  final String serverId;
-  final int chanelIndex;
-  final String chanelName;
+  final String channelName;
+  final CollectionReference messagesRef;
 
   @override
   ChatScreenState createState() => ChatScreenState();
@@ -16,10 +15,7 @@ class ChatScreen extends StatefulWidget {
 
 class ChatScreenState extends State<ChatScreen> {
   final TextEditingController textController = TextEditingController();
-  late final Stream<DocumentSnapshot> _messagesStream = FirebaseFirestore.instance
-      .collection('teams')
-      .doc(widget.serverId)
-      .snapshots();
+  late final Stream<QuerySnapshot> _messagesStream = widget.messagesRef.orderBy("time").snapshots();
 
   void _sendMessage() async {
     final message = textController.text;
@@ -33,17 +29,8 @@ class ChatScreenState extends State<ChatScreen> {
       'time': DateTime.now().toIso8601String(),
       'message': message,
     };
-    final docRef = FirebaseFirestore.instance.collection('teams').doc(widget.serverId);
 
-    final docSnapshot = await docRef.get();
-    if (docSnapshot.exists) {
-      final data = docSnapshot.data() as Map<String, dynamic>;
-      final channels = data['channels'] as List<dynamic>;
-
-      channels[widget.chanelIndex]['messages'].add(messageData);
-
-      await docRef.update({'channels': channels});
-    }
+    widget.messagesRef.doc().set(messageData);
   }
 
   @override
@@ -52,7 +39,7 @@ class ChatScreenState extends State<ChatScreen> {
       backgroundColor: Color(0xFF0F172A),
       appBar: AppBar(
         backgroundColor: Color(0xFF1E3A8A),
-        title: Text(widget.chanelName, style: TextStyle(color: Colors.white)),
+        title: Text(widget.channelName, style: TextStyle(color: Colors.white)),
         centerTitle: false,
       ),
       body: SafeArea(
@@ -64,22 +51,20 @@ class ChatScreenState extends State<ChatScreen> {
                 decoration: BoxDecoration(
                   border: Border(bottom: BorderSide(color: Color(0xff2d3748))),
                 ),
-                child: StreamBuilder<DocumentSnapshot>(stream: _messagesStream, builder: (context, snapshot){
+                child: StreamBuilder<QuerySnapshot>(stream: _messagesStream, builder: (context, snapshot){
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if(!snapshot.hasData || snapshot.data!.data() == null){
+                  if(!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return const Center(child: Text('Server deos not exist'));
                   }
+                  final messages = snapshot.data!.docs;
 
-                  final data = snapshot.data!.data() as Map<String, dynamic>;
-                  final channels = data['channels'] as List<dynamic>;
-                  final messages = channels[widget.chanelIndex]['messages'] as List<dynamic>;
                   return ListView.separated(
                     reverse: true,
                     itemCount: messages.length,
                     itemBuilder: (context, index) {
-                      final message = messages[messages.length - 1 - index] as Map<String, dynamic>;
+                      final message = messages[messages.length - 1 - index];
                       return ChatMessage(
                         name: message['name'],
                         time: message['time'],
