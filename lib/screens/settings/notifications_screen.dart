@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class NotificationsScreen extends StatelessWidget {
-  const NotificationsScreen({Key? key}) : super(key: key);
+class NotificationsSettingsScreen extends StatelessWidget {
+  const NotificationsSettingsScreen({Key? key}) : super(key: key);
 
   static const Color appBarColor = Color(0xFF1E3A8A);
   static const Color backgroundColor = Color(0xFF0F172A);
