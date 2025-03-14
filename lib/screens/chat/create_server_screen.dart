@@ -13,25 +13,31 @@ class CreateServerScreenState extends State<CreateServerScreen> {
   void _createServer() {
     final serverName = _serverNameController.text;
     final isServerPrivate = _isServerPrivate;
-
     if (serverName.isEmpty) {
       return;
     }
 
-    final serverData = {
-      'name': serverName,
-      'isPrivate': isServerPrivate,
-      'members': [FirebaseAuth.instance.currentUser!.uid],
-      'ownerId': FirebaseAuth.instance.currentUser!.uid,
-      'channels': [
-        {
-          'name': 'general',
-          'messages': [],
-        },
-      ],
-    };
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentReference serverRef = FirebaseFirestore.instance.collection('teams').doc();
+      transaction.set(serverRef, {
+        'name': serverName,
+        'isPrivate': isServerPrivate,
+        'members': [FirebaseAuth.instance.currentUser!.uid],
+        'ownerId': FirebaseAuth.instance.currentUser!.uid,
+      });
 
-    FirebaseFirestore.instance.collection('teams').add(serverData);
+      DocumentReference channelRef = serverRef.collection('channels').doc();
+      transaction.set(channelRef, {
+        'name': 'general',
+      });
+      DocumentReference messagesRef = channelRef.collection('messages').doc();
+      transaction.set(messagesRef, {
+        'name': 'FlowChat',
+        'time': DateTime.now().toIso8601String(),
+        'message': 'Welcome to the general channel!',
+      });
+    });
+
     Navigator.pop(context);
   }
   final Color backgroundColor = Color(0xFF0F172A);

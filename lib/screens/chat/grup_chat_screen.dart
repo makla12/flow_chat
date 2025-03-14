@@ -92,7 +92,7 @@ class HomeScreen extends StatelessWidget {
                             MaterialPageRoute(
                               builder:
                                   (context) =>
-                                      ChannelsScreen(serverId: server.id),
+                                      ChannelsScreen(serverId: server.id, ownerId: server["ownerId"],),
                             ),
                           );
                         },

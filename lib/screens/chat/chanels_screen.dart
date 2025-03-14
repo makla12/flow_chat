@@ -4,13 +4,12 @@ import 'package:flow_chat/screens/chat/chat_screen.dart';
 import 'package:flutter/material.dart';
 
 class ChannelsScreen extends StatelessWidget {
-  ChannelsScreen({super.key, required this.serverId});
+  ChannelsScreen({super.key, required this.serverId, required this.ownerId});
   final String serverId;
+  final String ownerId;
 
-  late final serverRef = FirebaseFirestore.instance
-      .collection('teams')
-      .doc(serverId);
-  late final Stream<DocumentSnapshot> _channelsStream = serverRef.snapshots();
+  late final channelsRef = FirebaseFirestore.instance.collection('teams').doc(serverId).collection('channels');
+  late final Stream<QuerySnapshot> _channelsStream = channelsRef.snapshots();
 
   final Color backgroundColor = Color(0xFF0F172A);
   final Color appBarColor = Color(0xFF1E3A8A);
@@ -27,21 +26,8 @@ class ChannelsScreen extends StatelessWidget {
         title: Text('Channels'),
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.person_add_alt)),
-          StreamBuilder(
-            stream: _channelsStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (!snapshot.hasData || snapshot.data!.data() == null) {
-                return const Text('');
-              }
-              final data = snapshot.data!.data() as Map<String, dynamic>;
-              if (data['ownerId'] != FirebaseAuth.instance.currentUser!.uid) {
-                return const Text('');
-              }
-
-              return IconButton(
+          if (ownerId == FirebaseAuth.instance.currentUser!.uid)
+              IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
                   showDialog(
@@ -68,10 +54,9 @@ class ChannelsScreen extends StatelessWidget {
                             onPressed: () {
                               final channelName = controller.text;
                               if (channelName.isNotEmpty) {
-                                serverRef.update({
-                                  'channels': FieldValue.arrayUnion([
-                                    {'messages': [], 'name': channelName},
-                                  ]),
+                                channelsRef.add({
+                                  'name': channelName,
+                                  'messages': [],
                                 });
                               }
                               Navigator.pop(context);
@@ -83,31 +68,29 @@ class ChannelsScreen extends StatelessWidget {
                     },
                   );
                 },
-              );
-            },
           ),
         ],
       ),
-      body: StreamBuilder<DocumentSnapshot>(
+      body: StreamBuilder<QuerySnapshot>(
         stream: _channelsStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (!snapshot.hasData || snapshot.data!.data() == null) {
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(child: Text('Sever does not exist'));
           }
 
-          final data = snapshot.data!.data() as Map<String, dynamic>;
-          final channels = data['channels'] as List<dynamic>;
+          final channels = snapshot.data!.docs;
+
           return ListView.builder(
             itemCount: channels.length,
             itemBuilder: (context, index) {
-              final channel = channels[index] as Map<String, dynamic>;
+              final channel = channels[index];
               return ListTile(
                 title: Text(channel['name']),
                 trailing:
-                    data['ownerId'] == FirebaseAuth.instance.currentUser!.uid
+                    ownerId == FirebaseAuth.instance.currentUser!.uid
                         ? IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () {
@@ -128,11 +111,7 @@ class ChannelsScreen extends StatelessWidget {
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        serverRef.update({
-                                          'channels': FieldValue.arrayRemove([
-                                            channel,
-                                          ]),
-                                        });
+                                        channel.reference.delete();
                                         Navigator.pop(context);
                                       },
                                       child: const Text('Delete'),
@@ -150,9 +129,8 @@ class ChannelsScreen extends StatelessWidget {
                     MaterialPageRoute(
                       builder:
                           (context) => ChatScreen(
-                            serverId: serverId,
-                            chanelIndex: index,
-                            chanelName: channel['name'],
+                            channelName: channel['name'],
+                            messagesRef: channel.reference.collection('messages'),
                           ),
                     ),
                   );
