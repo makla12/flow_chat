@@ -25,7 +25,7 @@ class ChatScreenState extends State<ChatScreen> {
     }
 
     final messageData = {
-      'name': FirebaseAuth.instance.currentUser!.displayName,
+      'name': FirebaseAuth.instance.currentUser!.uid,
       'time': DateTime.now().toIso8601String(),
       'message': message,
     };
