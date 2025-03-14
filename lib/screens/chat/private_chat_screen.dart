@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flow_chat/widgets/chat_message.dart';
 
 class PrivateChatScreen extends StatefulWidget {
-  const PrivateChatScreen({super.key, required this.serverId, required this.chanelIndex, required this.chanelName});
+  const PrivateChatScreen({super.key, required this.privateChatId});
 
-  final String serverId;
-  final int chanelIndex;
-  final String chanelName;
+  final String privateChatId;
 
   @override
   ChatScreenState createState() => ChatScreenState();
@@ -18,8 +16,8 @@ class PrivateChatScreen extends StatefulWidget {
 class ChatScreenState extends State<PrivateChatScreen> {
   final TextEditingController textController = TextEditingController();
   late final Stream<DocumentSnapshot> _messagesStream = FirebaseFirestore.instance
-      .collection('teams')
-      .doc(widget.serverId)
+      .collection('private_chats')
+      .doc(widget.privateChatId)
       .snapshots();
 
   void _sendMessage() async {
@@ -34,17 +32,10 @@ class ChatScreenState extends State<PrivateChatScreen> {
       'time': DateTime.now().toIso8601String(),
       'message': message,
     };
-    final docRef = FirebaseFirestore.instance.collection('teams').doc(widget.serverId);
-
-    final docSnapshot = await docRef.get();
-    if (docSnapshot.exists) {
-      final data = docSnapshot.data() as Map<String, dynamic>;
-      final channels = data['channels'] as List<dynamic>;
-
-      channels[widget.chanelIndex]['messages'].add(messageData);
-
-      await docRef.update({'channels': channels});
-    }
+    final docRef = FirebaseFirestore.instance.collection('private_chats').doc(widget.privateChatId);
+    docRef.update({
+      'messages': FieldValue.arrayUnion([messageData])
+    });
   }
 
   @override
@@ -53,7 +44,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
       backgroundColor: Color(0xFF0F172A),
       appBar: AppBar(
         backgroundColor: Color(0xFF1E3A8A),
-        title: Text(widget.chanelName, style: TextStyle(color: Colors.white)),
+        title: Text('Chat', style: TextStyle(color: Colors.white)),
         centerTitle: false,
       ),
       body: SafeArea(
@@ -74,8 +65,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
                   }
 
                   final data = snapshot.data!.data() as Map<String, dynamic>;
-                  final channels = data['channels'] as List<dynamic>;
-                  final messages = channels[widget.chanelIndex]['messages'] as List<dynamic>;
+                  final messages = data['messages'] as List<dynamic>;
                   return ListView.separated(
                     reverse: true,
                     itemCount: messages.length,
