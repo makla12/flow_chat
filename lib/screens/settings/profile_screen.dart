@@ -120,48 +120,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Wybierz awatar'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
+          content: ListView(
             children: [
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: const NetworkImage("https://i.pravatar.cc/150?img=40"),
-                ),
-                title: const Text('Awatar 1'),
-                onTap: () async {
-                  await _updateAvatarUrl("https://i.pravatar.cc/150?img=40");
-                  setState(() {
-                    _avatarUrl = "https://i.pravatar.cc/150?img=40";
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: const NetworkImage("https://i.pravatar.cc/150?img=14"),
-                ),
-                title: const Text('Awatar 2'),
-                onTap: () async {
-                  await _updateAvatarUrl("https://i.pravatar.cc/150?img=14");
-                  setState(() {
-                    _avatarUrl = "https://i.pravatar.cc/150?img=14";
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: const NetworkImage("https://i.pravatar.cc/150?img=8"),
-                ),
-                title: const Text('Awatar 3'),
-                onTap: () async {
-                  await _updateAvatarUrl("https://i.pravatar.cc/150?img=8");
-                  setState(() {
-                    _avatarUrl = "https://i.pravatar.cc/150?img=8";
-                  });
-                  Navigator.pop(context);
-                },
-              ),
+              for(var i = 0; i < 71; i++) 
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=$i"),
+                  ),
+                  title: Text('Awatar $i'),
+                  onTap: () async {
+                    await _updateAvatarUrl("https://i.pravatar.cc/150?img=$i");
+                    setState(() {
+                      _avatarUrl = "https://i.pravatar.cc/150?img=$i";
+                    });
+                    Navigator.pop(context);
+                  },
+                )
             ],
           ),
         );
