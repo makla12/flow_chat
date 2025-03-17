@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ChangeUsernameScreen extends StatelessWidget {
-  const ChangeUsernameScreen({Key? key}) : super(key: key);
+  const ChangeUsernameScreen({super.key});
 
   static const Color appBarColor = Color(0xFF1E3A8A);
   static const Color backgroundColor = Color(0xFF0F172A);
