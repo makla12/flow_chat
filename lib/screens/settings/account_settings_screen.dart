@@ -6,7 +6,7 @@ import 'change_username_screen.dart';
 import 'change_profile_picture_screen.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
-  const AccountSettingsScreen({Key? key}) : super(key: key);
+  const AccountSettingsScreen({super.key});
 
   static const Color appBarColor = Color(0xFF1E3A8A);
   static const Color backgroundColor = Color(0xFF0F172A);

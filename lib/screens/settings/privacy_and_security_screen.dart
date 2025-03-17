@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart'; // Pamiętaj o dodaniu google_sign_in do pubspec.yaml
 
 class PrivacyAndSecurityScreen extends StatefulWidget {
-  const PrivacyAndSecurityScreen({Key? key}) : super(key: key);
+  const PrivacyAndSecurityScreen({super.key});
 
   @override
   _PrivacyAndSecurityScreenState createState() =>

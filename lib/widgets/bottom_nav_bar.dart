@@ -11,13 +11,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
   final Color dividerColor;
 
   const CustomBottomNavigationBar({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.backgroundColor,
     required this.selectedItemColor,
     required this.unselectedItemColor,
     required this.dividerColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
