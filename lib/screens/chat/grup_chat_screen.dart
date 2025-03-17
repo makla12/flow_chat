@@ -3,13 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'chanels_screen.dart';
 import 'create_server_screen.dart';
-import 'notifications.dart'; // Import nowego ekranu
-
+import 'notifications.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final Stream<QuerySnapshot> _serversStream =
       FirebaseFirestore.instance
           .collection('teams')
@@ -19,10 +23,19 @@ class HomeScreen extends StatelessWidget {
           )
           .snapshots();
 
+  TextEditingController searchController = TextEditingController();
+  String searchQuery = '';
+
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
   static const Color containerColor = Color(0xFF1F2937);
   static const Color dividerColor = Color(0xFF2F3A4B);
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +51,7 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => NotificationsScreen(),
-                ), // Poprawiony ekran docelowy
+                MaterialPageRoute(builder: (context) => NotificationsScreen()),
               );
             },
           ),
@@ -60,6 +71,12 @@ class HomeScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: TextField(
+              controller: searchController,
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value.toLowerCase();
+                });
+              },
               decoration: InputDecoration(
                 hintText: 'Szukaj',
                 prefixIcon: const Icon(Icons.search),
@@ -79,7 +96,7 @@ class HomeScreen extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if(!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return const Center(
                     child: Text(
                       "Brak serwerów",
@@ -87,10 +104,26 @@ class HomeScreen extends StatelessWidget {
                     ),
                   );
                 }
+
+                final filteredDocs =
+                    snapshot.data!.docs.where((doc) {
+                      final String name = doc['name'].toString().toLowerCase();
+                      return name.contains(searchQuery);
+                    }).toList();
+
+                if (filteredDocs.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      "Nie znaleziono serwerów",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                }
+
                 return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
+                  itemCount: filteredDocs.length,
                   itemBuilder: (context, index) {
-                    final server = snapshot.data!.docs[index];
+                    final server = filteredDocs[index];
                     return ListTile(
                       leading: const CircleAvatar(backgroundColor: Colors.grey),
                       title: GestureDetector(
@@ -99,8 +132,10 @@ class HomeScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder:
-                                  (context) =>
-                                      ChannelsScreen(serverId: server.id, ownerId: server["ownerId"],),
+                                  (context) => ChannelsScreen(
+                                    serverId: server.id,
+                                    ownerId: server["ownerId"],
+                                  ),
                             ),
                           );
                         },
@@ -131,7 +166,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 0, // Podświetlamy przycisk "Menu"
+        currentIndex: 0,
         backgroundColor: backgroundColor,
         selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,

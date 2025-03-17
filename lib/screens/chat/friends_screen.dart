@@ -6,20 +6,35 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import 'adding_friends_screen.dart';
 
-class FriendsScreen extends StatelessWidget {
+class FriendsScreen extends StatefulWidget {
   FriendsScreen({super.key});
 
+  @override
+  State<FriendsScreen> createState() => _FriendsScreenState();
+}
+
+class _FriendsScreenState extends State<FriendsScreen> {
   final Stream<DocumentSnapshot> _friendsStream =
       FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .snapshots();
 
+  TextEditingController searchController = TextEditingController();
+  String searchQuery = '';
+  Set<String> matchingFriends = Set();
+
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
   static const Color containerColor = Color(0xFF1F2937);
   static const Color dividerColor = Color(0xFF2F3A4B);
   static const Color logoutColor = Color(0xFFE53935);
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +70,12 @@ class FriendsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: TextField(
+              controller: searchController,
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value.toLowerCase();
+                });
+              },
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 hintText: 'Szukaj',
@@ -84,7 +105,8 @@ class FriendsScreen extends StatelessWidget {
                 }
                 final data = snapshot.data!.data()! as Map<String, dynamic>;
                 final friends = data['friends'] as List<dynamic>;
-                if(friends.isEmpty) {
+
+                if (friends.isEmpty) {
                   return const Center(
                     child: Text(
                       'No friends found',
@@ -92,43 +114,64 @@ class FriendsScreen extends StatelessWidget {
                     ),
                   );
                 }
-                return ListView.builder(
-                  itemCount: friends.length,
-                  itemBuilder: (context, index) {
-                    final friendId = friends[index];
-                    final friendStream = FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(friendId)
-                        .snapshots();
 
-                    return StreamBuilder<DocumentSnapshot>(
-                      stream: friendStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
-                        }
-                        if (!snapshot.hasData || snapshot.data!.data() == null) {
-                          return Text("Friend data not found");
-                        }
-                        final friendData = snapshot.data!.data()! as Map<String, dynamic>;
-                        final friendName = friendData['username'] as String;
-                        final friendAvatarUrl = friendData['avatarUrl'] as String;
-                        final privateChatId = [FirebaseAuth.instance.currentUser!.uid, friendId ];
-                        privateChatId.sort();
-                        final privateChatIdString = privateChatId.join('_');
-                        return ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(friendAvatarUrl),
-                          ),
-                          title: Text(friendName),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PrivateChatScreen(
-                                  privateChatId: privateChatIdString,
-                                ),
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    return ListView.builder(
+                      itemCount: friends.length,
+                      itemBuilder: (context, index) {
+                        final friendId = friends[index];
+                        final friendStream =
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(friendId)
+                                .snapshots();
+
+                        return StreamBuilder<DocumentSnapshot>(
+                          stream: friendStream,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const SizedBox.shrink();
+                            }
+                            if (!snapshot.hasData ||
+                                snapshot.data!.data() == null) {
+                              return const SizedBox.shrink();
+                            }
+
+                            final friendData =
+                                snapshot.data!.data()! as Map<String, dynamic>;
+                            final friendName =
+                                friendData['username'].toString().toLowerCase();
+                            final shouldShow = friendName.contains(searchQuery);
+
+                            if (!shouldShow) return const SizedBox.shrink();
+
+                            final friendAvatarUrl =
+                                friendData['avatarUrl'] as String;
+                            final privateChatId = [
+                              FirebaseAuth.instance.currentUser!.uid,
+                              friendId,
+                            ];
+                            privateChatId.sort();
+                            final privateChatIdString = privateChatId.join('_');
+
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(friendAvatarUrl),
                               ),
+                              title: Text(friendData['username']),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => PrivateChatScreen(
+                                          privateChatId: privateChatIdString,
+                                        ),
+                                  ),
+                                );
+                              },
                             );
                           },
                         );
@@ -139,6 +182,14 @@ class FriendsScreen extends StatelessWidget {
               },
             ),
           ),
+          if (matchingFriends.isEmpty && searchQuery.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Nie znaleziono znajomych',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
         ],
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
