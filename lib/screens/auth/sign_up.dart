@@ -27,6 +27,7 @@ class SignUpState extends State<SignUp> {
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
       await credential.user!.updateDisplayName(username);
       AuthUtils.addUserToFirestore(credential.user!.uid, email, username);
+      AuthUtils.OnUserLogin();
       while(Navigator.canPop(context)) {
         Navigator.pop(context);
       }

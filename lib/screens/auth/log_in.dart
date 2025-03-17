@@ -24,6 +24,7 @@ class LogInState extends State<LogIn> {
     try{
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
       AuthUtils.addUserToFirestore(credential.user!.uid, credential.user!.email!, credential.user!.displayName!);
+      AuthUtils.OnUserLogin();
       while(Navigator.canPop(context)) {
         Navigator.pop(context);
       }
