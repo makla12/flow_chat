@@ -41,13 +41,14 @@ class WelcomeScreenState extends State<WelcomeScreen> {
     try {
       final userCredential = await signInWithGoogle();
       AuthUtils.addUserToFirestore(userCredential.user!.uid, userCredential.user!.email!, userCredential.user!.displayName!);
+      AuthUtils.OnUserLogin();
+      while(Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
       );
-      while(Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
     } catch (e) {
       print("Error: $e");
       setState(() {
@@ -106,7 +107,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => LogIn()));
                       },
-                      child: Text("Log in"),
+                      child: Text("Zaloguj się"),
                     ),
                     FilledButton(
                       style: ButtonStyle(
@@ -119,7 +120,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
                       },
-                      child: Text("Sign up"),
+                      child: Text("Zarejestruj się"),
                     ),
                     OutlinedButton(
                       style: ButtonStyle(
@@ -132,7 +133,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                         children: [
                           Image(image: AssetImage("images/googleIcon.png"), width: 24),
                           SizedBox(width: 10),
-                          Text("Sign in with Google"),
+                          Text("Zaloguj się przez Google"),
                       ],),
                     ),
                   ],

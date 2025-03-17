@@ -37,8 +37,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
           unselectedItemColor: unselectedItemColor,
           currentIndex: currentIndex,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.groups), label: 'Teams'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Friends'),
+            BottomNavigationBarItem(icon: Icon(Icons.groups), label: 'Serwery'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Znajomi'),
             BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
           ],
           onTap: (index) {

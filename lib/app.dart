@@ -1,3 +1,4 @@
+import 'package:flow_chat/utils/auth_utils.dart';
 import 'package:flutter/material.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/chat/grup_chat_screen.dart';
@@ -17,6 +18,7 @@ class FlowChatApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator(); 
           } else if (snapshot.hasData) {
+            AuthUtils.OnUserLogin();
             return HomeScreen(); 
           } else {
             return const WelcomeScreen(); 

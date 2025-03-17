@@ -212,7 +212,7 @@ class FriendRequestItem extends StatelessWidget {
                   ),
                 ),
                 onPressed: onAdd,
-                child: const Text('Add', style: TextStyle(color: Colors.white)),
+                child: const Text('Dodaj', style: TextStyle(color: Colors.white)),
               )
               : null),
     );

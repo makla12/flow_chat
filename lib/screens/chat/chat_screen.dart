@@ -56,7 +56,7 @@ class ChatScreenState extends State<ChatScreen> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if(!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Center(child: Text('Server deos not exist'));
+                    return const Center(child: Text('Server nie istnieje'));
                   }
                   final messages = snapshot.data!.docs;
 
@@ -101,7 +101,7 @@ class ChatScreenState extends State<ChatScreen> {
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                         ),
 
-                        hintText: "Message",
+                        hintText: "Wiadomość",
                       ),
                     ),
                   ),
