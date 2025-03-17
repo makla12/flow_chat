@@ -62,7 +62,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return const Center(child: Text('No messages'));
+                      return const Center(child: Text('Brak wiadomości'));
                     }
                     final messages = snapshot.data!.docs;
 
@@ -109,7 +109,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                         ),
 
-                        hintText: "Message",
+                        hintText: "Wiadomość",
                       ),
                     ),
                   ),

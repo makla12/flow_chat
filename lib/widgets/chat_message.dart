@@ -15,7 +15,7 @@ class ChatMessage extends StatelessWidget {
         return const Center(child: CircularProgressIndicator());
       }
       if (!snapshot.hasData || snapshot.data!.data() == null) {
-        return const Text("No messages");
+        return const Text("Brak wiadomości");
       }
       final data = snapshot.data!.data()! as Map<String, dynamic>;
       final name = data['username'] as String;
