@@ -7,12 +7,12 @@ class MenuItemWidget extends StatelessWidget {
   final VoidCallback? onTap;
 
   const MenuItemWidget({
-    Key? key,
+    super.key,
     required this.icon,
     required this.text,
     this.color = Colors.white,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

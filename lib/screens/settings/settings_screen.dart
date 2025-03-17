@@ -11,7 +11,7 @@ import 'appearance_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FlowChatScreen extends StatelessWidget {
-  const FlowChatScreen({Key? key}) : super(key: key);
+  const FlowChatScreen({super.key});
 
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
