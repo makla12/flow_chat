@@ -108,7 +108,7 @@ class FriendsScreen extends StatelessWidget {
                           return const Center(child: CircularProgressIndicator());
                         }
                         if (!snapshot.hasData || snapshot.data!.data() == null) {
-                          return Text("Friend data not found");
+                          return Text("Nie znaleziono danych znajomego");
                         }
                         final friendData = snapshot.data!.data()! as Map<String, dynamic>;
                         final friendName = friendData['username'] as String;
