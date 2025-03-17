@@ -9,6 +9,7 @@ class LogIn extends StatefulWidget {
   @override
   LogInState createState() => LogInState();
 }
+
 class LogInState extends State<LogIn> {
   bool _isLoading = false;
 
@@ -21,25 +22,36 @@ class LogInState extends State<LogIn> {
     });
     final String email = emailController.text;
     final String password = passwordController.text;
-    try{
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email, password: password);
       AuthUtils.addUserToFirestore(credential.user!.uid, credential.user!.email!, credential.user!.displayName!);
       AuthUtils.OnUserLogin();
-      while(Navigator.canPop(context)) {
+      while (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
     } on FirebaseAuthException catch (e) {
       setState(() {
         _isLoading = false;
       });
-      if(e.code == 'user-not-found') {
+      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+        // Jeśli email lub hasło jest błędne, wyświetl "Niepoprawny email lub hasło"
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Nie znaleziono użytkownika o podanym adresie email."))
+          SnackBar(content: Text("Niepoprawny email lub hasło")),
         );
-      } else if (e.code == 'wrong-password') {
+      } else if (e.code == 'invalid-email') {
+        // Jeśli email ma nieprawidłowy format
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Złe hasło dla podanego użytkownika."))
+          SnackBar(content: Text("Niepoprawny format adresu email")),
+        );
+      } else {
+        // Inne błędy Firebase
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Wystąpił błąd: ${e.message}")),
         );
       }
     } catch (e) {
@@ -58,45 +70,44 @@ class LogInState extends State<LogIn> {
         backgroundColor: Color(0xFF0F172A),
         title: Text("Zaloguj"),
       ),
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 20,
-                    children: [
-                      TextField(
-                        controller: emailController,
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      hintText: "Email",
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  TextField(
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                      labelText: "Password",
-                      hintText: "Password",
-                    ),
-                    obscureText: true,
-                  ),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      padding: WidgetStatePropertyAll(EdgeInsets.all(10)),
-                      backgroundColor: WidgetStatePropertyAll(Color(0xFF3B82F6)),
-                      foregroundColor: WidgetStatePropertyAll(Colors.white),
-                    ),
-                    onPressed: () => _logIn(context),
-                    child: Text("Zaloguj")
-                  ),
-                ],
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 20,
+            children: [
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: "Email",
+                  hintText: "Email",
+                ),
+                keyboardType: TextInputType.emailAddress,
               ),
-            ),
+              TextField(
+                controller: passwordController,
+                decoration: InputDecoration(
+                  labelText: "Password",
+                  hintText: "Password",
+                ),
+                obscureText: true,
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  padding: WidgetStatePropertyAll(EdgeInsets.all(10)),
+                  backgroundColor: WidgetStatePropertyAll(Color(0xFF3B82F6)),
+                  foregroundColor: WidgetStatePropertyAll(Colors.white),
+                ),
+                onPressed: () => _logIn(context),
+                child: Text("Zaloguj"),
+              ),
+            ],
           ),
+        ),
+      ),
     );
   }
 }
