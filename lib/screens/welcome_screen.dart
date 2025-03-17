@@ -107,7 +107,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => LogIn()));
                       },
-                      child: Text("Log in"),
+                      child: Text("Zaloguj się"),
                     ),
                     FilledButton(
                       style: ButtonStyle(
@@ -120,7 +120,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
                       },
-                      child: Text("Sign up"),
+                      child: Text("Zarejestruj się"),
                     ),
                     OutlinedButton(
                       style: ButtonStyle(
@@ -133,7 +133,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                         children: [
                           Image(image: AssetImage("images/googleIcon.png"), width: 24),
                           SizedBox(width: 10),
-                          Text("Sign in with Google"),
+                          Text("Zaloguj się przez Google"),
                       ],),
                     ),
                   ],

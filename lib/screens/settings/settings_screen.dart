@@ -5,14 +5,13 @@ import '../../widgets/bottom_nav_bar.dart';
 import '../../widgets/menu_item_widget.dart';
 import '../../widgets/custom_divider.dart';
 import 'profile_screen.dart';
-import 'account_settings_screen.dart';
 import 'privacy_and_security_screen.dart';
 import 'notifications_screen.dart';
 import 'appearance_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FlowChatScreen extends StatelessWidget {
-  const FlowChatScreen({Key? key}) : super(key: key);
+  const FlowChatScreen({super.key});
 
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
@@ -81,12 +80,6 @@ class FlowChatScreen extends StatelessWidget {
           icon: Icons.person,
           text: 'Pokaż profil',
           onTap: () => _navigateTo(context, const ProfileScreen()),
-        ),
-        const CustomDivider(dividerColor: dividerColor),
-        MenuItemWidget(
-          icon: Icons.settings,
-          text: 'Ustawienia konta',
-          onTap: () => _navigateTo(context, const AccountSettingsScreen()),
         ),
         const CustomDivider(dividerColor: dividerColor),
         MenuItemWidget(

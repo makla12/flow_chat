@@ -17,9 +17,7 @@ class FriendsScreen extends StatelessWidget {
 
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color containerColor = Color(0xFF1F2937);
   static const Color dividerColor = Color(0xFF2F3A4B);
-  static const Color logoutColor = Color(0xFFE53935);
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +82,7 @@ class FriendsScreen extends StatelessWidget {
                 }
                 final data = snapshot.data!.data()! as Map<String, dynamic>;
                 final friends = data['friends'] as List<dynamic>;
-                if(friends.isEmpty) {
+                if (friends.isEmpty) {
                   return const Center(
                     child: Text(
                       'No friends found',
@@ -96,24 +94,34 @@ class FriendsScreen extends StatelessWidget {
                   itemCount: friends.length,
                   itemBuilder: (context, index) {
                     final friendId = friends[index];
-                    final friendStream = FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(friendId)
-                        .snapshots();
+                    final friendStream =
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(friendId)
+                            .snapshots();
 
                     return StreamBuilder<DocumentSnapshot>(
                       stream: friendStream,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                         }
-                        if (!snapshot.hasData || snapshot.data!.data() == null) {
+                        if (!snapshot.hasData ||
+                            snapshot.data!.data() == null) {
                           return Text("Friend data not found");
                         }
-                        final friendData = snapshot.data!.data()! as Map<String, dynamic>;
+                        final friendData =
+                            snapshot.data!.data()! as Map<String, dynamic>;
                         final friendName = friendData['username'] as String;
-                        final friendAvatarUrl = friendData['avatarUrl'] as String;
-                        final privateChatId = [FirebaseAuth.instance.currentUser!.uid, friendId ];
+                        final friendAvatarUrl =
+                            friendData['avatarUrl'] as String;
+                        final privateChatId = [
+                          FirebaseAuth.instance.currentUser!.uid,
+                          friendId,
+                        ];
                         privateChatId.sort();
                         final privateChatIdString = privateChatId.join('_');
                         return ListTile(
@@ -125,9 +133,10 @@ class FriendsScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => PrivateChatScreen(
-                                  privateChatId: privateChatIdString,
-                                ),
+                                builder:
+                                    (context) => PrivateChatScreen(
+                                      privateChatId: privateChatIdString,
+                                    ),
                               ),
                             );
                           },
