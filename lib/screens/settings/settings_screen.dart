@@ -5,7 +5,6 @@ import '../../widgets/bottom_nav_bar.dart';
 import '../../widgets/menu_item_widget.dart';
 import '../../widgets/custom_divider.dart';
 import 'profile_screen.dart';
-import 'account_settings_screen.dart';
 import 'privacy_and_security_screen.dart';
 import 'notifications_screen.dart';
 import 'appearance_screen.dart';
@@ -81,12 +80,6 @@ class FlowChatScreen extends StatelessWidget {
           icon: Icons.person,
           text: 'Pokaż profil',
           onTap: () => _navigateTo(context, const ProfileScreen()),
-        ),
-        const CustomDivider(dividerColor: dividerColor),
-        MenuItemWidget(
-          icon: Icons.settings,
-          text: 'Ustawienia konta',
-          onTap: () => _navigateTo(context, const AccountSettingsScreen()),
         ),
         const CustomDivider(dividerColor: dividerColor),
         MenuItemWidget(

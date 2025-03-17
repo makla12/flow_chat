@@ -28,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color containerColor = Color(0xFF1F2937);
   static const Color dividerColor = Color(0xFF2F3A4B);
 
   @override
