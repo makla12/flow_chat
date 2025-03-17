@@ -1,6 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AuthUtils {
+  static void OnUserLogin() {
+    FirebaseMessaging.instance.subscribeToTopic(FirebaseAuth.instance.currentUser!.uid);
+  }
   static void addUserToFirestore(String uid, String email, String displayName) async {
     try{
       final userCollection = FirebaseFirestore.instance.collection('users');

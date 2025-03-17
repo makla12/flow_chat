@@ -25,10 +25,11 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
     if (currentUser == null) return;
     List<String> newInvites = [];
     try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('invites')
-          .where('to', isEqualTo: currentUser.uid)
-          .get();
+      final querySnapshot =
+          await FirebaseFirestore.instance
+              .collection('invites')
+              .where('to', isEqualTo: currentUser.uid)
+              .get();
       for (final doc in querySnapshot.docs) {
         final invite = doc.data();
         if (invite['type'] == 'friend') {
@@ -36,10 +37,11 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
         }
       }
 
-      final querySnapshot2 = await FirebaseFirestore.instance
-          .collection('invites')
-          .where('from', isEqualTo: currentUser.uid)
-          .get();
+      final querySnapshot2 =
+          await FirebaseFirestore.instance
+              .collection('invites')
+              .where('from', isEqualTo: currentUser.uid)
+              .get();
       for (final doc in querySnapshot2.docs) {
         final invite = doc.data();
         if (invite['type'] == 'friend') {
@@ -65,7 +67,7 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
     final searchText = _searchController.text.trim().toLowerCase();
     final currentUser = FirebaseAuth.instance.currentUser;
 
-    if (searchText.length >= 2 && currentUser != null) {
+    if (searchText.length >= 1 && currentUser != null) {
       try {
         final querySnapshot =
             await FirebaseFirestore.instance.collection('users').get();

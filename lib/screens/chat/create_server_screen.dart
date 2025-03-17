@@ -30,12 +30,6 @@ class CreateServerScreenState extends State<CreateServerScreen> {
       transaction.set(channelRef, {
         'name': 'general',
       });
-      DocumentReference messagesRef = channelRef.collection('messages').doc();
-      transaction.set(messagesRef, {
-        'name': 'FlowChat',
-        'time': DateTime.now().toIso8601String(),
-        'message': 'Welcome to the general channel!',
-      });
     });
 
     Navigator.pop(context);
