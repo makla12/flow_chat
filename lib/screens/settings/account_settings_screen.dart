@@ -32,36 +32,6 @@ class AccountSettingsScreen extends StatelessWidget {
           color: const Color(0xFF1F2937),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            MenuItemWidget(
-              icon: Icons.person,
-              text: 'Zmień nazwę użytkownika',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ChangeUsernameScreen(),
-                  ),
-                );
-              },
-            ),
-            const CustomDivider(dividerColor: Color(0xFF2F3A4B)),
-            MenuItemWidget(
-              icon: Icons.image,
-              text: 'Zmień zdjęcie profilowe',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ChangeProfilePictureScreen(),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
       ),
     );
   }
