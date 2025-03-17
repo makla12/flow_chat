@@ -53,7 +53,7 @@ class CreateServerScreenState extends State<CreateServerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(backgroundColor: appBarColor ,title: Text('Create Server')),
+      appBar: AppBar(backgroundColor: appBarColor ,title: Text('Stwórz serwer')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
 
@@ -61,11 +61,11 @@ class CreateServerScreenState extends State<CreateServerScreen> {
           children: <Widget>[
             TextField(
               controller: _serverNameController,
-              decoration: InputDecoration(labelText: 'Server Name'),
+              decoration: InputDecoration(labelText: 'Nazwa serwera'),
             ),
             SizedBox(height: 20),
             CheckboxListTile(
-              title: Text('Is Server Private?', style: TextStyle(color: Colors.white)),
+              title: Text('Czy serwer ma być prywatny?', style: TextStyle(color: Colors.white)),
               value: _isServerPrivate,
               onChanged: (bool? value) {
                 setState(() {
@@ -85,7 +85,7 @@ class CreateServerScreenState extends State<CreateServerScreen> {
                 ),
               ),
               onPressed: _createServer,
-              child: Text('Create Server'),
+              child: Text('Stwórz serwer'),
             ),
           ],
         ),

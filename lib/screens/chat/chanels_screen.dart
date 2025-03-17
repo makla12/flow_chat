@@ -23,7 +23,7 @@ class ChannelsScreen extends StatelessWidget {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: appBarColor,
-        title: Text('Channels'),
+        title: Text('Kanały'),
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.person_add_alt)),
           if (ownerId == FirebaseAuth.instance.currentUser!.uid)
@@ -36,11 +36,11 @@ class ChannelsScreen extends StatelessWidget {
                       final TextEditingController controller =
                           TextEditingController();
                       return AlertDialog(
-                        title: const Text('Add Channel'),
+                        title: const Text('Dodaj kanał'),
                         content: TextField(
                           controller: controller,
                           decoration: const InputDecoration(
-                            hintText: 'Channel Name',
+                            hintText: 'Nazwa kanału',
                           ),
                         ),
                         actions: [
@@ -48,7 +48,7 @@ class ChannelsScreen extends StatelessWidget {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: const Text('Cancel'),
+                            child: const Text('Anuluj'),
                           ),
                           TextButton(
                             onPressed: () {
@@ -61,7 +61,7 @@ class ChannelsScreen extends StatelessWidget {
                               }
                               Navigator.pop(context);
                             },
-                            child: const Text('Add'),
+                            child: const Text('Dodaj'),
                           ),
                         ],
                       );
@@ -78,7 +78,7 @@ class ChannelsScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('Sever does not exist'));
+            return const Center(child: Text('Server nie istnieje'));
           }
 
           final channels = snapshot.data!.docs;
@@ -98,23 +98,23 @@ class ChannelsScreen extends StatelessWidget {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: const Text('Delete Channel'),
+                                  title: const Text('Usuń kanał'),
                                   content: const Text(
-                                    'Are you sure you want to delete this channel?',
+                                    'Czy na pewno chcesz usunąć ten kanał?',
                                   ),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
-                                      child: const Text('Cancel'),
+                                      child: const Text('Anuluj'),
                                     ),
                                     TextButton(
                                       onPressed: () {
                                         channel.reference.delete();
                                         Navigator.pop(context);
                                       },
-                                      child: const Text('Delete'),
+                                      child: const Text('Usuń'),
                                     ),
                                   ],
                                 );

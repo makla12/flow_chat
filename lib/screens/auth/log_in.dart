@@ -34,11 +34,11 @@ class LogInState extends State<LogIn> {
       });
       if(e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("No user found for that email."))
+          SnackBar(content: Text("Nie znaleziono użytkownika o podanym adresie email."))
         );
       } else if (e.code == 'wrong-password') {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Wrong password provided for that user."))
+          SnackBar(content: Text("Złe hasło dla podanego użytkownika."))
         );
       }
     } catch (e) {
@@ -55,7 +55,7 @@ class LogInState extends State<LogIn> {
       backgroundColor: Color(0xFF0F172A),
       appBar: AppBar(
         backgroundColor: Color(0xFF0F172A),
-        title: Text("Log in"),
+        title: Text("Zaloguj"),
       ),
       body:
           _isLoading
@@ -90,7 +90,7 @@ class LogInState extends State<LogIn> {
                       foregroundColor: WidgetStatePropertyAll(Colors.white),
                     ),
                     onPressed: () => _logIn(context),
-                    child: Text("Log in")
+                    child: Text("Zaloguj")
                   ),
                 ],
               ),

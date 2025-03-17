@@ -37,11 +37,11 @@ class SignUpState extends State<SignUp> {
       });
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("The password provided is too weak."))
+          SnackBar(content: Text("Hasło jest za słabe."))
         );
       } else if (e.code == 'email-already-in-use') {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("The account already exists for that email."))
+          SnackBar(content: Text("Istnieje już użytkownik o podanym adresie email."))
         );
       }
     } catch (e) {
@@ -58,7 +58,7 @@ class SignUpState extends State<SignUp> {
       backgroundColor: Color(0xFF0F172A),
       appBar: AppBar(
         backgroundColor: Color(0xFF0F172A),
-        title: Text("Sign up"),
+        title: Text("Zarejestruj się"),
       ),
       body:
           _isLoading
@@ -81,15 +81,15 @@ class SignUpState extends State<SignUp> {
               TextField(
                 controller: usernameController,
                 decoration: InputDecoration(
-                  labelText: "Username",
-                  hintText: "Username",
+                  labelText: "Nazwa",
+                  hintText: "Nazwa",
                 ),
               ),
               TextField(
                 controller: passwordController,
                 decoration: InputDecoration(
-                  labelText: "Password",
-                  hintText: "Password",
+                  labelText: "Hasło",
+                  hintText: "Hasło",
                 ),
                 obscureText: true,
               ),
@@ -100,7 +100,7 @@ class SignUpState extends State<SignUp> {
                   foregroundColor: WidgetStatePropertyAll(Colors.white),
                 ),
                 onPressed: () => _signUp(context),
-                child: Text("Sign up"),
+                child: Text("Zarejestruj się"),
               ),
             ],
           ),
