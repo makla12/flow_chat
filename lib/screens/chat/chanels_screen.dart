@@ -81,7 +81,7 @@ class ChannelsScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('Server nie istnieje'));
+            return const Center(child: Text('Brak kanałów'));
           }
 
           final channels = snapshot.data!.docs;
