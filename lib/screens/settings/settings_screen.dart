@@ -107,7 +107,9 @@ class FlowChatScreen extends StatelessWidget {
           text: 'Wyloguj się',
           color: logoutColor,
           onTap: () {
-            FirebaseMessaging.instance.unsubscribeFromTopic(FirebaseAuth.instance.currentUser!.uid);
+            FirebaseMessaging.instance.unsubscribeFromTopic(
+              FirebaseAuth.instance.currentUser!.uid,
+            );
             FirebaseAuth.instance.signOut();
             Navigator.pushReplacement(
               context,
