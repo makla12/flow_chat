@@ -9,6 +9,7 @@ import 'privacy_and_security_screen.dart';
 import 'notifications_screen.dart';
 import 'appearance_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FlowChatScreen extends StatelessWidget {
   const FlowChatScreen({super.key});
@@ -106,6 +107,7 @@ class FlowChatScreen extends StatelessWidget {
           text: 'Wyloguj się',
           color: logoutColor,
           onTap: () {
+            FirebaseMessaging.instance.unsubscribeFromTopic(FirebaseAuth.instance.currentUser!.uid);
             FirebaseAuth.instance.signOut();
             Navigator.pushReplacement(
               context,
