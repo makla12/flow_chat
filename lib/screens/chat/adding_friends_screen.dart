@@ -156,7 +156,6 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
                     searchResults[index].data() as Map<String, dynamic>;
                 final friendUid = searchResults[index].id;
                 return FriendRequestItem(
-                  uid: friendUid,
                   nickname: userData['username'] ?? 'Brak nazwy',
                   avatarUrl: userData['avatarUrl'] as String?,
                   onAdd: () => _addFriend(friendUid),
@@ -172,7 +171,6 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
 }
 
 class FriendRequestItem extends StatelessWidget {
-  final String uid;
   final String nickname;
   final String? avatarUrl;
   final VoidCallback onAdd;
@@ -180,7 +178,6 @@ class FriendRequestItem extends StatelessWidget {
 
   const FriendRequestItem({
     super.key,
-    required this.uid,
     required this.nickname,
     required this.avatarUrl,
     required this.onAdd,
