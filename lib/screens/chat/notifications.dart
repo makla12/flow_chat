@@ -61,6 +61,15 @@ class NotificationsScreen extends StatelessWidget {
               .doc(FirebaseAuth.instance.currentUser!.uid),
           {'friends': friends2},
         );
+        List<String> privateChatIds = [userData.id, userData2.id];
+        privateChatIds.sort();
+        transaction.set(
+          FirebaseFirestore.instance.collection('private_chats').doc(privateChatIds.join('_')),
+          {
+            'members': privateChatIds,
+          },
+        );
+
         transaction.delete(
           FirebaseFirestore.instance.collection('invites').doc(inviteId),
         );
