@@ -112,7 +112,7 @@ class _NotificationsSettingsScreenState
           leading: Icon(icon, color: iconColor),
           title: Text(title, style: TextStyle(color: textColor)),
           trailing: Switch(
-            value: false, // Tutaj można dodać logikę obsługi zmiany stanu
+            value: false,
             onChanged: (bool value) {},
             activeColor: Colors.blue,
           ),
