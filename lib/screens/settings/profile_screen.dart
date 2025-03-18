@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Pamiętaj o dodaniu google_sign_in do pubspec.yaml
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,8 +11,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color backgroundColor = Color(0xFF0F172A);
+  bool isLightMode = false;
 
   String _username = "Ładowanie...";
   String _avatarUrl = "Ładowanie...";
@@ -20,26 +20,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _fetchUsername();
+    _loadPreferences();
   }
 
   Future<void> _fetchUsername() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      final userDoc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
       if (userDoc.exists) {
         setState(() {
           _username = userDoc['username'] ?? "User Name";
-          _avatarUrl = userDoc['avatarUrl'] ?? "https://i.pravatar.cc/150?img=1";
+          _avatarUrl =
+              userDoc['avatarUrl'] ?? "https://i.pravatar.cc/150?img=1";
         });
       }
     }
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isLightMode = prefs.getBool('isLightMode') ?? false;
+    });
   }
 
   Future<void> _updateUsername(String newName) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({'username': newName});
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'username': newName});
         await user.updateDisplayName(newName);
         await user.reload();
       } catch (e) {
@@ -52,7 +68,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({'avatarUrl': newUrl});
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'avatarUrl': newUrl});
         setState(() {
           _avatarUrl = newUrl;
         });
@@ -64,15 +83,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Color appBarColor = isLightMode ? Colors.blueGrey : const Color(0xFF1E3A8A);
+    Color backgroundColor = isLightMode ? Colors.white : Color(0xFF0F172A);
+    Color textColor = isLightMode ? Colors.black : Colors.white;
+
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: appBarColor,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: textColor),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Twój profil', style: TextStyle(color: Colors.white)),
+        title: Text('Twój profil', style: TextStyle(color: textColor)),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
@@ -90,23 +113,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 16),
                 Text(
                   _username,
-                  style: const TextStyle(fontSize: 20, color: Colors.white),
+                  style: TextStyle(fontSize: 20, color: textColor),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 32),
           ListTile(
-            leading: const Icon(Icons.image, color: Colors.white),
-            title: const Text('Zmień awatar', style: TextStyle(color: Colors.white)),
-            trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+            leading: Icon(Icons.image, color: textColor),
+            title: Text('Zmień awatar', style: TextStyle(color: textColor)),
+            trailing: Icon(Icons.arrow_forward_ios, color: textColor),
             onTap: _showAvatarDialog,
           ),
-          const Divider(color: Colors.white54),
+          Divider(color: textColor),
           ListTile(
-            leading: const Icon(Icons.person, color: Colors.white),
-            title: const Text('Zmień nazwę użytkownika', style: TextStyle(color: Colors.white)),
-            trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+            leading: Icon(Icons.person, color: textColor),
+            title: Text(
+              'Zmień nazwę użytkownika',
+              style: TextStyle(color: textColor),
+            ),
+            trailing: Icon(Icons.arrow_forward_ios, color: textColor),
             onTap: _showUsernameDialog,
           ),
         ],
@@ -122,10 +148,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title: const Text('Wybierz awatar'),
           content: ListView(
             children: [
-              for(var i = 0; i < 71; i++) 
+              for (var i = 0; i < 71; i++)
                 ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=$i"),
+                    backgroundImage: NetworkImage(
+                      "https://i.pravatar.cc/150?img=$i",
+                    ),
                   ),
                   title: Text('Awatar $i'),
                   onTap: () async {
@@ -135,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     });
                     Navigator.pop(context);
                   },
-                )
+                ),
             ],
           ),
         );
