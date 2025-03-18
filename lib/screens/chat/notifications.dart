@@ -18,7 +18,7 @@ class NotificationsScreen extends StatelessWidget {
     if (invite['type'] == 'server') {
       final serverData =
           await FirebaseFirestore.instance
-              .collection('servers')
+              .collection('teams')
               .doc(invite['from'])
               .get();
       final server = serverData.data() as Map<String, dynamic>;
@@ -26,7 +26,7 @@ class NotificationsScreen extends StatelessWidget {
       members.add(FirebaseAuth.instance.currentUser!.uid);
       FirebaseFirestore.instance.runTransaction((transaction) async {
         transaction.update(
-          FirebaseFirestore.instance.collection('servers').doc(invite['from']),
+          FirebaseFirestore.instance.collection('teams').doc(invite['from']),
           {'members': members},
         );
         transaction.delete(
@@ -147,7 +147,7 @@ class NotificationsScreen extends StatelessWidget {
                               ? StreamBuilder<DocumentSnapshot>(
                                 stream:
                                     FirebaseFirestore.instance
-                                        .collection('servers')
+                                        .collection('teams')
                                         .doc(invite["from"])
                                         .snapshots(),
                                 builder: (context, snapshot) {
@@ -155,6 +155,13 @@ class NotificationsScreen extends StatelessWidget {
                                       ConnectionState.waiting) {
                                     return const Text(
                                       "Ładowanie...",
+                                      style: TextStyle(color: Colors.white),
+                                    );
+                                  }
+                                  if (!snapshot.hasData || snapshot.data!.data() == null) {
+                                    onDeclineInvite(invite.id);
+                                    return const Text(
+                                      "Błąd zaproszenia",
                                       style: TextStyle(color: Colors.white),
                                     );
                                   }
@@ -182,6 +189,7 @@ class NotificationsScreen extends StatelessWidget {
                                     );
                                   }
                                   if(!snapshot.hasData || snapshot.data!.data() == null) {
+                                    onDeclineInvite(invite.id);
                                     return const Text(
                                       "Użytkownik nie istnieje",
                                       style: TextStyle(color: Colors.white),

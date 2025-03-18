@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow_chat/screens/chat/chat_screen.dart';
+import 'package:flow_chat/screens/chat/invite_to_server_screen.dart';
 import 'package:flow_chat/screens/chat/server_settings_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +30,9 @@ class ChannelsScreen extends StatelessWidget {
         backgroundColor: appBarColor,
         title: Text('Kanały'),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.person_add_alt)),
+          IconButton(onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => InviteToServerScreen(serverId: serverId)));
+          }, icon: Icon(Icons.person_add_alt)),
           if (ownerId == FirebaseAuth.instance.currentUser!.uid)
             IconButton(
               icon: Icon(Icons.add),
