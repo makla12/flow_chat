@@ -75,7 +75,7 @@ class FriendsScreen extends StatelessWidget {
                 if (!snapshot.hasData || snapshot.data!.data() == null) {
                   return const Center(
                     child: Text(
-                      'No friends found',
+                      'Nie znaleziono znajomych',
                       style: TextStyle(color: Colors.white),
                     ),
                   );
@@ -85,7 +85,7 @@ class FriendsScreen extends StatelessWidget {
                 if (friends.isEmpty) {
                   return const Center(
                     child: Text(
-                      'No friends found',
+                      'Nie znaleziono znajomych',
                       style: TextStyle(color: Colors.white),
                     ),
                   );
@@ -111,7 +111,7 @@ class FriendsScreen extends StatelessWidget {
                         }
                         if (!snapshot.hasData ||
                             snapshot.data!.data() == null) {
-                          return Text("Friend data not found");
+                          return Text("Brak danych");
                         }
                         final friendData =
                             snapshot.data!.data()! as Map<String, dynamic>;
