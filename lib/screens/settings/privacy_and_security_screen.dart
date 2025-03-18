@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart'; // Pamiętaj o dodaniu google_sign_in do pubspec.yaml
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Pamiętaj o dodaniu google_sign_in do pubspec.yaml
 
 class PrivacyAndSecurityScreen extends StatefulWidget {
   const PrivacyAndSecurityScreen({super.key});
@@ -30,11 +31,20 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
   String? _passwordError;
   String?
   _loginProvider; // Zmienna do przechowywania informacji o dostawcy logowania
+  bool isLightMode = false;
 
   @override
   void initState() {
     super.initState();
     _checkLoginProvider(); // Sprawdzamy, jakim dostawcą jest użytkownik
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isLightMode = prefs.getBool('isLightMode') ?? false;
+    });
   }
 
   /// Funkcja sprawdzająca, jakim dostawcą (provider) jest zalogowany użytkownik.
@@ -223,15 +233,19 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const Color appBarColor = Color(0xFF1E3A8A);
-    const Color backgroundColor = Color(0xFF0F172A);
+    final Color appBarColor = isLightMode ? Colors.blueGrey : Color(0xFF1E3A8A);
+    final Color backgroundColor =
+        isLightMode
+            ? const Color.fromARGB(255, 219, 216, 216)
+            : Color(0xFF0F172A);
+    final Color textColor = isLightMode ? Colors.black : Colors.white;
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: appBarColor,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: textColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -258,21 +272,21 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       // =========================
                       // SEKCJA AKTUALIZACJI EMAILA
                       // =========================
-                      const Text(
+                      Text(
                         'Aktualizacja emaila',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: textColor,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
+                      Text(
                         'Podaj nowy email. Jeśli korzystasz z Email/Password, musisz wpisać także swoje obecne hasło. '
                         'Jeśli jesteś zalogowany przez Google, zostaniesz poproszony o ponowne zalogowanie w Google.',
-                        style: TextStyle(color: Colors.white70),
+                        style: TextStyle(color: textColor),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16),
                       TextField(
                         controller: _newEmailController,
                         keyboardType: TextInputType.emailAddress,
@@ -328,19 +342,19 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       // =========================
                       // SEKCJA AKTUALIZACJI HASŁA
                       // =========================
-                      const Text(
+                      Text(
                         'Aktualizacja hasła',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: textColor,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
+                      Text(
                         'Jeśli jesteś zalogowany kontem Email/Password, podaj obecne hasło, a następnie wprowadź nowe hasło dwukrotnie. '
                         'Dla Google Sign-In zostaniesz poproszony o ponowne zalogowanie w Google.',
-                        style: TextStyle(color: Colors.white70),
+                        style: TextStyle(color: textColor),
                       ),
                       const SizedBox(height: 16),
                       TextField(
