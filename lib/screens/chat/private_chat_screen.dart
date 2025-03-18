@@ -72,7 +72,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
                       itemBuilder: (context, index) {
                         final message = messages[messages.length - 1 - index];
                         return ChatMessage(
-                          name: message['name'],
+                          userId: message['name'],
                           time: message['time'],
                           message: message['message'],
                         );
