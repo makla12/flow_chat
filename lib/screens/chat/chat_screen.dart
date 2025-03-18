@@ -66,7 +66,7 @@ class ChatScreenState extends State<ChatScreen> {
                     itemBuilder: (context, index) {
                       final message = messages[messages.length - 1 - index];
                       return ChatMessage(
-                        userId: message['name'],
+                        name: message['name'],
                         time: message['time'],
                         message: message['message'],
                       );

@@ -1,56 +1,44 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class ChatMessage extends StatefulWidget {
-  ChatMessage({super.key, required this.userId, required this.time, required this.message});
-  final String userId;
+class ChatMessage extends StatelessWidget {
+  ChatMessage({super.key, required this.name, required this.time, required this.message});
+  final String name;
   final Timestamp time;
   final String message;
-
-  @override
-  ChatMessageState createState() => ChatMessageState();
-}
-
-class ChatMessageState extends State<ChatMessage> {
-  String? name;
-  String? avatarUrl;
-  late final _friendRef = FirebaseFirestore.instance.collection('users').doc(widget.userId);
-  void getFriendData() {
-    _friendRef.get().then((snapshot) {
-      if (snapshot.exists) {
-        final data = snapshot.data()!;
-        setState(() {
-          name = data['username'] as String;
-          avatarUrl = data['avatarUrl'] as String;
-        });
-      }
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getFriendData();
-  }
+  late final _friendStream = FirebaseFirestore.instance.collection('users').doc(name).snapshots();
 
   @override
   Widget build(BuildContext context) {
-    return (name == null || avatarUrl == null ? Text("") : Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CircleAvatar(backgroundImage: NetworkImage(avatarUrl!)),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [Text(name!, style: TextStyle(fontSize: 16)), Text(widget.time.toDate().toIso8601String(), style: TextStyle(fontSize: 8))],
-              ),
-              Text(widget.message, style: TextStyle(fontSize: 14)),
-            ],
+    return StreamBuilder<DocumentSnapshot>(stream: _friendStream, builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (!snapshot.hasData || snapshot.data!.data() == null) {
+        return const Text("Brak wiadomości");
+      }
+      final data = snapshot.data!.data()! as Map<String, dynamic>;
+      final name = data['username'] as String;
+      final avatarUrl = data['avatarUrl'] as String;
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 10,
+        children: [
+          CircleAvatar(backgroundImage: NetworkImage(avatarUrl)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  spacing: 5,
+                  children: [Text(name, style: TextStyle(fontSize: 16)), Text(time.toDate().toIso8601String(), style: TextStyle(fontSize: 8))],
+                ),
+                Text(message, style: TextStyle(fontSize: 14)),
+              ],
+            ),
           ),
-        ),
-      ],
-    ));
+        ],
+      );
+    });
   }
 }
