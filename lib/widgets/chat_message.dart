@@ -11,9 +11,6 @@ class ChatMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(stream: _friendStream, builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
-      }
       if (!snapshot.hasData || snapshot.data!.data() == null) {
         return const Text("Brak wiadomości");
       }
