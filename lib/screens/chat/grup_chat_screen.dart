@@ -124,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (context, index) {
                     final server = filteredDocs[index];
                     return ListTile(
-                      leading: const CircleAvatar(backgroundColor: Colors.grey),
+                      leading: const Icon(Icons.home, color: Colors.white),
                       title: GestureDetector(
                         onTap: () {
                           Navigator.push(
