@@ -12,6 +12,7 @@ class LogIn extends StatefulWidget {
 
 class LogInState extends State<LogIn> {
   bool _isLoading = false;
+  bool _textIsObscured = true;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -39,17 +40,14 @@ class LogInState extends State<LogIn> {
         _isLoading = false;
       });
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        // Jeśli email lub hasło jest błędne, wyświetl "Niepoprawny email lub hasło"
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Niepoprawny email lub hasło")),
         );
       } else if (e.code == 'invalid-email') {
-        // Jeśli email ma nieprawidłowy format
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Niepoprawny format adresu email")),
         );
       } else {
-        // Inne błędy Firebase
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Wystąpił błąd: ${e.message}")),
         );
@@ -92,8 +90,10 @@ class LogInState extends State<LogIn> {
                 decoration: InputDecoration(
                   labelText: "Password",
                   hintText: "Password",
+                  suffixIcon: IconButton(onPressed: (){setState(() { _textIsObscured = !_textIsObscured; });}, icon: Icon(_textIsObscured ? Icons.visibility : Icons.visibility_off))
+                  
                 ),
-                obscureText: true,
+                obscureText: _textIsObscured,
               ),
               ElevatedButton(
                 style: ButtonStyle(

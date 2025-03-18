@@ -12,7 +12,6 @@ class CreateServerScreen extends StatefulWidget {
 class CreateServerScreenState extends State<CreateServerScreen> {
   void _createServer() {
     final serverName = _serverNameController.text;
-    final isServerPrivate = _isServerPrivate;
     if (serverName.isEmpty) {
       return;
     }
@@ -21,7 +20,6 @@ class CreateServerScreenState extends State<CreateServerScreen> {
       DocumentReference serverRef = FirebaseFirestore.instance.collection('teams').doc();
       transaction.set(serverRef, {
         'name': serverName,
-        'isPrivate': isServerPrivate,
         'members': [FirebaseAuth.instance.currentUser!.uid],
         'ownerId': FirebaseAuth.instance.currentUser!.uid,
       });
@@ -41,7 +39,6 @@ class CreateServerScreenState extends State<CreateServerScreen> {
   final Color buttonColor = Color(0xFF3B82F6);
 
   final _serverNameController = TextEditingController();
-  bool _isServerPrivate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -56,18 +53,6 @@ class CreateServerScreenState extends State<CreateServerScreen> {
             TextField(
               controller: _serverNameController,
               decoration: InputDecoration(labelText: 'Nazwa serwera'),
-            ),
-            SizedBox(height: 20),
-            CheckboxListTile(
-              title: Text('Czy serwer ma być prywatny?', style: TextStyle(color: Colors.white)),
-              value: _isServerPrivate,
-              onChanged: (bool? value) {
-                setState(() {
-                  _isServerPrivate = value ?? false;
-                });
-              },
-              activeColor: buttonColor,
-              checkColor: Colors.white,
             ),
             SizedBox(height: 20),
             ElevatedButton(
