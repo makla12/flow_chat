@@ -14,7 +14,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   bool isLightMode = false;
 
   String _username = "Ładowanie...";
-  String _avatarUrl = "Ładowanie...";
+  String _avatarUrl = "";
 
   @override
   void initState() {
@@ -107,7 +107,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   onTap: _showAvatarDialog,
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: NetworkImage(_avatarUrl),
+                    backgroundImage: _avatarUrl.isNotEmpty ? NetworkImage(_avatarUrl) : null,
                   ),
                 ),
                 const SizedBox(height: 16),
