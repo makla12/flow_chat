@@ -106,7 +106,7 @@ class FriendsScreen extends StatelessWidget {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const Center(
-                            child: CircularProgressIndicator(),
+                            child: SizedBox(),
                           );
                         }
                         if (!snapshot.hasData ||
