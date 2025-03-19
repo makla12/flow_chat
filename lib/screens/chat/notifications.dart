@@ -51,10 +51,10 @@ class NotificationsScreen extends StatelessWidget {
           {
             'members': privateChatIds,
             'reed': [],
-            'lastMessageTimestamp': DateTime.now(),
             'lastMessage': {
               'name': '',
               'message': '',
+              'time': DateTime.now(),
             },
           },
         );

@@ -81,6 +81,11 @@ class FriendsScreen extends StatelessWidget {
                   );
                 }
                 final friends = snapshot.data!.docs;
+                friends.sort((a, b) {
+                  final aTime = (a['lastMessage']['time'] as Timestamp);
+                  final bTime = (b['lastMessage']['time'] as Timestamp);
+                  return bTime.compareTo(aTime);
+                });
                 return ListView.builder(
                   itemCount: friends.length,
                   itemBuilder: (context, index) {
@@ -111,17 +116,20 @@ class FriendsScreen extends StatelessWidget {
                         final friendName = friendData['username'] as String;
                         final friendAvatarUrl =
                             friendData['avatarUrl'] as String;
+                        final bool isReed = friends[index]['reed'].contains(FirebaseAuth.instance.currentUser!.uid);
                         return ListTile(
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(friendAvatarUrl),
                           ),
-                          title: Text(friendName),
+                          title: Text(friendName, style: !isReed ? const TextStyle(fontWeight: FontWeight.bold) : null),
                           subtitle: Row(
                             children: [
                               Text(friends[index]['lastMessage']['name'] == FirebaseAuth.instance.currentUser!.uid
                                   ? 'Ty: '
                                   : ''),
-                              Text(friends[index]['lastMessage']['message']),
+                              Text(friends[index]['lastMessage']['message'], style: !isReed
+                                  ? const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)
+                                  : null),
                             ],
                           ),
                           onTap: () {

@@ -31,8 +31,8 @@ class ChatScreenState extends State<PrivateChatScreen> {
         'lastMessage': {
           'name': FirebaseAuth.instance.currentUser!.uid,
           'message': message,
+          'time': DateTime.now(),
         },
-        'lastMessageTimestamp': DateTime.now(),
         'reed': [],
       });
       transaction.set(_messagesRef.doc(), {
