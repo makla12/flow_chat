@@ -7,10 +7,10 @@ class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  ProfileScreenState createState() => ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class ProfileScreenState extends State<ProfileScreen> {
   bool isLightMode = false;
 
   String _username = "Ładowanie...";
@@ -161,7 +161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     setState(() {
                       _avatarUrl = "https://i.pravatar.cc/150?img=$i";
                     });
-                    Navigator.pop(context);
+                    if(context.mounted) Navigator.pop(context);
                   },
                 ),
             ],
@@ -196,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 setState(() {
                   _username = newName;
                 });
-                Navigator.pop(context);
+                if(context.mounted) Navigator.pop(context);
               },
               child: const Text('Zapisz'),
             ),

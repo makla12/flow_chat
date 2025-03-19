@@ -18,7 +18,7 @@ class FlowChatApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator(); 
           } else if (snapshot.hasData) {
-            AuthUtils.OnUserLogin();
+            AuthUtils.onUserLogin();
             return HomeScreen(); 
           } else {
             return const WelcomeScreen(); 
