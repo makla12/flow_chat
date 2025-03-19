@@ -81,6 +81,11 @@ class FriendsScreen extends StatelessWidget {
                   );
                 }
                 final friends = snapshot.data!.docs;
+                friends.sort((a, b) {
+                  final aTime = (a['lastMessage']['time'] as Timestamp);
+                  final bTime = (b['lastMessage']['time'] as Timestamp);
+                  return bTime.compareTo(aTime);
+                });
                 return ListView.builder(
                   itemCount: friends.length,
                   itemBuilder: (context, index) {
