@@ -44,29 +44,18 @@ class NotificationsScreen extends StatelessWidget {
               .collection('users')
               .doc(FirebaseAuth.instance.currentUser!.uid)
               .get();
-      final user = userData.data() as Map<String, dynamic>;
-      final friends = List<String>.from(user['friends']);
-      friends.add(FirebaseAuth.instance.currentUser!.uid);
-      final user2 = userData2.data() as Map<String, dynamic>;
-      final friends2 = List<String>.from(user2['friends']);
-      friends2.add(invite['from']);
       FirebaseFirestore.instance.runTransaction((transaction) async {
-        transaction.update(
-          FirebaseFirestore.instance.collection('users').doc(invite['from']),
-          {'friends': friends},
-        );
-        transaction.update(
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(FirebaseAuth.instance.currentUser!.uid),
-          {'friends': friends2},
-        );
         List<String> privateChatIds = [userData.id, userData2.id];
-        privateChatIds.sort();
         transaction.set(
-          FirebaseFirestore.instance.collection('private_chats').doc(privateChatIds.join('_')),
+          FirebaseFirestore.instance.collection('private_chats').doc(),
           {
             'members': privateChatIds,
+            'reed': [],
+            'lastMessageTimestamp': DateTime.now(),
+            'lastMessage': {
+              'name': '',
+              'message': '',
+            },
           },
         );
 

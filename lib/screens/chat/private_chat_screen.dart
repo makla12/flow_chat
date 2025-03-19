@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flow_chat/widgets/chat_message.dart';
 
 class PrivateChatScreen extends StatefulWidget {
-  const PrivateChatScreen({super.key, required this.privateChatId});
+  const PrivateChatScreen({super.key, required this.privateChatRef});
 
-  final String privateChatId;
+  final DocumentReference privateChatRef;
 
   @override
   ChatScreenState createState() => ChatScreenState();
@@ -15,10 +15,7 @@ class PrivateChatScreen extends StatefulWidget {
 
 class ChatScreenState extends State<PrivateChatScreen> {
   final TextEditingController textController = TextEditingController();
-  late final CollectionReference _messagesRef = FirebaseFirestore.instance
-      .collection('private_chats')
-      .doc(widget.privateChatId)
-      .collection('messages');
+  late final CollectionReference _messagesRef = widget.privateChatRef.collection('messages');
 
   late final Stream<QuerySnapshot> _messagesStream = _messagesRef.orderBy("time").snapshots();
 
@@ -29,12 +26,21 @@ class ChatScreenState extends State<PrivateChatScreen> {
       return;
     }
 
-    final messageData = {
-      'name': FirebaseAuth.instance.currentUser!.uid,
-      'time': DateTime.now(),
-      'message': message,
-    };
-    _messagesRef.doc().set(messageData);
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      transaction.update(widget.privateChatRef, {
+        'lastMessage': {
+          'name': FirebaseAuth.instance.currentUser!.uid,
+          'message': message,
+        },
+        'lastMessageTimestamp': DateTime.now(),
+        'reed': [],
+      });
+      transaction.set(_messagesRef.doc(), {
+        'name': FirebaseAuth.instance.currentUser!.uid,
+        'time': DateTime.now(),
+        'message': message,
+      });
+    });
   }
 
   @override
@@ -61,6 +67,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     }
+                    widget.privateChatRef.update({'reed': FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid])});
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                       return const Center(child: Text('Brak wiadomości'));
                     }
