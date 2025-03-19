@@ -63,7 +63,7 @@ class ChannelsScreen extends StatelessWidget {
                             if (channelName.isNotEmpty) {
                               channelsRef.add({
                                 'name': channelName,
-                                'messages': [],
+                                'reed': [],
                               });
                             }
                             Navigator.pop(context);
@@ -101,8 +101,10 @@ class ChannelsScreen extends StatelessWidget {
             itemCount: channels.length,
             itemBuilder: (context, index) {
               final channel = channels[index];
+              final bool isReed = channel['reed'].contains(FirebaseAuth.instance.currentUser!.uid);
               return ListTile(
                 title: Text(channel['name']),
+                leading: !isReed ? const CircleAvatar(backgroundColor: Colors.green, maxRadius: 5,) : const SizedBox(),
                 trailing:
                     ownerId == FirebaseAuth.instance.currentUser!.uid
                         ? IconButton(
@@ -143,7 +145,7 @@ class ChannelsScreen extends StatelessWidget {
                     MaterialPageRoute(
                       builder:
                           (context) => ChatScreen(
-                            channelName: channel['name'],
+                            channelSnapshot: channel,
                             messagesRef: channel.reference.collection(
                               'messages',
                             ),

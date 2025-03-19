@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flow_chat/widgets/chat_message.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key, required this.messagesRef, required this.channelName});
+  const ChatScreen({super.key, required this.messagesRef, required this.channelSnapshot});
 
-  final String channelName;
+  final QueryDocumentSnapshot channelSnapshot;
   final CollectionReference messagesRef;
 
   @override
@@ -29,8 +29,12 @@ class ChatScreenState extends State<ChatScreen> {
       'time': DateTime.now(),
       'message': message,
     };
-
-    widget.messagesRef.doc().set(messageData);
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      transaction.update(widget.channelSnapshot.reference, {
+        'reed': [],
+      });
+      transaction.set(widget.messagesRef.doc(), messageData);
+    });
   }
 
   @override
@@ -39,7 +43,7 @@ class ChatScreenState extends State<ChatScreen> {
       backgroundColor: Color(0xFF0F172A),
       appBar: AppBar(
         backgroundColor: Color(0xFF1E3A8A),
-        title: Text(widget.channelName, style: TextStyle(color: Colors.white)),
+        title: Text(widget.channelSnapshot['name'], style: TextStyle(color: Colors.white)),
         centerTitle: false,
       ),
       body: SafeArea(
@@ -55,6 +59,11 @@ class ChatScreenState extends State<ChatScreen> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
+
+                  widget.channelSnapshot.reference.update({
+                    'reed': FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
+                  });
+
                   if(!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return const Center(child: Text('Brak wiadomości'));
                   }

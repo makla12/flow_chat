@@ -15,7 +15,6 @@ class AuthUtils {
         await userDoc.set({
           'email': email,
           'username': displayName,
-          'friends': [],
           'avatarUrl':"https://i.pravatar.cc/150?img=1", 
         });
       }

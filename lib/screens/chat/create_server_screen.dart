@@ -27,6 +27,7 @@ class CreateServerScreenState extends State<CreateServerScreen> {
       DocumentReference channelRef = serverRef.collection('channels').doc();
       transaction.set(channelRef, {
         'name': 'general',
+        'reed': [],
       });
     });
 
