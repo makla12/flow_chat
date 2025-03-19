@@ -43,9 +43,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
       AuthUtils.addUserToFirestore(userCredential.user!.uid, userCredential.user!.email!, userCredential.user!.displayName!);
       AuthUtils.onUserLogin();
       if(!context.mounted) return;
-      while(Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
+      Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),

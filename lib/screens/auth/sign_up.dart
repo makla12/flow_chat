@@ -51,9 +51,7 @@ class SignUpState extends State<SignUp> {
       await credential.user!.updateDisplayName(username);
       AuthUtils.addUserToFirestore(credential.user!.uid, email, username);
       if(!context.mounted) return;
-      while (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
+      Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),

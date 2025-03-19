@@ -29,9 +29,7 @@ class LogInState extends State<LogIn> {
       AuthUtils.addUserToFirestore(credential.user!.uid, credential.user!.email!, credential.user!.displayName!);
       AuthUtils.onUserLogin();
       if(!context.mounted) return;
-      while (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
+      Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
