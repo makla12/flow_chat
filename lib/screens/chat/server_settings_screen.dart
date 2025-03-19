@@ -90,7 +90,7 @@ class ServerSettingsScreen extends StatelessWidget {
                         TextButton(
                           onPressed: () {
                             serverRef.delete();
-                            Navigator.popUntil(context, ModalRoute.withName('/'));
+                            Navigator.popUntil(context, (route) => route.isFirst);
                           },
                           child: const Text('Usuń'),
                         ),
