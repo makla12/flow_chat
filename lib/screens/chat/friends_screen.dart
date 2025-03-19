@@ -9,10 +9,10 @@ import 'adding_friends_screen.dart';
 class FriendsScreen extends StatelessWidget {
   FriendsScreen({super.key});
 
-  final Stream<DocumentSnapshot> _friendsStream =
+  final Stream<QuerySnapshot> _privateChatStream =
       FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('private_chats')
+          .where('members', arrayContains: FirebaseAuth.instance.currentUser!.uid)
           .snapshots();
 
   static const Color backgroundColor = Color(0xFF0F172A);
@@ -66,13 +66,13 @@ class FriendsScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: StreamBuilder<DocumentSnapshot>(
-              stream: _friendsStream,
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _privateChatStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (!snapshot.hasData || snapshot.data!.data() == null) {
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return const Center(
                     child: Text(
                       'Nie znaleziono znajomych',
@@ -80,20 +80,13 @@ class FriendsScreen extends StatelessWidget {
                     ),
                   );
                 }
-                final data = snapshot.data!.data()! as Map<String, dynamic>;
-                final friends = data['friends'] as List<dynamic>;
-                if (friends.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'Nie znaleziono znajomych',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                }
+                final friends = snapshot.data!.docs;
                 return ListView.builder(
                   itemCount: friends.length,
                   itemBuilder: (context, index) {
-                    final friendId = friends[index];
+                    final friendId = friends[index]['members']
+                        .firstWhere((element) =>
+                            element != FirebaseAuth.instance.currentUser!.uid);
                     final friendStream =
                         FirebaseFirestore.instance
                             .collection('users')
@@ -118,24 +111,26 @@ class FriendsScreen extends StatelessWidget {
                         final friendName = friendData['username'] as String;
                         final friendAvatarUrl =
                             friendData['avatarUrl'] as String;
-                        final privateChatId = [
-                          FirebaseAuth.instance.currentUser!.uid,
-                          friendId,
-                        ];
-                        privateChatId.sort();
-                        final privateChatIdString = privateChatId.join('_');
                         return ListTile(
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(friendAvatarUrl),
                           ),
                           title: Text(friendName),
+                          subtitle: Row(
+                            children: [
+                              Text(friends[index]['lastMessage']['name'] == FirebaseAuth.instance.currentUser!.uid
+                                  ? 'Ty: '
+                                  : ''),
+                              Text(friends[index]['lastMessage']['message']),
+                            ],
+                          ),
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder:
                                     (context) => PrivateChatScreen(
-                                      privateChatId: privateChatIdString,
+                                      privateChatRef: friends[index].reference,
                                     ),
                               ),
                             );

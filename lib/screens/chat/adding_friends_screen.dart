@@ -19,6 +19,26 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<DocumentSnapshot> searchResults = [];
   List<String> invites = [];
+  List<String> friends = [];
+
+  void getFriends() async {
+    final curentUser = FirebaseAuth.instance.currentUser;
+    if (curentUser == null) return;
+    List<String> newFriends = [];
+    try{
+      final querySnapshot = await FirebaseFirestore.instance.collection('private_chats').where('members', arrayContains: curentUser.uid).get();
+      for (final doc in querySnapshot.docs) {
+        final members = doc['members'] as List<dynamic>;
+        final friendUid = members.firstWhere((uid) => uid != curentUser.uid);
+        newFriends.add(friendUid as String);
+      }
+    } catch (e) {
+      print('Błąd pobierania znajomych: $e');
+    }
+    setState(() {
+      friends = newFriends;
+    });
+  }
 
   void getInvites() async {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -60,6 +80,7 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
   void initState() {
     super.initState();
     getInvites();
+    getFriends();
     _searchController.addListener(_searchUser);
   }
 
@@ -159,7 +180,7 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
                   nickname: userData['username'] ?? 'Brak nazwy',
                   avatarUrl: userData['avatarUrl'] as String?,
                   onAdd: () => _addFriend(friendUid),
-                  canAdd: !invites.contains(friendUid),
+                  canAdd: !invites.contains(friendUid) && !friends.contains(friendUid),
                 );
               },
             ),
