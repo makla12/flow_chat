@@ -41,7 +41,8 @@ class WelcomeScreenState extends State<WelcomeScreen> {
     try {
       final userCredential = await signInWithGoogle();
       AuthUtils.addUserToFirestore(userCredential.user!.uid, userCredential.user!.email!, userCredential.user!.displayName!);
-      AuthUtils.OnUserLogin();
+      AuthUtils.onUserLogin();
+      if(!context.mounted) return;
       while(Navigator.canPop(context)) {
         Navigator.pop(context);
       }

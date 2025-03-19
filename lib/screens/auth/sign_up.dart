@@ -50,6 +50,7 @@ class SignUpState extends State<SignUp> {
           .createUserWithEmailAndPassword(email: email, password: password);
       await credential.user!.updateDisplayName(username);
       AuthUtils.addUserToFirestore(credential.user!.uid, email, username);
+      if(!context.mounted) return;
       while (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
@@ -61,6 +62,7 @@ class SignUpState extends State<SignUp> {
       setState(() {
         _isLoading = false;
       });
+      if(!context.mounted) return;
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(
           context,

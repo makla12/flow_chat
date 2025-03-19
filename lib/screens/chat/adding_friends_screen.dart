@@ -88,7 +88,7 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
     final searchText = _searchController.text.trim().toLowerCase();
     final currentUser = FirebaseAuth.instance.currentUser;
 
-    if (searchText.length >= 1 && currentUser != null) {
+    if (searchText.isNotEmpty  && currentUser != null) {
       try {
         final querySnapshot =
             await FirebaseFirestore.instance.collection('users').get();
@@ -125,11 +125,13 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
         'timestamp': FieldValue.serverTimestamp(),
         'type': 'friend',
       });
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Wysłano zaproszenie do znajomych!')),
       );
     } catch (e) {
       print('Błąd przy dodawaniu znajomego: $e');
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Wystąpił błąd, spróbuj ponownie.')),
       );

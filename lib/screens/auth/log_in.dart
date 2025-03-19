@@ -27,7 +27,8 @@ class LogInState extends State<LogIn> {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email, password: password);
       AuthUtils.addUserToFirestore(credential.user!.uid, credential.user!.email!, credential.user!.displayName!);
-      AuthUtils.OnUserLogin();
+      AuthUtils.onUserLogin();
+      if(!context.mounted) return;
       while (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
@@ -39,6 +40,7 @@ class LogInState extends State<LogIn> {
       setState(() {
         _isLoading = false;
       });
+      if(!context.mounted) return;
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Niepoprawny email lub hasło")),
