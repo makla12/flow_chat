@@ -21,12 +21,14 @@ class CreateServerScreenState extends State<CreateServerScreen> {
       transaction.set(serverRef, {
         'name': serverName,
         'members': [FirebaseAuth.instance.currentUser!.uid],
+        'muted': [],
         'ownerId': FirebaseAuth.instance.currentUser!.uid,
       });
 
       DocumentReference channelRef = serverRef.collection('channels').doc();
       transaction.set(channelRef, {
         'name': 'general',
+        'muted': [],
         'reed': [],
       });
     });
