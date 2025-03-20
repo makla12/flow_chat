@@ -51,6 +51,7 @@ class NotificationsScreen extends StatelessWidget {
           {
             'members': privateChatIds,
             'reed': [],
+            'muted': [],
             'lastMessage': {
               'name': '',
               'message': '',
