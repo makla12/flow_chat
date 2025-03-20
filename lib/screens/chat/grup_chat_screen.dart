@@ -6,7 +6,6 @@ import 'chanels_screen.dart';
 import 'create_server_screen.dart';
 import 'notifications.dart';
 import '../../widgets/bottom_nav_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,55 +24,12 @@ class _HomeScreenState extends State<HomeScreen> {
           )
           .snapshots();
 
-  final TextEditingController searchController = TextEditingController();
+  TextEditingController searchController = TextEditingController();
   String searchQuery = '';
 
-  // Dynamiczne ustawienia wyglądu
-  bool isLightMode = false;
-  double fontSize = 14.0;
-  Color accentColor = Colors.blue;
-
-  // Gettery dynamicznych kolorów
-  Color get backgroundColor =>
-      isLightMode ? Colors.white : const Color(0xFF0F172A);
-  Color get appBarColor =>
-      isLightMode ? Colors.blueGrey : const Color(0xFF1E3A8A);
-  Color get dividerColor => isLightMode ? Colors.grey : const Color(0xFF2F3A4B);
-  Color get textColor => isLightMode ? Colors.black : Colors.white;
-  Color get searchFillColor =>
-      isLightMode ? Colors.grey.shade300 : Colors.grey.shade900;
-  Color get iconColor => isLightMode ? Colors.black : Colors.white;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPreferences();
-  }
-
-  // Ładowanie ustawień wyglądu z SharedPreferences
-  Future<void> _loadPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isLightMode = prefs.getBool('isLightMode') ?? false;
-      fontSize = prefs.getDouble('fontSize') ?? 14.0;
-      int savedColor = prefs.getInt('accentColor') ?? Colors.blue.value;
-      accentColor = Color(savedColor);
-    });
-  }
-
-  // Zapis trybu jasnego
-  Future<void> _saveLightMode(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLightMode', value);
-  }
-
-  // Przełączanie trybu jasnego/ciemnego
-  void toggleLightMode() {
-    setState(() {
-      isLightMode = !isLightMode;
-    });
-    _saveLightMode(isLightMode);
-  }
+  static const Color backgroundColor = Color(0xFF0F172A);
+  static const Color appBarColor = Color(0xFF1E3A8A);
+  static const Color dividerColor = Color(0xFF2F3A4B);
 
   @override
   void dispose() {
@@ -87,14 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: appBarColor,
-        title: Text(
-          'FlowChat',
-          style: TextStyle(color: iconColor, fontSize: fontSize),
-        ),
+        title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
         centerTitle: false,
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications, color: iconColor),
+            icon: const Icon(Icons.notifications, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -103,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.add_home, color: iconColor),
+            icon: const Icon(Icons.add_home, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -111,8 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-
-          // Przycisk przełączający tryb jasny/ciemny
         ],
       ),
       body: Column(
@@ -126,13 +77,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   searchQuery = value.toLowerCase();
                 });
               },
-              style: TextStyle(color: textColor, fontSize: fontSize),
               decoration: InputDecoration(
                 hintText: 'Szukaj',
-                hintStyle: TextStyle(color: textColor.withOpacity(0.6)),
-                prefixIcon: Icon(Icons.search, color: iconColor),
+                prefixIcon: const Icon(Icons.search),
                 filled: true,
-                fillColor: searchFillColor,
+                fillColor: Colors.grey.shade900,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
                   borderSide: BorderSide.none,
@@ -148,10 +97,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(
+                  return const Center(
                     child: Text(
                       "Brak serwerów",
-                      style: TextStyle(color: textColor, fontSize: fontSize),
+                      style: TextStyle(color: Colors.white),
                     ),
                   );
                 }
@@ -163,10 +112,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     }).toList();
 
                 if (filteredDocs.isEmpty) {
-                  return Center(
+                  return const Center(
                     child: Text(
                       "Nie znaleziono serwerów",
-                      style: TextStyle(color: textColor, fontSize: fontSize),
+                      style: TextStyle(color: Colors.white),
                     ),
                   );
                 }
@@ -176,8 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (context, index) {
                     final server = filteredDocs[index];
                     return ListTile(
-                      trailing: ServerReedIcon(serverSnapshot: server),
-                      leading: Icon(Icons.home, color: iconColor),
+                      trailing: ServerReedIcon(serverSnapshot: server,),
+                      leading: const Icon(Icons.home, color: Colors.white),
                       title: GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -195,13 +144,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 30,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: searchFillColor,
+                            color: Colors.grey.shade900,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Center(
                             child: Text(
                               server['name'],
-                              style: TextStyle(color: textColor, fontSize: 16),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                         ),
@@ -217,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 0,
         backgroundColor: backgroundColor,
-        selectedItemColor: accentColor,
+        selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
         dividerColor: dividerColor,
       ),

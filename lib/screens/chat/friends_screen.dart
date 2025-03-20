@@ -1,76 +1,23 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flow_chat/screens/chat/notifications.dart';
 import 'package:flow_chat/screens/chat/private_chat_screen.dart';
-import 'package:flow_chat/screens/chat/adding_friends_screen.dart';
-import 'package:flow_chat/widgets/bottom_nav_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../widgets/bottom_nav_bar.dart';
+import 'adding_friends_screen.dart';
 
-class FriendsScreen extends StatefulWidget {
-  const FriendsScreen({super.key});
+class FriendsScreen extends StatelessWidget {
+  FriendsScreen({super.key});
 
-  @override
-  State<FriendsScreen> createState() => _FriendsScreenState();
-}
-
-class _FriendsScreenState extends State<FriendsScreen> {
   final Stream<QuerySnapshot> _privateChatStream =
       FirebaseFirestore.instance
           .collection('private_chats')
-          .where(
-            'members',
-            arrayContains: FirebaseAuth.instance.currentUser!.uid,
-          )
+          .where('members', arrayContains: FirebaseAuth.instance.currentUser!.uid)
           .snapshots();
 
-  final TextEditingController _searchController = TextEditingController();
-
-  // Ustawienia wyglądu
-  bool isLightMode = false;
-  double fontSize = 14.0;
-  Color accentColor = Colors.blue;
-
-  // Gettery dynamicznych kolorów
-  Color get backgroundColor =>
-      isLightMode ? Colors.white : const Color(0xFF0F172A);
-  Color get appBarColor =>
-      isLightMode ? Colors.blueGrey : const Color(0xFF1E3A8A);
-  Color get dividerColor => isLightMode ? Colors.grey : const Color(0xFF2F3A4B);
-  Color get searchFillColor =>
-      isLightMode ? Colors.grey.shade300 : Colors.grey.shade900;
-  Color get textColor => isLightMode ? Colors.black : Colors.white;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPreferences();
-  }
-
-  // Ładowanie ustawień wyglądu z SharedPreferences
-  Future<void> _loadPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isLightMode = prefs.getBool('isLightMode') ?? false;
-      fontSize = prefs.getDouble('fontSize') ?? 14.0;
-      int savedColor = prefs.getInt('accentColor') ?? Colors.blue.value;
-      accentColor = Color(savedColor);
-    });
-  }
-
-  // Zapis trybu jasnego
-  Future<void> _saveLightMode(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLightMode', value);
-  }
-
-  // Przełączanie trybu jasnego
-  void toggleLightMode() {
-    setState(() {
-      isLightMode = !isLightMode;
-    });
-    _saveLightMode(isLightMode);
-  }
+  static const Color backgroundColor = Color(0xFF0F172A);
+  static const Color appBarColor = Color(0xFF1E3A8A);
+  static const Color dividerColor = Color(0xFF2F3A4B);
 
   @override
   Widget build(BuildContext context) {
@@ -78,14 +25,11 @@ class _FriendsScreenState extends State<FriendsScreen> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: appBarColor,
-        title: Text(
-          'FlowChat',
-          style: TextStyle(color: textColor, fontSize: fontSize),
-        ),
+        title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
         centerTitle: false,
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications, color: textColor),
+            icon: const Icon(Icons.notifications, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -94,13 +38,11 @@ class _FriendsScreenState extends State<FriendsScreen> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.add, color: textColor),
+            icon: const Icon(Icons.add, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const AddingFriendsScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => AddingFriendsScreen()),
               );
             },
           ),
@@ -111,13 +53,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: TextField(
-              controller: _searchController,
-              style: TextStyle(color: textColor, fontSize: fontSize),
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search, color: textColor),
+                prefixIcon: Icon(Icons.search),
                 hintText: 'Szukaj',
-                hintStyle: TextStyle(color: textColor.withOpacity(0.6)),
-                fillColor: searchFillColor,
+                fillColor: Colors.grey.shade900,
                 filled: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
@@ -134,10 +73,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(
+                  return const Center(
                     child: Text(
                       'Nie znaleziono znajomych',
-                      style: TextStyle(color: textColor, fontSize: fontSize),
+                      style: TextStyle(color: Colors.white),
                     ),
                   );
                 }
@@ -150,10 +89,9 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 return ListView.builder(
                   itemCount: friends.length,
                   itemBuilder: (context, index) {
-                    final friendId = friends[index]['members'].firstWhere(
-                      (element) =>
-                          element != FirebaseAuth.instance.currentUser!.uid,
-                    );
+                    final friendId = friends[index]['members']
+                        .firstWhere((element) =>
+                            element != FirebaseAuth.instance.currentUser!.uid);
                     final friendStream =
                         FirebaseFirestore.instance
                             .collection('users')
@@ -165,71 +103,33 @@ class _FriendsScreenState extends State<FriendsScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const SizedBox();
+                          return const Center(
+                            child: SizedBox(),
+                          );
                         }
                         if (!snapshot.hasData ||
                             snapshot.data!.data() == null) {
-                          return const Text("Brak danych");
+                          return Text("Brak danych");
                         }
                         final friendData =
                             snapshot.data!.data()! as Map<String, dynamic>;
                         final friendName = friendData['username'] as String;
                         final friendAvatarUrl =
                             friendData['avatarUrl'] as String;
-                        final bool isReed = friends[index]['reed'].contains(
-                          FirebaseAuth.instance.currentUser!.uid,
-                        );
+                        final bool isReed = friends[index]['reed'].contains(FirebaseAuth.instance.currentUser!.uid);
                         return ListTile(
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(friendAvatarUrl),
                           ),
-                          title: Text(
-                            friendName,
-                            style:
-                                !isReed
-                                    ? TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: fontSize,
-                                      color: textColor,
-                                    )
-                                    : TextStyle(
-                                      fontSize: fontSize,
-                                      color: textColor,
-                                    ),
-                          ),
+                          title: Text(friendName, style: !isReed ? const TextStyle(fontWeight: FontWeight.bold) : null),
                           subtitle: Row(
                             children: [
-                              Text(
-                                friends[index]['lastMessage']['name'] ==
-                                        FirebaseAuth.instance.currentUser!.uid
-                                    ? 'Ty: '
-                                    : '',
-                                style:
-                                    !isReed
-                                        ? TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: fontSize,
-                                          color: textColor,
-                                        )
-                                        : TextStyle(
-                                          fontSize: fontSize,
-                                          color: textColor,
-                                        ),
-                              ),
-                              Text(
-                                friends[index]['lastMessage']['message'],
-                                style:
-                                    !isReed
-                                        ? TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: fontSize,
-                                          color: textColor,
-                                        )
-                                        : TextStyle(
-                                          fontSize: fontSize,
-                                          color: textColor,
-                                        ),
-                              ),
+                              Text(friends[index]['lastMessage']['name'] == FirebaseAuth.instance.currentUser!.uid
+                                  ? 'Ty: '
+                                  : ''),
+                              Text(friends[index]['lastMessage']['message'], style: !isReed
+                                  ? const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)
+                                  : null),
                             ],
                           ),
                           onTap: () {
@@ -256,7 +156,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 1,
         backgroundColor: backgroundColor,
-        selectedItemColor: accentColor,
+        selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
         dividerColor: dividerColor,
       ),

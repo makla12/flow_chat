@@ -1,47 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class NotificationsScreen extends StatefulWidget {
+class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
-  @override
-  State<NotificationsScreen> createState() => _NotificationsScreenState();
-}
-
-class _NotificationsScreenState extends State<NotificationsScreen> {
-  // Dynamiczne ustawienia wyglądu
-  bool isLightMode = false;
-  double fontSize = 14.0;
-  Color accentColor = Colors.blue;
-
-  // Gettery kolorów w zależności od trybu
-  Color get backgroundColor =>
-      isLightMode ? Colors.white : const Color(0xFF0F172A);
-  Color get appBarColor =>
-      isLightMode ? Colors.blueGrey : const Color(0xFF1E3A8A);
-  Color get cardColor =>
-      isLightMode ? Colors.grey.shade200 : const Color(0xFF1F2937);
-  Color get textColor => isLightMode ? Colors.black : Colors.white;
-  Color get iconColor => isLightMode ? Colors.black : Colors.white;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPreferences();
-  }
-
-  // Ładowanie ustawień wyglądu z SharedPreferences
-  Future<void> _loadPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isLightMode = prefs.getBool('isLightMode') ?? false;
-      fontSize = prefs.getDouble('fontSize') ?? 14.0;
-      int savedColor = prefs.getInt('accentColor') ?? Colors.blue.value;
-      accentColor = Color(savedColor);
-    });
-  }
+  static const Color backgroundColor = Color(0xFF0F172A);
+  static const Color appBarColor = Color(0xFF1E3A8A);
+  static const Color cardColor = Color(0xFF1F2937);
 
   void onAcceptInvite(String inviteId) async {
     final invite =
@@ -85,9 +51,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           {
             'members': privateChatIds,
             'reed': [],
-            'lastMessage': {'name': '', 'message': '', 'time': DateTime.now()},
+            'lastMessage': {
+              'name': '',
+              'message': '',
+              'time': DateTime.now(),
+            },
           },
         );
+
         transaction.delete(
           FirebaseFirestore.instance.collection('invites').doc(inviteId),
         );
@@ -115,12 +86,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: appBarColor,
-        title: Text(
+        title: const Text(
           'Powiadomienia',
-          style: TextStyle(color: textColor, fontSize: fontSize),
+          style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: iconColor),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -131,10 +102,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(
+            return const Center(
               child: Text(
                 "Brak powiadomień",
-                style: TextStyle(color: textColor, fontSize: fontSize + 4),
+                style: TextStyle(color: Colors.white, fontSize: 18),
               ),
             );
           }
@@ -149,148 +120,124 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               return Material(
                 borderRadius: BorderRadius.circular(20),
                 color: cardColor,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Icon(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Icon(
+                        invite["type"] == "server" ? Icons.group : Icons.person,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child:
                           invite["type"] == "server"
-                              ? Icons.group
-                              : Icons.person,
-                          color: iconColor,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child:
-                            invite["type"] == "server"
-                                ? StreamBuilder<DocumentSnapshot>(
-                                  stream:
-                                      FirebaseFirestore.instance
-                                          .collection('teams')
-                                          .doc(invite["from"])
-                                          .snapshots(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Text(
-                                        "Ładowanie...",
-                                        style: TextStyle(
-                                          color: textColor,
-                                          fontSize: fontSize,
-                                        ),
-                                      );
-                                    }
-                                    if (!snapshot.hasData ||
-                                        snapshot.data!.data() == null) {
-                                      onDeclineInvite(invite.id);
-                                      return Text(
-                                        "Błąd zaproszenia",
-                                        style: TextStyle(
-                                          color: textColor,
-                                          fontSize: fontSize,
-                                        ),
-                                      );
-                                    }
-                                    final serverData =
-                                        snapshot.data!.data()
-                                            as Map<String, dynamic>;
-                                    return Text(
-                                      "Zaproszenie do serwera ${serverData["name"]}",
-                                      style: TextStyle(
-                                        color: textColor,
-                                        fontSize: fontSize,
-                                      ),
+                              ? StreamBuilder<DocumentSnapshot>(
+                                stream:
+                                    FirebaseFirestore.instance
+                                        .collection('teams')
+                                        .doc(invite["from"])
+                                        .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Text(
+                                      "Ładowanie...",
+                                      style: TextStyle(color: Colors.white),
                                     );
-                                  },
-                                )
-                                : StreamBuilder<DocumentSnapshot>(
-                                  stream:
-                                      FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(invite["from"])
-                                          .snapshots(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Text(
-                                        "Ładowanie...",
-                                        style: TextStyle(
-                                          color: textColor,
-                                          fontSize: fontSize,
-                                        ),
-                                      );
-                                    }
-                                    if (!snapshot.hasData ||
-                                        snapshot.data!.data() == null) {
-                                      onDeclineInvite(invite.id);
-                                      return Text(
-                                        "Użytkownik nie istnieje",
-                                        style: TextStyle(
-                                          color: textColor,
-                                          fontSize: fontSize,
-                                        ),
-                                      );
-                                    }
-                                    final userData =
-                                        snapshot.data!.data()
-                                            as Map<String, dynamic>;
-                                    return Text(
-                                      "Zaproszenie do znajomych od ${userData["username"]}",
-                                      style: TextStyle(
-                                        color: textColor,
-                                        fontSize: fontSize,
-                                      ),
+                                  }
+                                  if (!snapshot.hasData || snapshot.data!.data() == null) {
+                                    onDeclineInvite(invite.id);
+                                    return const Text(
+                                      "Błąd zaproszenia",
+                                      style: TextStyle(color: Colors.white),
                                     );
-                                  },
-                                ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () => onAcceptInvite(invite.id),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: accentColor,
-                                minimumSize: const Size(70, 30),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                ),
+                                  }
+                                  final serverData =
+                                      snapshot.data!.data()
+                                          as Map<String, dynamic>;
+                                  return Text(
+                                    "Zaproszenie do serwera ${serverData["name"]}",
+                                    style: const TextStyle(color: Colors.white),
+                                  );
+                                },
+                              )
+                              : StreamBuilder<DocumentSnapshot>(
+                                stream:
+                                    FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(invite["from"])
+                                        .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Text(
+                                      "Ładowanie...",
+                                      style: TextStyle(color: Colors.white),
+                                    );
+                                  }
+                                  if(!snapshot.hasData || snapshot.data!.data() == null) {
+                                    onDeclineInvite(invite.id);
+                                    return const Text(
+                                      "Użytkownik nie istnieje",
+                                      style: TextStyle(color: Colors.white),
+                                    );
+                                  }
+                                  
+                                  final userData =
+                                      snapshot.data!.data()
+                                          as Map<String, dynamic>;
+                                  return Text(
+                                    "Zaproszenie do znajomych od ${userData["username"]}",
+                                    style: const TextStyle(color: Colors.white),
+                                  );
+                                },
                               ),
-                              child: Text(
-                                "✓",
-                                style: TextStyle(
-                                  fontSize: fontSize,
-                                  color: textColor,
-                                ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () => onAcceptInvite(invite.id),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              minimumSize: const Size(70, 30),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
                               ),
                             ),
-                            const SizedBox(height: 6),
-                            ElevatedButton(
-                              onPressed: () => onDeclineInvite(invite.id),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                minimumSize: const Size(70, 30),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                ),
-                              ),
-                              child: Text(
-                                "✕",
-                                style: TextStyle(
-                                  fontSize: fontSize,
-                                  color: textColor,
-                                ),
+                            child: const Text(
+                              "✓",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: 6),
+                          ElevatedButton(
+                            onPressed: () => onDeclineInvite(invite.id),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              minimumSize: const Size(70, 30),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
+                            ),
+                            child: const Text(
+                              "✕",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             },
