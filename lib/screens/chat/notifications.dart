@@ -85,12 +85,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           {
             'members': privateChatIds,
             'reed': [],
-            'muted': [],
-            'lastMessage': {
-              'name': '',
-              'message': '',
-              'time': DateTime.now(),
-            },
+            'lastMessage': {'name': '', 'message': '', 'time': DateTime.now()},
           },
         );
         transaction.delete(

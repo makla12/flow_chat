@@ -72,109 +72,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
     _saveLightMode(isLightMode);
   }
 
-  void _showFriendDeleteDialog(context, DocumentReference chatRefrence) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Usuń znajomego'),
-          content: const Text('Czy na pewno chcesz usunąć znajomego?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Anuluj'),
-            ),
-            TextButton(
-              onPressed: () {
-                chatRefrence.delete();
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              child: const Text('Usuń'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showFriendMenu(context, DocumentSnapshot chatSnapshot) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            (chatSnapshot['muted'].contains(FirebaseAuth.instance.currentUser!.uid))
-                ? ListTile(
-                  title: const Text('Włącz powiadomienia'),
-                  trailing: const Icon(Icons.notifications),
-                  onTap: () {
-                    chatSnapshot.reference.update({
-                      'muted': FieldValue.arrayRemove([
-                        FirebaseAuth.instance.currentUser!.uid,
-                      ]),
-                    });
-                    Navigator.pop(context);
-                  },
-                )
-                : ListTile(
-                  title: const Text('Wyłącz powiadomienia'),
-                  trailing: const Icon(Icons.notifications_off),
-                  onTap: () {
-                    chatSnapshot.reference.update({
-                      'muted': FieldValue.arrayUnion([
-                        FirebaseAuth.instance.currentUser!.uid,
-                      ]),
-                    });
-                    Navigator.pop(context);
-                  },
-                ),
-            (chatSnapshot['reed'].contains(
-                  FirebaseAuth.instance.currentUser!.uid,
-                ))
-                ? ListTile(
-                  title: const Text('Oznacz jako nieprzeczytane'),
-                  trailing: const Icon(Icons.close),
-                  onTap: () {
-                    chatSnapshot.reference.update({
-                      'reed': FieldValue.arrayRemove([
-                        FirebaseAuth.instance.currentUser!.uid,
-                      ]),
-                    });
-                    Navigator.pop(context);
-                  },
-                )
-                : ListTile(
-                  title: const Text('Oznacz jako przeczytane'),
-                  trailing: const Icon(Icons.check),
-                  onTap: () {
-                    chatSnapshot.reference.update({
-                      'reed': FieldValue.arrayUnion([
-                        FirebaseAuth.instance.currentUser!.uid,
-                      ]),
-                    });
-                    Navigator.pop(context);
-                  },
-                ),
-            ListTile(
-              trailing: const Icon(Icons.delete, color: Colors.red),
-              title: const Text(
-                'Usuń znajomego',
-                style: TextStyle(color: Colors.red),
-              ),
-              onTap:
-                  () =>
-                      _showFriendDeleteDialog(context, chatSnapshot.reference),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -268,7 +165,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const Center(child: SizedBox());
+                          return const SizedBox();
                         }
                         if (!snapshot.hasData ||
                             snapshot.data!.data() == null) {
@@ -283,11 +180,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           FirebaseAuth.instance.currentUser!.uid,
                         );
                         return ListTile(
-                          trailing: friends[index]['muted'].contains(
-                            FirebaseAuth.instance.currentUser!.uid,
-                          )
-                              ? const Icon(Icons.notifications_off)
-                              : null,
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(friendAvatarUrl),
                           ),
@@ -312,10 +204,17 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                         FirebaseAuth.instance.currentUser!.uid
                                     ? 'Ty: '
                                     : '',
-                                style: TextStyle(
-                                  color: textColor,
-                                  fontSize: fontSize,
-                                ),
+                                style:
+                                    !isReed
+                                        ? TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: fontSize,
+                                          color: textColor,
+                                        )
+                                        : TextStyle(
+                                          fontSize: fontSize,
+                                          color: textColor,
+                                        ),
                               ),
                               Text(
                                 friends[index]['lastMessage']['message'],
@@ -333,8 +232,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
                               ),
                             ],
                           ),
-                          onLongPress:
-                              () => _showFriendMenu(context, friends[index]),
                           onTap: () {
                             Navigator.push(
                               context,
