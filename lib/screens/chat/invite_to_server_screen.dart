@@ -69,11 +69,13 @@ class InviteToServerScreenState extends State<InviteToServerScreen> {
         'timestamp': FieldValue.serverTimestamp(),
         'type': 'server',
       });
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Wysłano zaproszenie do serwera!')),
       );
     } catch (e) {
       print('Błąd przy dodawaniu znajomego: $e');
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Wystąpił błąd, spróbuj ponownie.')),
       );

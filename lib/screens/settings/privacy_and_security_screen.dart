@@ -7,11 +7,11 @@ class PrivacyAndSecurityScreen extends StatefulWidget {
   const PrivacyAndSecurityScreen({super.key});
 
   @override
-  _PrivacyAndSecurityScreenState createState() =>
-      _PrivacyAndSecurityScreenState();
+  PrivacyAndSecurityScreenState createState() =>
+      PrivacyAndSecurityScreenState();
 }
 
-class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
+class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // -- Pola do zmiany emaila (dla użytkowników Email/Password)
@@ -135,6 +135,7 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
       await user.verifyBeforeUpdateEmail(_newEmailController.text.trim());
 
       // Ważne! Nowy email nie jest od razu zapisany, więc użytkownik musi potwierdzić go w skrzynce pocztowej.
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -196,6 +197,7 @@ class _PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
       await user.updatePassword(_newPasswordController.text.trim());
       await user.reload();
 
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Hasło zostało pomyślnie zaktualizowane.'),
