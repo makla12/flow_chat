@@ -180,13 +180,13 @@ class ChannelsScreen extends StatelessWidget {
                     Navigator.pop(context);
                   },
                 ),
-            if (widget.ownerId == FirebaseAuth.instance.currentUser!.uid)
+            if (ownerId == FirebaseAuth.instance.currentUser!.uid)
               ListTile(
                 title: Text('Zmień nazwę kanału'),
                 trailing: Icon(Icons.edit),
                 onTap: () => _showChannelNameEditDialog(context, channel),
               ),
-            if (widget.ownerId == FirebaseAuth.instance.currentUser!.uid)
+            if (ownerId == FirebaseAuth.instance.currentUser!.uid)
               ListTile(
                 title: Text('Usuń kanał', style: TextStyle(color: Colors.red)),
                 trailing: Icon(Icons.delete, color: Colors.red),
@@ -212,13 +212,13 @@ class ChannelsScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder:
-                      (context) => InviteToServerScreen(serverId: widget.serverId),
+                      (context) => InviteToServerScreen(serverId: serverId),
                 ),
               );
             },
             icon: Icon(Icons.person_add_alt),
           ),
-          if (widget.ownerId == FirebaseAuth.instance.currentUser!.uid)
+          if (ownerId == FirebaseAuth.instance.currentUser!.uid)
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () => _showChanelAddDialog(context),
@@ -231,8 +231,8 @@ class ChannelsScreen extends StatelessWidget {
                 MaterialPageRoute(
                   builder:
                       (context) => ServerSettingsScreen(
-                        serverId: widget.serverId,
-                        ownerId: widget.ownerId,
+                        serverId: serverId,
+                        ownerId: ownerId,
                       ),
                 ),
               );
