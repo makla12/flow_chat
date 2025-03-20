@@ -19,6 +19,109 @@ class FriendsScreen extends StatelessWidget {
   static const Color appBarColor = Color(0xFF1E3A8A);
   static const Color dividerColor = Color(0xFF2F3A4B);
 
+  void _showFriendDeleteDialog(context, DocumentReference chatRefrence) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Usuń znajomego'),
+          content: const Text('Czy na pewno chcesz usunąć znajomego?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Anuluj'),
+            ),
+            TextButton(
+              onPressed: () {
+                chatRefrence.delete();
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: const Text('Usuń'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showFriendMenu(context, DocumentSnapshot chatSnapshot) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            (chatSnapshot['muted'].contains(FirebaseAuth.instance.currentUser!.uid))
+                ? ListTile(
+                  title: const Text('Włącz powiadomienia'),
+                  trailing: const Icon(Icons.notifications),
+                  onTap: () {
+                    chatSnapshot.reference.update({
+                      'muted': FieldValue.arrayRemove([
+                        FirebaseAuth.instance.currentUser!.uid,
+                      ]),
+                    });
+                    Navigator.pop(context);
+                  },
+                )
+                : ListTile(
+                  title: const Text('Wyłącz powiadomienia'),
+                  trailing: const Icon(Icons.notifications_off),
+                  onTap: () {
+                    chatSnapshot.reference.update({
+                      'muted': FieldValue.arrayUnion([
+                        FirebaseAuth.instance.currentUser!.uid,
+                      ]),
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+            (chatSnapshot['reed'].contains(
+                  FirebaseAuth.instance.currentUser!.uid,
+                ))
+                ? ListTile(
+                  title: const Text('Oznacz jako nieprzeczytane'),
+                  trailing: const Icon(Icons.close),
+                  onTap: () {
+                    chatSnapshot.reference.update({
+                      'reed': FieldValue.arrayRemove([
+                        FirebaseAuth.instance.currentUser!.uid,
+                      ]),
+                    });
+                    Navigator.pop(context);
+                  },
+                )
+                : ListTile(
+                  title: const Text('Oznacz jako przeczytane'),
+                  trailing: const Icon(Icons.check),
+                  onTap: () {
+                    chatSnapshot.reference.update({
+                      'reed': FieldValue.arrayUnion([
+                        FirebaseAuth.instance.currentUser!.uid,
+                      ]),
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+            ListTile(
+              trailing: const Icon(Icons.delete, color: Colors.red),
+              title: const Text(
+                'Usuń znajomego',
+                style: TextStyle(color: Colors.red),
+              ),
+              onTap:
+                  () =>
+                      _showFriendDeleteDialog(context, chatSnapshot.reference),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,9 +192,10 @@ class FriendsScreen extends StatelessWidget {
                 return ListView.builder(
                   itemCount: friends.length,
                   itemBuilder: (context, index) {
-                    final friendId = friends[index]['members']
-                        .firstWhere((element) =>
-                            element != FirebaseAuth.instance.currentUser!.uid);
+                    final friendId = friends[index]['members'].firstWhere(
+                      (element) =>
+                          element != FirebaseAuth.instance.currentUser!.uid,
+                    );
                     final friendStream =
                         FirebaseFirestore.instance
                             .collection('users')
@@ -103,9 +207,7 @@ class FriendsScreen extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const Center(
-                            child: SizedBox(),
-                          );
+                          return const Center(child: SizedBox());
                         }
                         if (!snapshot.hasData ||
                             snapshot.data!.data() == null) {
@@ -116,22 +218,49 @@ class FriendsScreen extends StatelessWidget {
                         final friendName = friendData['username'] as String;
                         final friendAvatarUrl =
                             friendData['avatarUrl'] as String;
-                        final bool isReed = friends[index]['reed'].contains(FirebaseAuth.instance.currentUser!.uid);
+                        final bool isReed = friends[index]['reed'].contains(
+                          FirebaseAuth.instance.currentUser!.uid,
+                        );
                         return ListTile(
+                          trailing: friends[index]['muted'].contains(
+                            FirebaseAuth.instance.currentUser!.uid,
+                          )
+                              ? const Icon(Icons.notifications_off)
+                              : null,
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(friendAvatarUrl),
                           ),
-                          title: Text(friendName, style: !isReed ? const TextStyle(fontWeight: FontWeight.bold) : null),
+                          title: Text(
+                            friendName,
+                            style:
+                                !isReed
+                                    ? const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    )
+                                    : null,
+                          ),
                           subtitle: Row(
                             children: [
-                              Text(friends[index]['lastMessage']['name'] == FirebaseAuth.instance.currentUser!.uid
-                                  ? 'Ty: '
-                                  : ''),
-                              Text(friends[index]['lastMessage']['message'], style: !isReed
-                                  ? const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)
-                                  : null),
+                              Text(
+                                friends[index]['lastMessage']['name'] ==
+                                        FirebaseAuth.instance.currentUser!.uid
+                                    ? 'Ty: '
+                                    : '',
+                              ),
+                              Text(
+                                friends[index]['lastMessage']['message'],
+                                style:
+                                    !isReed
+                                        ? const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        )
+                                        : null,
+                              ),
                             ],
                           ),
+                          onLongPress:
+                              () => _showFriendMenu(context, friends[index]),
                           onTap: () {
                             Navigator.push(
                               context,
