@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AuthUtils {
-  static void OnUserLogin() {
+  static void onUserLogin() {
     FirebaseMessaging.instance.subscribeToTopic(FirebaseAuth.instance.currentUser!.uid);
   }
   static void addUserToFirestore(String uid, String email, String displayName) async {
@@ -15,7 +15,6 @@ class AuthUtils {
         await userDoc.set({
           'email': email,
           'username': displayName,
-          'friends': [],
           'avatarUrl':"https://i.pravatar.cc/150?img=1", 
         });
       }

@@ -7,14 +7,14 @@ class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  ProfileScreenState createState() => ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class ProfileScreenState extends State<ProfileScreen> {
   bool isLightMode = false;
 
   String _username = "Ładowanie...";
-  String _avatarUrl = "Ładowanie...";
+  String _avatarUrl = "";
 
   @override
   void initState() {
@@ -107,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onTap: _showAvatarDialog,
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: NetworkImage(_avatarUrl),
+                    backgroundImage: _avatarUrl.isNotEmpty ? NetworkImage(_avatarUrl) : null,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -161,7 +161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     setState(() {
                       _avatarUrl = "https://i.pravatar.cc/150?img=$i";
                     });
-                    Navigator.pop(context);
+                    if(context.mounted) Navigator.pop(context);
                   },
                 ),
             ],
@@ -196,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 setState(() {
                   _username = newName;
                 });
-                Navigator.pop(context);
+                if(context.mounted) Navigator.pop(context);
               },
               child: const Text('Zapisz'),
             ),

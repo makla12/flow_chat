@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flow_chat/widgets/server_reed_icon.dart';
 import 'package:flutter/material.dart';
 import 'chanels_screen.dart';
 import 'create_server_screen.dart';
@@ -7,7 +8,7 @@ import 'notifications.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -124,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (context, index) {
                     final server = filteredDocs[index];
                     return ListTile(
+                      trailing: ServerReedIcon(serverSnapshot: server,),
                       leading: const Icon(Icons.home, color: Colors.white),
                       title: GestureDetector(
                         onTap: () {

@@ -5,11 +5,11 @@ class NotificationsSettingsScreen extends StatefulWidget {
   const NotificationsSettingsScreen({super.key});
 
   @override
-  _NotificationsSettingsScreenState createState() =>
-      _NotificationsSettingsScreenState();
+  NotificationsSettingsScreenState createState() =>
+      NotificationsSettingsScreenState();
 }
 
-class _NotificationsSettingsScreenState
+class NotificationsSettingsScreenState
     extends State<NotificationsSettingsScreen> {
   bool isLightMode = false;
 

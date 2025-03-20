@@ -3,13 +3,13 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppearanceScreen extends StatefulWidget {
-  const AppearanceScreen({Key? key}) : super(key: key);
+  const AppearanceScreen({super.key});
 
   @override
-  _AppearanceScreenState createState() => _AppearanceScreenState();
+  AppearanceScreenState createState() => AppearanceScreenState();
 }
 
-class _AppearanceScreenState extends State<AppearanceScreen> {
+class AppearanceScreenState extends State<AppearanceScreen> {
   bool isLightMode = false;
   double fontSize = 14.0;
   Color accentColor = Colors.blue;
@@ -26,7 +26,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
     setState(() {
       isLightMode = prefs.getBool('isLightMode') ?? false;
       fontSize = prefs.getDouble('fontSize') ?? 14.0;
-      int savedColor = prefs.getInt('accentColor') ?? Colors.blue.value;
+      int savedColor = prefs.getInt('accentColor') ?? 0;
       accentColor = Color(savedColor);
     });
   }
@@ -46,7 +46,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
   // Zapis koloru akcentu
   Future<void> _saveAccentColor(Color color) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('accentColor', color.value);
+    prefs.setInt('accentColor', 0);
   }
 
   void toggleLightMode() {
