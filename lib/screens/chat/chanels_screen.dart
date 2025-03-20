@@ -4,38 +4,112 @@ import 'package:flow_chat/screens/chat/chat_screen.dart';
 import 'package:flow_chat/screens/chat/invite_to_server_screen.dart';
 import 'package:flow_chat/screens/chat/server_settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ChannelsScreen extends StatelessWidget {
-  ChannelsScreen({super.key, required this.serverId, required this.ownerId});
+class ChannelsScreen extends StatefulWidget {
+  const ChannelsScreen({
+    super.key,
+    required this.serverId,
+    required this.ownerId,
+  });
   final String serverId;
   final String ownerId;
 
+  @override
+  _ChannelsScreenState createState() => _ChannelsScreenState();
+}
+
+class _ChannelsScreenState extends State<ChannelsScreen> {
+  // Ustawienia wyglądu
+  bool isLightMode = false;
+  double fontSize = 14.0;
+  Color accentColor = Colors.blue;
+
+  // Referencja do kolekcji kanałów
   late final channelsRef = FirebaseFirestore.instance
       .collection('teams')
-      .doc(serverId)
+      .doc(widget.serverId)
       .collection('channels');
   late final Stream<QuerySnapshot> _channelsStream = channelsRef.snapshots();
 
-  final Color backgroundColor = Color(0xFF0F172A);
-  final Color appBarColor = Color(0xFF1E3A8A);
-  final Color containerColor = Color(0xFF1F2937);
-  final Color dividerColor = Color(0xFF2F3A4B);
-  final Color buttonColor = Color(0xFF3B82F6);
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences(); // Wczytaj zapisane ustawienia wyglądu
+  }
+
+  // Ładowanie zapisanych ustawień
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isLightMode = prefs.getBool('isLightMode') ?? false;
+      fontSize = prefs.getDouble('fontSize') ?? 14.0;
+      int savedColor = prefs.getInt('accentColor') ?? Colors.blue.value;
+      accentColor = Color(savedColor);
+    });
+  }
+
+  // Zapis trybu jasnego
+  Future<void> _saveLightMode(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLightMode', value);
+  }
+
+  // Zapis rozmiaru czcionki
+  Future<void> _saveFontSize(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setDouble('fontSize', value);
+  }
+
+  // Zapis koloru akcentu
+  Future<void> _saveAccentColor(Color color) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('accentColor', color.value);
+  }
+
+  // Przełączanie trybu jasnego
+  void toggleLightMode() {
+    setState(() {
+      isLightMode = !isLightMode;
+    });
+    _saveLightMode(isLightMode);
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Dynamiczne kolory zależne od ustawień
+    Color backgroundColor =
+        isLightMode ? Colors.white : const Color(0xFF0F172A);
+    Color containerColor =
+        isLightMode ? Colors.grey.shade200 : const Color(0xFF1F2937);
+    Color textColor = isLightMode ? Colors.black : Colors.white;
+    Color appBarColor = isLightMode ? Colors.blueGrey : const Color(0xFF1E3A8A);
+
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: appBarColor,
-        title: Text('Kanały'),
+        title: Text(
+          'Kanały',
+          style: TextStyle(color: textColor, fontSize: fontSize),
+        ),
         actions: [
-          IconButton(onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => InviteToServerScreen(serverId: serverId)));
-          }, icon: Icon(Icons.person_add_alt)),
-          if (ownerId == FirebaseAuth.instance.currentUser!.uid)
+          IconButton(
+            icon: Icon(Icons.person_add_alt, color: textColor),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) =>
+                          InviteToServerScreen(serverId: widget.serverId),
+                ),
+              );
+            },
+          ),
+          if (widget.ownerId == FirebaseAuth.instance.currentUser!.uid)
             IconButton(
-              icon: Icon(Icons.add),
+              icon: Icon(Icons.add, color: textColor),
               onPressed: () {
                 showDialog(
                   context: context,
@@ -76,11 +150,18 @@ class ChannelsScreen extends StatelessWidget {
                 );
               },
             ),
-          if(ownerId == FirebaseAuth.instance.currentUser!.uid)
+          if (widget.ownerId == FirebaseAuth.instance.currentUser!.uid)
             IconButton(
-              icon: Icon(Icons.settings),
+              icon: Icon(Icons.settings, color: textColor),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ServerSettingsScreen(serverId: serverId)));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) =>
+                            ServerSettingsScreen(serverId: widget.serverId),
+                  ),
+                );
               },
             ),
         ],
@@ -92,23 +173,38 @@ class ChannelsScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('Brak kanałów'));
+            return Center(
+              child: Text(
+                'Brak kanałów',
+                style: TextStyle(color: textColor, fontSize: fontSize),
+              ),
+            );
           }
 
           final channels = snapshot.data!.docs;
-
           return ListView.builder(
             itemCount: channels.length,
             itemBuilder: (context, index) {
               final channel = channels[index];
-              final bool isReed = channel['reed'].contains(FirebaseAuth.instance.currentUser!.uid);
+              final bool isReed = channel['reed'].contains(
+                FirebaseAuth.instance.currentUser!.uid,
+              );
               return ListTile(
-                title: Text(channel['name']),
-                leading: !isReed ? const CircleAvatar(backgroundColor: Colors.green, maxRadius: 5,) : const SizedBox(),
+                title: Text(
+                  channel['name'],
+                  style: TextStyle(color: textColor, fontSize: fontSize),
+                ),
+                leading:
+                    !isReed
+                        ? const CircleAvatar(
+                          backgroundColor: Colors.green,
+                          maxRadius: 5,
+                        )
+                        : const SizedBox(),
                 trailing:
-                    ownerId == FirebaseAuth.instance.currentUser!.uid
+                    widget.ownerId == FirebaseAuth.instance.currentUser!.uid
                         ? IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: Icon(Icons.delete, color: textColor),
                           onPressed: () {
                             showDialog(
                               context: context,

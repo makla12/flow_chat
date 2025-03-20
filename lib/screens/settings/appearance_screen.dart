@@ -46,7 +46,7 @@ class AppearanceScreenState extends State<AppearanceScreen> {
   // Zapis koloru akcentu
   Future<void> _saveAccentColor(Color color) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('accentColor', 0);
+    prefs.setInt('accentColor', color.value);
   }
 
   void toggleLightMode() {
