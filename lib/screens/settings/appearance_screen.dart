@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppearanceScreen extends StatefulWidget {
@@ -10,80 +9,47 @@ class AppearanceScreen extends StatefulWidget {
 }
 
 class AppearanceScreenState extends State<AppearanceScreen> {
-  bool isLightMode = false;
-  double fontSize = 14.0;
-  Color accentColor = Colors.blue;
+  int themeMode = 0; // 0 - System, 1 - Jasny, 2 - Ciemny
 
   @override
   void initState() {
     super.initState();
-    _loadPreferences(); // Wczytaj ustawienia po uruchomieniu
+    _loadPreferences();
   }
 
-  // Pobieranie zapisanych ustawień
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      isLightMode = prefs.getBool('isLightMode') ?? false;
-      fontSize = prefs.getDouble('fontSize') ?? 14.0;
-      int savedColor = prefs.getInt('accentColor') ?? 0;
-      accentColor = Color(savedColor);
+      themeMode = prefs.getInt('themeMode') ?? 0;
     });
   }
 
-  // Zapis trybu jasnego
-  Future<void> _saveLightMode(bool value) async {
+  Future<void> _saveThemeMode(int value) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLightMode', value);
+    prefs.setInt('themeMode', value);
   }
 
-  // Zapis rozmiaru czcionki
-  Future<void> _saveFontSize(double value) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setDouble('fontSize', value);
-  }
-
-  // Zapis koloru akcentu
-  Future<void> _saveAccentColor(Color color) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('accentColor', 0);
-  }
-
-  void toggleLightMode() {
+  void setThemeMode(int mode) {
     setState(() {
-      isLightMode = !isLightMode;
+      themeMode = mode;
     });
-    _saveLightMode(isLightMode);
-  }
-
-  void changeFontSize(double newSize) {
-    setState(() {
-      fontSize = newSize;
-    });
-    _saveFontSize(newSize);
-  }
-
-  void changeAccentColor(Color newColor) {
-    setState(() {
-      accentColor = newColor;
-    });
-    _saveAccentColor(newColor);
+    _saveThemeMode(mode);
   }
 
   @override
   Widget build(BuildContext context) {
     Color backgroundColor =
-        isLightMode ? Colors.white : const Color(0xFF0F172A);
+        themeMode == 2 ? const Color(0xFF0F172A) : Colors.white;
     Color containerColor =
-        isLightMode ? Colors.grey.shade200 : const Color(0xFF1F2937);
-    Color textColor = isLightMode ? Colors.black : Colors.white;
-    Color iconColor = isLightMode ? Colors.black87 : Colors.white;
+        themeMode == 2 ? const Color(0xFF1F2937) : Colors.grey.shade200;
+    Color textColor = themeMode == 2 ? Colors.white : Colors.black;
+    Color iconColor = themeMode == 2 ? Colors.white : Colors.black87;
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor:
-            isLightMode ? Colors.blueGrey : const Color(0xFF1E3A8A),
+            themeMode == 2 ? const Color(0xFF1E3A8A) : Colors.blueGrey,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: textColor),
           onPressed: () => Navigator.pop(context),
@@ -100,86 +66,21 @@ class AppearanceScreenState extends State<AppearanceScreen> {
           child: Column(
             children: [
               _buildMenuItem(
-                Icons.brightness_6,
+                'Ustawienia systemowe',
+                themeMode == 0,
+                () => setThemeMode(0),
+                textColor,
+              ),
+              _buildMenuItem(
                 'Tryb jasny',
-                toggleLightMode,
-                iconColor,
+                themeMode == 1,
+                () => setThemeMode(1),
                 textColor,
               ),
               _buildMenuItem(
-                Icons.text_fields,
-                'Rozmiar czcionki',
-                () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Rozmiar czcionki'),
-                        content: StatefulBuilder(
-                          builder: (context, setState) {
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Slider(
-                                  value: fontSize,
-                                  min: 10.0,
-                                  max: 24.0,
-                                  divisions: 14,
-                                  label: fontSize.toString(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      fontSize = value;
-                                    });
-                                    changeFontSize(value);
-                                  },
-                                ),
-                                Text(
-                                  'Podgląd tekstu',
-                                  style: TextStyle(fontSize: fontSize),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                iconColor,
-                textColor,
-              ),
-              _buildMenuItem(
-                Icons.color_lens,
-                'Kolor akcentu',
-                () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Kolor akcentu'),
-                        content: SingleChildScrollView(
-                          child: BlockPicker(
-                            pickerColor: accentColor,
-                            onColorChanged: changeAccentColor,
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                iconColor,
+                'Tryb ciemny',
+                themeMode == 2,
+                () => setThemeMode(2),
                 textColor,
               ),
             ],
@@ -190,15 +91,14 @@ class AppearanceScreenState extends State<AppearanceScreen> {
   }
 
   Widget _buildMenuItem(
-    IconData icon,
     String title,
+    bool isSelected,
     VoidCallback onTap,
-    Color iconColor,
     Color textColor,
   ) {
     return ListTile(
-      leading: Icon(icon, color: iconColor),
       title: Text(title, style: TextStyle(color: textColor)),
+      trailing: isSelected ? Icon(Icons.check, color: textColor) : null,
       onTap: onTap,
     );
   }

@@ -11,7 +11,7 @@ import 'appearance_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-class FlowChatScreen extends StatelessWidget {
+class FlowChatScreen extends StatefulWidget {
   const FlowChatScreen({super.key});
 
   static const Color backgroundColor = Color(0xFF0F172A);
@@ -21,11 +21,16 @@ class FlowChatScreen extends StatelessWidget {
   static const Color logoutColor = Color.fromARGB(255, 253, 63, 60);
 
   @override
+  State<FlowChatScreen> createState() => _FlowChatScreenState();
+}
+
+class _FlowChatScreenState extends State<FlowChatScreen> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: FlowChatScreen.backgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarColor,
+        backgroundColor: FlowChatScreen.appBarColor,
         title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
         centerTitle: false,
         actions: [
@@ -49,7 +54,7 @@ class FlowChatScreen extends StatelessWidget {
               maxWidth: MediaQuery.of(context).size.width * 0.9,
             ),
             decoration: BoxDecoration(
-              color: containerColor,
+              color: FlowChatScreen.containerColor,
               borderRadius: BorderRadius.circular(12),
             ),
             child: SingleChildScrollView(
@@ -66,10 +71,10 @@ class FlowChatScreen extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 2,
-        backgroundColor: backgroundColor,
+        backgroundColor: FlowChatScreen.backgroundColor,
         selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
-        dividerColor: dividerColor,
+        dividerColor: FlowChatScreen.dividerColor,
       ),
     );
   }
@@ -82,30 +87,30 @@ class FlowChatScreen extends StatelessWidget {
           text: 'Pokaż profil',
           onTap: () => _navigateTo(context, const ProfileScreen()),
         ),
-        const CustomDivider(dividerColor: dividerColor),
+        const CustomDivider(dividerColor: FlowChatScreen.dividerColor),
         MenuItemWidget(
           icon: Icons.security,
           text: 'Prywatność i bezpieczeństwo',
           onTap: () => _navigateTo(context, const PrivacyAndSecurityScreen()),
         ),
-        const CustomDivider(dividerColor: dividerColor),
+        const CustomDivider(dividerColor: FlowChatScreen.dividerColor),
         MenuItemWidget(
           icon: Icons.notifications,
           text: 'Powiadomienia',
           onTap:
               () => _navigateTo(context, const NotificationsSettingsScreen()),
         ),
-        const CustomDivider(dividerColor: dividerColor),
+        const CustomDivider(dividerColor: FlowChatScreen.dividerColor),
         MenuItemWidget(
           icon: Icons.star,
-          text: 'Wygląd',
+          text: 'Motyw',
           onTap: () => _navigateTo(context, const AppearanceScreen()),
         ),
-        const CustomDivider(dividerColor: dividerColor),
+        const CustomDivider(dividerColor: FlowChatScreen.dividerColor),
         MenuItemWidget(
           icon: Icons.logout,
           text: 'Wyloguj się',
-          color: logoutColor,
+          color: FlowChatScreen.logoutColor,
           onTap: () {
             FirebaseMessaging.instance.unsubscribeFromTopic(
               FirebaseAuth.instance.currentUser!.uid,
