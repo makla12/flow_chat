@@ -100,7 +100,6 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                         backgroundColor: WidgetStatePropertyAll(
                           Color(0xFF3B82F6),
                         ),
-                        foregroundColor: WidgetStatePropertyAll(Colors.white),
                       ),
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => LogIn(setThemeMode: widget.setThemeMode,)));
@@ -113,7 +112,6 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                         backgroundColor: WidgetStatePropertyAll(
                           Color(0xFF3B82F6),
                         ),
-                        foregroundColor: WidgetStatePropertyAll(Colors.white),
                       ),
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp(setThemeMode: widget.setThemeMode,)));
@@ -123,7 +121,6 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                     OutlinedButton(
                       style: ButtonStyle(
                         padding: WidgetStatePropertyAll(EdgeInsets.all(20)),
-                        foregroundColor: WidgetStatePropertyAll(Colors.white),
                       ),
                       onPressed: () => _signInWithGoogle(context),
                       child: Row(

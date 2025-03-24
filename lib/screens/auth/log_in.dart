@@ -64,9 +64,7 @@ class LogInState extends State<LogIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0F172A),
       appBar: AppBar(
-        backgroundColor: Color(0xFF0F172A),
         title: Text("Zaloguj"),
       ),
       body: _isLoading
@@ -99,8 +97,6 @@ class LogInState extends State<LogIn> {
               ElevatedButton(
                 style: ButtonStyle(
                   padding: WidgetStatePropertyAll(EdgeInsets.all(10)),
-                  backgroundColor: WidgetStatePropertyAll(Color(0xFF3B82F6)),
-                  foregroundColor: WidgetStatePropertyAll(Colors.white),
                 ),
                 onPressed: () => _logIn(context),
                 child: Text("Zaloguj"),
