@@ -2,10 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class NotificationsScreen extends StatelessWidget {
+class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
 
+  @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
+  bool _isLoading = false;
+
   void onAcceptInvite(String inviteId) async {
+    setState(() {
+      _isLoading = true;
+    });
     final invite =
         await FirebaseFirestore.instance
             .collection('invites')
@@ -20,7 +30,7 @@ class NotificationsScreen extends StatelessWidget {
       final server = serverData.data() as Map<String, dynamic>;
       final members = List<String>.from(server['members']);
       members.add(FirebaseAuth.instance.currentUser!.uid);
-      FirebaseFirestore.instance.runTransaction((transaction) async {
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
         transaction.update(
           FirebaseFirestore.instance.collection('teams').doc(invite['from']),
           {'members': members},
@@ -40,7 +50,7 @@ class NotificationsScreen extends StatelessWidget {
               .collection('users')
               .doc(FirebaseAuth.instance.currentUser!.uid)
               .get();
-      FirebaseFirestore.instance.runTransaction((transaction) async {
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
         List<String> privateChatIds = [userData.id, userData2.id];
         transaction.set(
           FirebaseFirestore.instance.collection('private_chats').doc(),
@@ -61,6 +71,9 @@ class NotificationsScreen extends StatelessWidget {
         );
       });
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void onDeclineInvite(String inviteId) async {
@@ -92,7 +105,7 @@ class NotificationsScreen extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: invitesStream,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting || _isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
