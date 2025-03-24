@@ -4,7 +4,8 @@ import 'package:flow_chat/utils/auth_utils.dart';
 import '../chat/grup_chat_screen.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+  const SignUp({super.key, required this.setThemeMode});
+  final Function(ThemeMode) setThemeMode;
 
   @override
   SignUpState createState() => SignUpState();
@@ -54,7 +55,7 @@ class SignUpState extends State<SignUp> {
       Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen(setThemeMode: widget.setThemeMode,)),
       );
     } on FirebaseAuthException catch (e) {
       setState(() {

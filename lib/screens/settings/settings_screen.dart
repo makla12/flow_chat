@@ -12,7 +12,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FlowChatScreen extends StatefulWidget {
-  const FlowChatScreen({super.key});
+  const FlowChatScreen({super.key, required this.setThemeMode});
+  final Function(ThemeMode) setThemeMode;
 
   static const Color backgroundColor = Color(0xFF0F172A);
   static const Color appBarColor = Color(0xFF1E3A8A);
@@ -62,7 +63,7 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: [_buildMenuItems(context)],
+                  children: [_buildMenuItems(context, widget.setThemeMode)],
                 ),
               ),
             ),
@@ -75,11 +76,12 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
         selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
         dividerColor: FlowChatScreen.dividerColor,
+        setThemeMode: widget.setThemeMode,
       ),
     );
   }
 
-  Widget _buildMenuItems(BuildContext context) {
+  Widget _buildMenuItems(BuildContext context, Function(ThemeMode) setThemeMode) {
     return Column(
       children: [
         MenuItemWidget(
@@ -104,7 +106,7 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
         MenuItemWidget(
           icon: Icons.star,
           text: 'Motyw',
-          onTap: () => _navigateTo(context, const AppearanceScreen()),
+          onTap: () => _navigateTo(context, AppearanceScreen(setThemeMode: setThemeMode,)),
         ),
         const CustomDivider(dividerColor: FlowChatScreen.dividerColor),
         MenuItemWidget(
@@ -118,7 +120,7 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
             FirebaseAuth.instance.signOut();
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+              MaterialPageRoute(builder: (context) => WelcomeScreen(setThemeMode: setThemeMode,)),
             );
           },
         ),
