@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow_chat/screens/chat/chat_screen.dart';
 import 'package:flow_chat/screens/chat/invite_to_server_screen.dart';
+import 'package:flow_chat/screens/chat/members_screen.dart';
 import 'package:flow_chat/screens/chat/server_settings_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -15,13 +16,6 @@ class ChannelsScreen extends StatelessWidget {
       .doc(serverId)
       .collection('channels');
   late final Stream<QuerySnapshot> _channelsStream = channelsRef.snapshots();
-
-  final Color backgroundColor = Color(0xFF0F172A);
-  final Color appBarColor = Color(0xFF1E3A8A);
-  final Color containerColor = Color(0xFF1F2937);
-  final Color dividerColor = Color(0xFF2F3A4B);
-  final Color buttonColor = Color(0xFF3B82F6);
-
   void _showChanelAddDialog(context) {
     showDialog(
       context: context,
@@ -201,9 +195,8 @@ class ChannelsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      endDrawer: MembersScreen(serverId: serverId, ownerId: ownerId,),
       appBar: AppBar(
-        backgroundColor: appBarColor,
         title: Text('Kanały'),
         actions: [
           IconButton(
@@ -240,6 +233,14 @@ class ChannelsScreen extends StatelessWidget {
           ),
         ],
       ),
+
+      floatingActionButton: Builder(builder: (context) => 
+        FloatingActionButton(
+          onPressed: () => Scaffold.of(context).openEndDrawer(),
+          child: Icon(Icons.group),
+        )
+      ,),
+
       body: StreamBuilder<QuerySnapshot>(
         stream: _channelsStream,
         builder: (context, snapshot) {

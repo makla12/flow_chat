@@ -11,8 +11,6 @@ class InviteToServerScreen extends StatefulWidget {
 }
 
 class InviteToServerScreenState extends State<InviteToServerScreen> {
-  final Color backgroundColor = Color(0xFF0F172A);
-  final Color appBarColor = Color(0xFF1E3A8A);
   List<DocumentSnapshot> searchResults = [];
   List<String> invites = [];
 
@@ -92,9 +90,7 @@ class InviteToServerScreenState extends State<InviteToServerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarColor,
         title: Text('Zaproś do serwera'),
       ),
       body: Column(
@@ -106,7 +102,6 @@ class InviteToServerScreenState extends State<InviteToServerScreen> {
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
                 hintText: 'Wpisz nazwę użytkownika...',
-                fillColor: Colors.grey.shade900,
                 filled: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),

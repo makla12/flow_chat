@@ -15,11 +15,6 @@ class FriendsScreen extends StatelessWidget {
           .collection('private_chats')
           .where('members', arrayContains: FirebaseAuth.instance.currentUser!.uid)
           .snapshots();
-
-  static const Color backgroundColor = Color(0xFF0F172A);
-  static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color dividerColor = Color(0xFF2F3A4B);
-
   void _showFriendDeleteDialog(context, DocumentReference chatRefrence) {
     showDialog(
       context: context,
@@ -126,14 +121,12 @@ class FriendsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarColor,
-        title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
+        title: const Text('FlowChat'),
         centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
+            icon: const Icon(Icons.notifications),
             onPressed: () {
               Navigator.push(
                 context,
@@ -142,7 +135,7 @@ class FriendsScreen extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
+            icon: const Icon(Icons.add),
             onPressed: () {
               Navigator.push(
                 context,
@@ -160,7 +153,6 @@ class FriendsScreen extends StatelessWidget {
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 hintText: 'Szukaj',
-                fillColor: Colors.grey.shade900,
                 filled: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
@@ -180,7 +172,6 @@ class FriendsScreen extends StatelessWidget {
                   return const Center(
                     child: Text(
                       'Nie znaleziono znajomych',
-                      style: TextStyle(color: Colors.white),
                     ),
                   );
                 }
@@ -234,7 +225,7 @@ class FriendsScreen extends StatelessWidget {
                                   ? 'Ty: '
                                   : ''),
                               Text(friends[index]['lastMessage']['message'], style: !isReed
-                                  ? const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)
+                                  ? const TextStyle(fontWeight: FontWeight.bold)
                                   : null),
                             ],
                           ),
@@ -263,10 +254,6 @@ class FriendsScreen extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 1,
-        backgroundColor: backgroundColor,
-        selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
-        unselectedItemColor: Colors.white70,
-        dividerColor: dividerColor,
         setThemeMode: setThemeMode
       ),
     );

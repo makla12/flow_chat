@@ -46,20 +46,34 @@ class _FlowChatAppState extends State<FlowChatApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blueGrey[200]
-        ),
+        scaffoldBackgroundColor: Colors.grey[100],
+        appBarTheme: AppBarTheme(backgroundColor: Colors.blueGrey[200]),
+        dividerColor: Colors.grey[300],
         cardColor: Colors.grey[400],
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.grey[100],
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.grey,
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.blueGrey[200],
+        )
       ),
 
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Color(0xFF0F172A),
-        appBarTheme: AppBarTheme(
-          backgroundColor: Color(0xFF1E3A8A)
+        appBarTheme: AppBarTheme(backgroundColor: Color(0xFF1E3A8A)),
+        dividerColor: Color(0xff4F4F4F),
+        cardColor: Color(0xff211f26),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Color(0xFF0F172A),
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey,
         ),
-        dividerColor: Color(0xFF2F3A4B),
-        cardColor: Colors.grey[900]
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFF1E3A8A),
+        ),
       ),
 
       themeMode: themeMode,
@@ -67,12 +81,12 @@ class _FlowChatAppState extends State<FlowChatApp> {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); 
+            return const CircularProgressIndicator();
           } else if (snapshot.hasData) {
             AuthUtils.onUserLogin();
-            return HomeScreen(setThemeMode: setThemeMode,); 
+            return HomeScreen(setThemeMode: setThemeMode);
           } else {
-            return WelcomeScreen(setThemeMode: setThemeMode,); 
+            return WelcomeScreen(setThemeMode: setThemeMode);
           }
         },
       ),

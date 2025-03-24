@@ -5,10 +5,6 @@ import 'package:flutter/material.dart';
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
-  static const Color backgroundColor = Color(0xFF0F172A);
-  static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color cardColor = Color(0xFF1F2937);
-
   void onAcceptInvite(String inviteId) async {
     final invite =
         await FirebaseFirestore.instance
@@ -84,15 +80,12 @@ class NotificationsScreen extends StatelessWidget {
             .snapshots();
 
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarColor,
         title: const Text(
           'Powiadomienia',
-          style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -106,7 +99,7 @@ class NotificationsScreen extends StatelessWidget {
             return const Center(
               child: Text(
                 "Brak powiadomień",
-                style: TextStyle(color: Colors.white, fontSize: 18),
+                style: TextStyle(fontSize: 18),
               ),
             );
           }
@@ -119,15 +112,15 @@ class NotificationsScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final invite = invites[index];
               return Material(
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(20),
-                color: cardColor,
+
                 child: Row(
                   children: [
                     Expanded(
                       flex: 1,
                       child: Icon(
                         invite["type"] == "server" ? Icons.group : Icons.person,
-                        color: Colors.white,
                       ),
                     ),
                     Expanded(
@@ -145,14 +138,12 @@ class NotificationsScreen extends StatelessWidget {
                                       ConnectionState.waiting) {
                                     return const Text(
                                       "Ładowanie...",
-                                      style: TextStyle(color: Colors.white),
                                     );
                                   }
                                   if (!snapshot.hasData || snapshot.data!.data() == null) {
                                     onDeclineInvite(invite.id);
                                     return const Text(
                                       "Błąd zaproszenia",
-                                      style: TextStyle(color: Colors.white),
                                     );
                                   }
                                   final serverData =
@@ -160,7 +151,6 @@ class NotificationsScreen extends StatelessWidget {
                                           as Map<String, dynamic>;
                                   return Text(
                                     "Zaproszenie do serwera ${serverData["name"]}",
-                                    style: const TextStyle(color: Colors.white),
                                   );
                                 },
                               )
@@ -175,14 +165,12 @@ class NotificationsScreen extends StatelessWidget {
                                       ConnectionState.waiting) {
                                     return const Text(
                                       "Ładowanie...",
-                                      style: TextStyle(color: Colors.white),
                                     );
                                   }
                                   if(!snapshot.hasData || snapshot.data!.data() == null) {
                                     onDeclineInvite(invite.id);
                                     return const Text(
                                       "Użytkownik nie istnieje",
-                                      style: TextStyle(color: Colors.white),
                                     );
                                   }
                                   
@@ -191,7 +179,6 @@ class NotificationsScreen extends StatelessWidget {
                                           as Map<String, dynamic>;
                                   return Text(
                                     "Zaproszenie do znajomych od ${userData["username"]}",
-                                    style: const TextStyle(color: Colors.white),
                                   );
                                 },
                               ),
@@ -203,7 +190,7 @@ class NotificationsScreen extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () => onAcceptInvite(invite.id),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Colors.green,
                               minimumSize: const Size(70, 30),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
@@ -213,7 +200,6 @@ class NotificationsScreen extends StatelessWidget {
                               "✓",
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -231,7 +217,6 @@ class NotificationsScreen extends StatelessWidget {
                               "✕",
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white,
                               ),
                             ),
                           ),

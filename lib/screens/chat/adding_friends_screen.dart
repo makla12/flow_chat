@@ -4,13 +4,6 @@ import 'package:flutter/material.dart';
 
 class AddingFriendsScreen extends StatefulWidget {
   const AddingFriendsScreen({super.key});
-
-  static const Color backgroundColor = Color(0xFF0F172A);
-  static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color containerColor = Color(0xFF1F2937);
-  static const Color dividerColor = Color(0xFF2F3A4B);
-  static const Color buttonColor = Color(0xFF3B82F6);
-
   @override
   State<AddingFriendsScreen> createState() => _AddingFriendsScreenState();
 }
@@ -141,13 +134,11 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AddingFriendsScreen.backgroundColor,
       appBar: AppBar(
-        backgroundColor: AddingFriendsScreen.appBarColor,
-        title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
+        title: const Text('FlowChat'),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -162,7 +153,6 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
                 hintText: 'Wpisz nazwę użytkownika...',
-                fillColor: Colors.grey.shade900,
                 filled: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
@@ -218,21 +208,20 @@ class FriendRequestItem extends StatelessWidget {
                 : null,
         child:
             avatarUrl == null || avatarUrl!.isEmpty
-                ? const Icon(Icons.person, color: Colors.white)
+                ? const Icon(Icons.person)
                 : null,
       ),
-      title: Text(nickname, style: const TextStyle(color: Colors.white)),
+      title: Text(nickname),
       trailing:
           (canAdd
               ? ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AddingFriendsScreen.buttonColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
                 onPressed: onAdd,
-                child: const Text('Dodaj', style: TextStyle(color: Colors.white)),
+                child: const Text('Dodaj'),
               )
               : null),
     );
