@@ -15,12 +15,6 @@ class FlowChatScreen extends StatefulWidget {
   const FlowChatScreen({super.key, required this.setThemeMode});
   final Function(ThemeMode) setThemeMode;
 
-  static const Color backgroundColor = Color(0xFF0F172A);
-  static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color containerColor = Color(0xff211f26);
-  static const Color dividerColor = Color(0xff4F4F4F);
-  static const Color logoutColor = Color.fromARGB(255, 253, 63, 60);
-
   @override
   State<FlowChatScreen> createState() => _FlowChatScreenState();
 }
@@ -29,14 +23,12 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: FlowChatScreen.backgroundColor,
       appBar: AppBar(
-        backgroundColor: FlowChatScreen.appBarColor,
-        title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
+        title: const Text('FlowChat'),
         centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
+            icon: const Icon(Icons.notifications),
             onPressed:
                 () => Navigator.push(
                   context,
@@ -54,10 +46,7 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
               maxHeight: MediaQuery.of(context).size.height * 0.8,
               maxWidth: MediaQuery.of(context).size.width * 0.9,
             ),
-            decoration: BoxDecoration(
-              color: FlowChatScreen.containerColor,
-              borderRadius: BorderRadius.circular(12),
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -72,16 +61,19 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 2,
-        backgroundColor: FlowChatScreen.backgroundColor,
+
         selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
-        dividerColor: FlowChatScreen.dividerColor,
+
         setThemeMode: widget.setThemeMode,
       ),
     );
   }
 
-  Widget _buildMenuItems(BuildContext context, Function(ThemeMode) setThemeMode) {
+  Widget _buildMenuItems(
+    BuildContext context,
+    Function(ThemeMode) setThemeMode,
+  ) {
     return Column(
       children: [
         MenuItemWidget(
@@ -89,7 +81,7 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
           text: 'Pokaż profil',
           onTap: () => _navigateTo(context, const ProfileScreen()),
         ),
-        const CustomDivider(dividerColor: FlowChatScreen.dividerColor),
+        const CustomDivider(),
         MenuItemWidget(
           icon: Icons.security,
           text: 'Prywatność i bezpieczeństwo',
@@ -106,13 +98,17 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
         MenuItemWidget(
           icon: Icons.star,
           text: 'Motyw',
-          onTap: () => _navigateTo(context, AppearanceScreen(setThemeMode: setThemeMode,)),
+          onTap:
+              () => _navigateTo(
+                context,
+                AppearanceScreen(setThemeMode: setThemeMode),
+              ),
         ),
         const CustomDivider(dividerColor: FlowChatScreen.dividerColor),
         MenuItemWidget(
           icon: Icons.logout,
           text: 'Wyloguj się',
-          color: FlowChatScreen.logoutColor,
+
           onTap: () {
             FirebaseMessaging.instance.unsubscribeFromTopic(
               FirebaseAuth.instance.currentUser!.uid,
@@ -120,7 +116,9 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
             FirebaseAuth.instance.signOut();
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => WelcomeScreen(setThemeMode: setThemeMode,)),
+              MaterialPageRoute(
+                builder: (context) => WelcomeScreen(setThemeMode: setThemeMode),
+              ),
             );
           },
         ),

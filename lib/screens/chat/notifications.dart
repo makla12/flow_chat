@@ -5,10 +5,6 @@ import 'package:flutter/material.dart';
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
-  static const Color backgroundColor = Color(0xFF0F172A);
-  static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color cardColor = Color(0xFF1F2937);
-
   void onAcceptInvite(String inviteId) async {
     final invite =
         await FirebaseFirestore.instance
@@ -84,9 +80,7 @@ class NotificationsScreen extends StatelessWidget {
             .snapshots();
 
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarColor,
         title: const Text(
           'Powiadomienia',
           style: TextStyle(color: Colors.white),
@@ -120,7 +114,7 @@ class NotificationsScreen extends StatelessWidget {
               final invite = invites[index];
               return Material(
                 borderRadius: BorderRadius.circular(20),
-                color: cardColor,
+
                 child: Row(
                   children: [
                     Expanded(
@@ -203,7 +197,6 @@ class NotificationsScreen extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () => onAcceptInvite(invite.id),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
                               minimumSize: const Size(70, 30),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
@@ -213,7 +206,6 @@ class NotificationsScreen extends StatelessWidget {
                               "✓",
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white,
                               ),
                             ),
                           ),

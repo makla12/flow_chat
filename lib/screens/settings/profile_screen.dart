@@ -83,19 +83,13 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Color appBarColor = isLightMode ? Colors.blueGrey : const Color(0xFF1E3A8A);
-    Color backgroundColor = isLightMode ? Colors.white : Color(0xFF0F172A);
-    Color textColor = isLightMode ? Colors.black : Colors.white;
-
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: textColor),
+          icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Twój profil', style: TextStyle(color: textColor)),
+        title: Text('Twój profil'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
@@ -107,32 +101,27 @@ class ProfileScreenState extends State<ProfileScreen> {
                   onTap: _showAvatarDialog,
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: _avatarUrl.isNotEmpty ? NetworkImage(_avatarUrl) : null,
+                    backgroundImage:
+                        _avatarUrl.isNotEmpty ? NetworkImage(_avatarUrl) : null,
                   ),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  _username,
-                  style: TextStyle(fontSize: 20, color: textColor),
-                ),
+                Text(_username, style: TextStyle(fontSize: 20)),
               ],
             ),
           ),
           const SizedBox(height: 32),
           ListTile(
-            leading: Icon(Icons.image, color: textColor),
-            title: Text('Zmień awatar', style: TextStyle(color: textColor)),
-            trailing: Icon(Icons.arrow_forward_ios, color: textColor),
+            leading: Icon(Icons.image),
+            title: Text('Zmień awatar'),
+            trailing: Icon(Icons.arrow_forward_ios),
             onTap: _showAvatarDialog,
           ),
-          Divider(color: textColor),
+          Divider(),
           ListTile(
-            leading: Icon(Icons.person, color: textColor),
-            title: Text(
-              'Zmień nazwę użytkownika',
-              style: TextStyle(color: textColor),
-            ),
-            trailing: Icon(Icons.arrow_forward_ios, color: textColor),
+            leading: Icon(Icons.person),
+            title: Text('Zmień nazwę użytkownika'),
+            trailing: Icon(Icons.arrow_forward_ios),
             onTap: _showUsernameDialog,
           ),
         ],
@@ -161,7 +150,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                     setState(() {
                       _avatarUrl = "https://i.pravatar.cc/150?img=$i";
                     });
-                    if(context.mounted) Navigator.pop(context);
+                    if (context.mounted) Navigator.pop(context);
                   },
                 ),
             ],
@@ -196,7 +185,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 setState(() {
                   _username = newName;
                 });
-                if(context.mounted) Navigator.pop(context);
+                if (context.mounted) Navigator.pop(context);
               },
               child: const Text('Zapisz'),
             ),

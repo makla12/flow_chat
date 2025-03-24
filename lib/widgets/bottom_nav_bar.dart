@@ -5,20 +5,18 @@ import 'package:flow_chat/screens/chat/friends_screen.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
-  final Color backgroundColor;
   final Color selectedItemColor;
   final Color unselectedItemColor;
-  final Color dividerColor;
+
   final Function(ThemeMode) setThemeMode;
 
   const CustomBottomNavigationBar({
     super.key,
     required this.currentIndex,
-    required this.backgroundColor,
     required this.selectedItemColor,
     required this.unselectedItemColor,
-    required this.dividerColor,
-    required this.setThemeMode
+
+    required this.setThemeMode,
   });
 
   @override
@@ -29,12 +27,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
         highlightColor: Colors.transparent,
       ),
       child: Container(
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: dividerColor, width: 1)),
-        ),
+        decoration: BoxDecoration(border: Border(top: BorderSide(width: 1))),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: backgroundColor,
           selectedItemColor: selectedItemColor,
           unselectedItemColor: unselectedItemColor,
           currentIndex: currentIndex,
@@ -47,21 +42,27 @@ class CustomBottomNavigationBar extends StatelessWidget {
             if (index == 1) {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => FriendsScreen(setThemeMode: setThemeMode,)),
+                MaterialPageRoute(
+                  builder:
+                      (context) => FriendsScreen(setThemeMode: setThemeMode),
+                ),
+              );
+            } else if (index == 2) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => FlowChatScreen(setThemeMode: setThemeMode),
+                ),
+              );
+            } else if (index == 0) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomeScreen(setThemeMode: setThemeMode),
+                ),
               );
             }
-            else if (index == 2) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => FlowChatScreen(setThemeMode: setThemeMode,)),
-                );
-            }
-            else if (index == 0) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen(setThemeMode: setThemeMode,)));
-            }
-
           },
         ),
       ),
