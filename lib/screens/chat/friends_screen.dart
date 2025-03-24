@@ -122,11 +122,11 @@ class FriendsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
+        title: const Text('FlowChat'),
         centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
+            icon: const Icon(Icons.notifications),
             onPressed: () {
               Navigator.push(
                 context,
@@ -135,7 +135,7 @@ class FriendsScreen extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
+            icon: const Icon(Icons.add),
             onPressed: () {
               Navigator.push(
                 context,
@@ -153,7 +153,6 @@ class FriendsScreen extends StatelessWidget {
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 hintText: 'Szukaj',
-                fillColor: Colors.grey.shade900,
                 filled: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
@@ -173,7 +172,6 @@ class FriendsScreen extends StatelessWidget {
                   return const Center(
                     child: Text(
                       'Nie znaleziono znajomych',
-                      style: TextStyle(color: Colors.white),
                     ),
                   );
                 }
@@ -227,7 +225,7 @@ class FriendsScreen extends StatelessWidget {
                                   ? 'Ty: '
                                   : ''),
                               Text(friends[index]['lastMessage']['message'], style: !isReed
-                                  ? const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)
+                                  ? const TextStyle(fontWeight: FontWeight.bold)
                                   : null),
                             ],
                           ),
@@ -256,10 +254,6 @@ class FriendsScreen extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 1,
-        backgroundColor: Colors.white24,
-        selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
-        unselectedItemColor: Colors.white70,
-        dividerColor: Colors.white24,
         setThemeMode: setThemeMode
       ),
     );

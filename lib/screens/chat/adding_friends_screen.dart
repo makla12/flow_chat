@@ -135,10 +135,10 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
+        title: const Text('FlowChat'),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -153,7 +153,6 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
                 hintText: 'Wpisz nazwę użytkownika...',
-                fillColor: Colors.grey.shade900,
                 filled: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
@@ -209,10 +208,10 @@ class FriendRequestItem extends StatelessWidget {
                 : null,
         child:
             avatarUrl == null || avatarUrl!.isEmpty
-                ? const Icon(Icons.person, color: Colors.white)
+                ? const Icon(Icons.person)
                 : null,
       ),
-      title: Text(nickname, style: const TextStyle(color: Colors.white)),
+      title: Text(nickname),
       trailing:
           (canAdd
               ? ElevatedButton(
@@ -222,7 +221,7 @@ class FriendRequestItem extends StatelessWidget {
                   ),
                 ),
                 onPressed: onAdd,
-                child: const Text('Dodaj', style: TextStyle(color: Colors.white)),
+                child: const Text('Dodaj'),
               )
               : null),
     );

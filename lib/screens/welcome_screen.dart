@@ -61,8 +61,6 @@ class WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0F172A),
-
       body:
           _isLoading
               ? const Center(child: CircularProgressIndicator())

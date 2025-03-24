@@ -83,10 +83,9 @@ class NotificationsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Powiadomienia',
-          style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -100,7 +99,7 @@ class NotificationsScreen extends StatelessWidget {
             return const Center(
               child: Text(
                 "Brak powiadomień",
-                style: TextStyle(color: Colors.white, fontSize: 18),
+                style: TextStyle(fontSize: 18),
               ),
             );
           }
@@ -121,7 +120,6 @@ class NotificationsScreen extends StatelessWidget {
                       flex: 1,
                       child: Icon(
                         invite["type"] == "server" ? Icons.group : Icons.person,
-                        color: Colors.white,
                       ),
                     ),
                     Expanded(
@@ -139,14 +137,12 @@ class NotificationsScreen extends StatelessWidget {
                                       ConnectionState.waiting) {
                                     return const Text(
                                       "Ładowanie...",
-                                      style: TextStyle(color: Colors.white),
                                     );
                                   }
                                   if (!snapshot.hasData || snapshot.data!.data() == null) {
                                     onDeclineInvite(invite.id);
                                     return const Text(
                                       "Błąd zaproszenia",
-                                      style: TextStyle(color: Colors.white),
                                     );
                                   }
                                   final serverData =
@@ -154,7 +150,6 @@ class NotificationsScreen extends StatelessWidget {
                                           as Map<String, dynamic>;
                                   return Text(
                                     "Zaproszenie do serwera ${serverData["name"]}",
-                                    style: const TextStyle(color: Colors.white),
                                   );
                                 },
                               )
@@ -169,14 +164,12 @@ class NotificationsScreen extends StatelessWidget {
                                       ConnectionState.waiting) {
                                     return const Text(
                                       "Ładowanie...",
-                                      style: TextStyle(color: Colors.white),
                                     );
                                   }
                                   if(!snapshot.hasData || snapshot.data!.data() == null) {
                                     onDeclineInvite(invite.id);
                                     return const Text(
                                       "Użytkownik nie istnieje",
-                                      style: TextStyle(color: Colors.white),
                                     );
                                   }
                                   
@@ -185,7 +178,6 @@ class NotificationsScreen extends StatelessWidget {
                                           as Map<String, dynamic>;
                                   return Text(
                                     "Zaproszenie do znajomych od ${userData["username"]}",
-                                    style: const TextStyle(color: Colors.white),
                                   );
                                 },
                               ),
@@ -223,7 +215,6 @@ class NotificationsScreen extends StatelessWidget {
                               "✕",
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white,
                               ),
                             ),
                           ),
