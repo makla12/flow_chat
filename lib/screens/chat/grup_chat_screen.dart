@@ -28,10 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController searchController = TextEditingController();
   String searchQuery = '';
 
-  static const Color backgroundColor = Color(0xFF0F172A);
-  static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color dividerColor = Color(0xFF2F3A4B);
-
   @override
   void dispose() {
     searchController.dispose();
@@ -41,9 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarColor,
         title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
         centerTitle: false,
         actions: [
@@ -171,10 +165,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 0,
-        backgroundColor: backgroundColor,
+        backgroundColor: Colors.white24,
         selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
-        dividerColor: dividerColor,
+        dividerColor: Colors.white24,
         setThemeMode: widget.setThemeMode,
       ),
     );

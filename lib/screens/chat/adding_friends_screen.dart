@@ -4,13 +4,6 @@ import 'package:flutter/material.dart';
 
 class AddingFriendsScreen extends StatefulWidget {
   const AddingFriendsScreen({super.key});
-
-  static const Color backgroundColor = Color(0xFF0F172A);
-  static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color containerColor = Color(0xFF1F2937);
-  static const Color dividerColor = Color(0xFF2F3A4B);
-  static const Color buttonColor = Color(0xFF3B82F6);
-
   @override
   State<AddingFriendsScreen> createState() => _AddingFriendsScreenState();
 }
@@ -141,9 +134,7 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AddingFriendsScreen.backgroundColor,
       appBar: AppBar(
-        backgroundColor: AddingFriendsScreen.appBarColor,
         title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         leading: IconButton(
@@ -226,7 +217,6 @@ class FriendRequestItem extends StatelessWidget {
           (canAdd
               ? ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AddingFriendsScreen.buttonColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
