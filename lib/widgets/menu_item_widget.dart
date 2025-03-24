@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class MenuItemWidget extends StatelessWidget {
   final IconData icon;
   final String text;
-  final Color color;
+  final Color? color;
   final VoidCallback? onTap;
 
   const MenuItemWidget({
     super.key,
     required this.icon,
     required this.text,
-    this.color = Colors.white,
+    this.color ,
     this.onTap,
   });
 

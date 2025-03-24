@@ -46,16 +46,28 @@ class _FlowChatAppState extends State<FlowChatApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
+        scaffoldBackgroundColor: Colors.grey[100],
         appBarTheme: AppBarTheme(backgroundColor: Colors.blueGrey[200]),
+        dividerColor: Colors.grey[300],
         cardColor: Colors.grey[400],
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.grey[100],
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.grey,
+        ),
       ),
 
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Color(0xFF0F172A),
         appBarTheme: AppBarTheme(backgroundColor: Color(0xFF1E3A8A)),
-        dividerColor: Color(0xFF2F3A4B),
-        cardColor: Colors.grey[900],
+        dividerColor: Color(0xff4F4F4F),
+        cardColor: Color(0xff211f26),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Color(0xFF0F172A),
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey,
+        ),
       ),
 
       themeMode: themeMode,

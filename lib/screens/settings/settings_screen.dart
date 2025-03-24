@@ -46,7 +46,7 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
               maxHeight: MediaQuery.of(context).size.height * 0.8,
               maxWidth: MediaQuery.of(context).size.width * 0.9,
             ),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(12)),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -61,10 +61,6 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 2,
-
-        selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
-        unselectedItemColor: Colors.white70,
-
         setThemeMode: widget.setThemeMode,
       ),
     );
@@ -87,14 +83,14 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
           text: 'Prywatność i bezpieczeństwo',
           onTap: () => _navigateTo(context, const PrivacyAndSecurityScreen()),
         ),
-        const CustomDivider(dividerColor: FlowChatScreen.dividerColor),
+        const CustomDivider(),
         MenuItemWidget(
           icon: Icons.notifications,
           text: 'Powiadomienia',
           onTap:
               () => _navigateTo(context, const NotificationsSettingsScreen()),
         ),
-        const CustomDivider(dividerColor: FlowChatScreen.dividerColor),
+        const CustomDivider(),
         MenuItemWidget(
           icon: Icons.star,
           text: 'Motyw',
@@ -104,11 +100,11 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
                 AppearanceScreen(setThemeMode: setThemeMode),
               ),
         ),
-        const CustomDivider(dividerColor: FlowChatScreen.dividerColor),
+        const CustomDivider(),
         MenuItemWidget(
           icon: Icons.logout,
           text: 'Wyloguj się',
-
+          color: Colors.red,
           onTap: () {
             FirebaseMessaging.instance.unsubscribeFromTopic(
               FirebaseAuth.instance.currentUser!.uid,

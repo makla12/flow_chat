@@ -38,11 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
+        title: const Text('FlowChat'),
         centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
+            icon: const Icon(Icons.notifications),
             onPressed: () {
               Navigator.push(
                 context,
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.add_home, color: Colors.white),
+            icon: const Icon(Icons.add_home),
             onPressed: () {
               Navigator.push(
                 context,
@@ -76,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 hintText: 'Szukaj',
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
-                fillColor: Colors.grey.shade900,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
                   borderSide: BorderSide.none,
@@ -95,7 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   return const Center(
                     child: Text(
                       "Brak serwerów",
-                      style: TextStyle(color: Colors.white),
                     ),
                   );
                 }
@@ -110,7 +108,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   return const Center(
                     child: Text(
                       "Nie znaleziono serwerów",
-                      style: TextStyle(color: Colors.white),
                     ),
                   );
                 }
@@ -141,14 +138,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 30,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade900,
+                            color: Theme.of(context).cardColor,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Center(
                             child: Text(
                               server['name'],
                               style: TextStyle(
-                                color: Colors.white,
                                 fontSize: 16,
                               ),
                             ),
@@ -165,10 +161,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 0,
-        backgroundColor: Colors.white24,
-        selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
-        unselectedItemColor: Colors.white70,
-        dividerColor: Colors.white24,
         setThemeMode: widget.setThemeMode,
       ),
     );

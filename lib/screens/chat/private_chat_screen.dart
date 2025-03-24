@@ -47,7 +47,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat', style: TextStyle(color: Colors.white)),
+        title: Text('Chat'),
         centerTitle: false,
       ),
       body: SafeArea(

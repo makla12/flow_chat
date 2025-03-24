@@ -235,24 +235,14 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Color appBarColor = isLightMode ? Colors.blueGrey : Color(0xFF1E3A8A);
-    final Color backgroundColor =
-        isLightMode
-            ? const Color.fromARGB(255, 219, 216, 216)
-            : Color(0xFF0F172A);
-    final Color textColor = isLightMode ? Colors.black : Colors.white;
-
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: textColor),
+          icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'Prywatność i bezpieczeństwo',
-          style: TextStyle(color: Colors.white),
         ),
       ),
       body:
@@ -277,7 +267,6 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       Text(
                         'Aktualizacja emaila',
                         style: TextStyle(
-                          color: textColor,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -286,20 +275,15 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       Text(
                         'Podaj nowy email. Jeśli korzystasz z Email/Password, musisz wpisać także swoje obecne hasło. '
                         'Jeśli jesteś zalogowany przez Google, zostaniesz poproszony o ponowne zalogowanie w Google.',
-                        style: TextStyle(color: textColor),
                       ),
                       SizedBox(height: 16),
                       TextField(
                         controller: _newEmailController,
                         keyboardType: TextInputType.emailAddress,
-                        style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           labelText: 'Nowy email',
-                          labelStyle: const TextStyle(color: Colors.white),
                           hintText: 'Wprowadź nowy email',
-                          hintStyle: const TextStyle(color: Colors.white54),
                           filled: true,
-                          fillColor: const Color(0xFF1F2937),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
@@ -310,14 +294,10 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       TextField(
                         controller: _emailPasswordController,
                         obscureText: true,
-                        style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           labelText: 'Hasło (Email/Password)',
-                          labelStyle: const TextStyle(color: Colors.white),
                           hintText: 'Wprowadź hasło, jeśli logujesz się mailem',
-                          hintStyle: const TextStyle(color: Colors.white54),
                           filled: true,
-                          fillColor: const Color(0xFF1F2937),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
@@ -335,7 +315,6 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       ElevatedButton(
                         onPressed: _updateEmail,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: appBarColor,
                         ),
                         child: const Text('Zmień email'),
                       ),
@@ -347,7 +326,6 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       Text(
                         'Aktualizacja hasła',
                         style: TextStyle(
-                          color: textColor,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -356,21 +334,16 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       Text(
                         'Jeśli jesteś zalogowany kontem Email/Password, podaj obecne hasło, a następnie wprowadź nowe hasło dwukrotnie. '
                         'Dla Google Sign-In zostaniesz poproszony o ponowne zalogowanie w Google.',
-                        style: TextStyle(color: textColor),
                       ),
                       const SizedBox(height: 16),
                       TextField(
                         controller: _currentPasswordForPasswordController,
                         obscureText: true,
-                        style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           labelText: 'Obecne hasło (Email/Password)',
-                          labelStyle: const TextStyle(color: Colors.white),
                           hintText:
                               'Wprowadź obecne hasło (jeśli logujesz się mailem)',
-                          hintStyle: const TextStyle(color: Colors.white54),
                           filled: true,
-                          fillColor: const Color(0xFF1F2937),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
@@ -381,14 +354,10 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       TextField(
                         controller: _newPasswordController,
                         obscureText: true,
-                        style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           labelText: 'Nowe hasło',
-                          labelStyle: const TextStyle(color: Colors.white),
                           hintText: 'Wprowadź nowe hasło',
-                          hintStyle: const TextStyle(color: Colors.white54),
                           filled: true,
-                          fillColor: const Color(0xFF1F2937),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
@@ -399,14 +368,10 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       TextField(
                         controller: _confirmNewPasswordController,
                         obscureText: true,
-                        style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           labelText: 'Potwierdź nowe hasło',
-                          labelStyle: const TextStyle(color: Colors.white),
                           hintText: 'Powtórz nowe hasło',
-                          hintStyle: const TextStyle(color: Colors.white54),
                           filled: true,
-                          fillColor: const Color(0xFF1F2937),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
@@ -423,9 +388,6 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: _updatePassword,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: appBarColor,
-                        ),
                         child: const Text('Zmień hasło'),
                       ),
                     ],
