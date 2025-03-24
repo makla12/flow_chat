@@ -126,7 +126,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     final server = filteredDocs[index];
                     return ListTile(
                       trailing: ServerReedIcon(serverSnapshot: server,),
-                      leading: const Icon(Icons.home, color: Colors.white),
+                      leading: (server['muted'] as List<dynamic>).contains(FirebaseAuth.instance.currentUser!.uid)
+                          ? const Icon(Icons.notifications_off)
+                          : const Icon(Icons.home),
                       title: GestureDetector(
                         onTap: () {
                           Navigator.push(
