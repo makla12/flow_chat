@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppearanceScreen extends StatefulWidget {
-  const AppearanceScreen({super.key});
+  const AppearanceScreen({super.key, required this.setThemeMode});
+  final Function(ThemeMode) setThemeMode;
 
   @override
   AppearanceScreenState createState() => AppearanceScreenState();
@@ -24,43 +25,23 @@ class AppearanceScreenState extends State<AppearanceScreen> {
     });
   }
 
-  Future<void> _saveThemeMode(int value) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('themeMode', value);
-  }
-
-  void setThemeMode(int mode) {
-    setState(() {
-      themeMode = mode;
-    });
-    _saveThemeMode(mode);
-  }
-
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor =
-        themeMode == 2 ? const Color(0xFF0F172A) : Colors.white;
-    Color containerColor =
-        themeMode == 2 ? const Color(0xFF1F2937) : Colors.grey.shade200;
-    Color textColor = themeMode == 2 ? Colors.white : Colors.black;
-    Color iconColor = themeMode == 2 ? Colors.white : Colors.black87;
+    ThemeData theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor:
-            themeMode == 2 ? const Color(0xFF1E3A8A) : Colors.blueGrey,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: textColor),
+          icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Wygląd', style: TextStyle(color: textColor)),
+        title: Text('Wygląd'), 
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Container(
           decoration: BoxDecoration(
-            color: containerColor,
+            color: theme.cardColor,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -68,20 +49,26 @@ class AppearanceScreenState extends State<AppearanceScreen> {
               _buildMenuItem(
                 'Ustawienia systemowe',
                 themeMode == 0,
-                () => setThemeMode(0),
-                textColor,
+                () {
+                  widget.setThemeMode(ThemeMode.system);
+                  setState(() => themeMode = 0);
+                },
               ),
               _buildMenuItem(
                 'Tryb jasny',
                 themeMode == 1,
-                () => setThemeMode(1),
-                textColor,
+                () {
+                  widget.setThemeMode(ThemeMode.light);
+                  setState(() => themeMode = 1);
+                },
               ),
               _buildMenuItem(
                 'Tryb ciemny',
                 themeMode == 2,
-                () => setThemeMode(2),
-                textColor,
+                () {
+                  widget.setThemeMode(ThemeMode.dark);
+                  setState(() => themeMode = 2);
+                }, 
               ),
             ],
           ),
@@ -94,11 +81,10 @@ class AppearanceScreenState extends State<AppearanceScreen> {
     String title,
     bool isSelected,
     VoidCallback onTap,
-    Color textColor,
   ) {
     return ListTile(
-      title: Text(title, style: TextStyle(color: textColor)),
-      trailing: isSelected ? Icon(Icons.check, color: textColor) : null,
+      title: Text(title),
+      trailing: isSelected ? Icon(Icons.check) : null,
       onTap: onTap,
     );
   }

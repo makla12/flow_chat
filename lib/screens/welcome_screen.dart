@@ -7,7 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({super.key});
+  const WelcomeScreen({super.key, required this.setThemeMode});
+  final Function(ThemeMode) setThemeMode;
 
   @override
   WelcomeScreenState createState() => WelcomeScreenState();
@@ -46,7 +47,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
       Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen(setThemeMode: widget.setThemeMode,)),
       );
     } catch (e) {
       print("Error: $e");
@@ -104,7 +105,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                         foregroundColor: WidgetStatePropertyAll(Colors.white),
                       ),
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => LogIn()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => LogIn(setThemeMode: widget.setThemeMode,)));
                       },
                       child: Text("Zaloguj się"),
                     ),
@@ -117,7 +118,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                         foregroundColor: WidgetStatePropertyAll(Colors.white),
                       ),
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp(setThemeMode: widget.setThemeMode,)));
                       },
                       child: Text("Zarejestruj się"),
                     ),
