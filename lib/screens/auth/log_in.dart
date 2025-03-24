@@ -1,3 +1,4 @@
+import 'package:flow_chat/screens/auth/reset_password.dart';
 import 'package:flow_chat/screens/chat/grup_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,32 +27,40 @@ class LogInState extends State<LogIn> {
     final String password = passwordController.text;
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email, password: password);
-      AuthUtils.addUserToFirestore(credential.user!.uid, credential.user!.email!, credential.user!.displayName!);
+        email: email,
+        password: password,
+      );
+      AuthUtils.addUserToFirestore(
+        credential.user!.uid,
+        credential.user!.email!,
+        credential.user!.displayName!,
+      );
       AuthUtils.onUserLogin();
-      if(!context.mounted) return;
+      if (!context.mounted) return;
       Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen(setThemeMode: widget.setThemeMode,)),
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(setThemeMode: widget.setThemeMode),
+        ),
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
         _isLoading = false;
       });
-      if(!context.mounted) return;
+      if (!context.mounted) return;
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Niepoprawny email lub hasło")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Niepoprawny email lub hasło")));
       } else if (e.code == 'invalid-email') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Niepoprawny format adresu email")),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Wystąpił błąd: ${e.message}")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Wystąpił błąd: ${e.message}")));
       }
     } catch (e) {
       print("Error: $e");
@@ -64,47 +73,67 @@ class LogInState extends State<LogIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Zaloguj"),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 20,
-            children: [
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  hintText: "Email",
+      appBar: AppBar(title: Text("Zaloguj")),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 20,
+                    children: [
+                      TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: "Email",
+                          hintText: "Email",
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      TextField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          hintText: "Password",
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _textIsObscured = !_textIsObscured;
+                              });
+                            },
+                            icon: Icon(
+                              _textIsObscured
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                          ),
+                        ),
+                        obscureText: _textIsObscured,
+                      ),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          padding: WidgetStatePropertyAll(EdgeInsets.all(10)),
+                        ),
+                        onPressed: () => _logIn(context),
+                        child: Text("Zaloguj"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ResetPassword(),
+                            ),
+                          );
+                        },
+                        child: Text("Nie pamiętasz hasła?"),
+                      ),
+                    ],
+                  ),
                 ),
-                keyboardType: TextInputType.emailAddress,
               ),
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  hintText: "Password",
-                  suffixIcon: IconButton(onPressed: (){setState(() { _textIsObscured = !_textIsObscured; });}, icon: Icon(_textIsObscured ? Icons.visibility : Icons.visibility_off))
-                  
-                ),
-                obscureText: _textIsObscured,
-              ),
-              ElevatedButton(
-                style: ButtonStyle(
-                  padding: WidgetStatePropertyAll(EdgeInsets.all(10)),
-                ),
-                onPressed: () => _logIn(context),
-                child: Text("Zaloguj"),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
