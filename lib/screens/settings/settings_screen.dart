@@ -6,7 +6,6 @@ import '../../widgets/menu_item_widget.dart';
 import '../../widgets/custom_divider.dart';
 import 'profile_screen.dart';
 import 'privacy_and_security_screen.dart';
-import 'notifications_screen.dart';
 import 'appearance_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -82,13 +81,6 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
           icon: Icons.security,
           text: 'Prywatność i bezpieczeństwo',
           onTap: () => _navigateTo(context, const PrivacyAndSecurityScreen()),
-        ),
-        const CustomDivider(),
-        MenuItemWidget(
-          icon: Icons.notifications,
-          text: 'Powiadomienia',
-          onTap:
-              () => _navigateTo(context, const NotificationsSettingsScreen()),
         ),
         const CustomDivider(),
         MenuItemWidget(
