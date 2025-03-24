@@ -7,7 +7,8 @@ import '../../widgets/bottom_nav_bar.dart';
 import 'adding_friends_screen.dart';
 
 class FriendsScreen extends StatelessWidget {
-  FriendsScreen({super.key});
+  FriendsScreen({super.key, required this.setThemeMode});
+  final Function(ThemeMode) setThemeMode;
 
   final Stream<QuerySnapshot> _privateChatStream =
       FirebaseFirestore.instance
@@ -266,6 +267,7 @@ class FriendsScreen extends StatelessWidget {
         selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
         dividerColor: dividerColor,
+        setThemeMode: setThemeMode
       ),
     );
   }

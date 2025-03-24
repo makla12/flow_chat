@@ -8,7 +8,8 @@ import 'notifications.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.setThemeMode});
+  final Function(ThemeMode) setThemeMode;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -174,6 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
         dividerColor: dividerColor,
+        setThemeMode: widget.setThemeMode,
       ),
     );
   }

@@ -9,6 +9,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   final Color selectedItemColor;
   final Color unselectedItemColor;
   final Color dividerColor;
+  final Function(ThemeMode) setThemeMode;
 
   const CustomBottomNavigationBar({
     super.key,
@@ -17,6 +18,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     required this.selectedItemColor,
     required this.unselectedItemColor,
     required this.dividerColor,
+    required this.setThemeMode
   });
 
   @override
@@ -45,19 +47,19 @@ class CustomBottomNavigationBar extends StatelessWidget {
             if (index == 1) {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => FriendsScreen()),
+                MaterialPageRoute(builder: (context) => FriendsScreen(setThemeMode: setThemeMode,)),
               );
             }
             else if (index == 2) {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => FlowChatScreen()),
+                  MaterialPageRoute(builder: (context) => FlowChatScreen(setThemeMode: setThemeMode,)),
                 );
             }
             else if (index == 0) {
               Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()));
+                  MaterialPageRoute(builder: (context) => HomeScreen(setThemeMode: setThemeMode,)));
             }
 
           },

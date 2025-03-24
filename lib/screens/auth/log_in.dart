@@ -4,7 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow_chat/utils/auth_utils.dart';
 
 class LogIn extends StatefulWidget {
-  const LogIn({super.key});
+  const LogIn({super.key, required this.setThemeMode});
+  final Function(ThemeMode) setThemeMode;
 
   @override
   LogInState createState() => LogInState();
@@ -32,7 +33,7 @@ class LogInState extends State<LogIn> {
       Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen(setThemeMode: widget.setThemeMode,)),
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
