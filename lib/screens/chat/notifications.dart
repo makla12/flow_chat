@@ -112,6 +112,7 @@ class NotificationsScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final invite = invites[index];
               return Material(
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(20),
 
                 child: Row(
@@ -189,6 +190,7 @@ class NotificationsScreen extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () => onAcceptInvite(invite.id),
                             style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
                               minimumSize: const Size(70, 30),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
