@@ -109,9 +109,7 @@ class ServerSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0F172A),
       appBar: AppBar(
-        backgroundColor: Color(0xFF1E3A8A),
         title: Text('Ustawienia serwera'),
       ),
       body: StreamBuilder<DocumentSnapshot>(

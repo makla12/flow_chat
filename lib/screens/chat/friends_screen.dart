@@ -15,11 +15,6 @@ class FriendsScreen extends StatelessWidget {
           .collection('private_chats')
           .where('members', arrayContains: FirebaseAuth.instance.currentUser!.uid)
           .snapshots();
-
-  static const Color backgroundColor = Color(0xFF0F172A);
-  static const Color appBarColor = Color(0xFF1E3A8A);
-  static const Color dividerColor = Color(0xFF2F3A4B);
-
   void _showFriendDeleteDialog(context, DocumentReference chatRefrence) {
     showDialog(
       context: context,
@@ -126,9 +121,7 @@ class FriendsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarColor,
         title: const Text('FlowChat', style: TextStyle(color: Colors.white)),
         centerTitle: false,
         actions: [
@@ -263,10 +256,10 @@ class FriendsScreen extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 1,
-        backgroundColor: backgroundColor,
+        backgroundColor: Colors.white24,
         selectedItemColor: const Color.fromARGB(255, 63, 146, 255),
         unselectedItemColor: Colors.white70,
-        dividerColor: dividerColor,
+        dividerColor: Colors.white24,
         setThemeMode: setThemeMode
       ),
     );

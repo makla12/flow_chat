@@ -35,19 +35,13 @@ class CreateServerScreenState extends State<CreateServerScreen> {
 
     Navigator.pop(context);
   }
-  final Color backgroundColor = Color(0xFF0F172A);
-  final Color appBarColor = Color(0xFF1E3A8A);
-  final Color containerColor = Color(0xFF1F2937);
-  final Color dividerColor = Color(0xFF2F3A4B);
-  final Color buttonColor = Color(0xFF3B82F6);
 
   final _serverNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(backgroundColor: appBarColor ,title: Text('Stwórz serwer')),
+      appBar: AppBar(title: Text('Stwórz serwer')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
 
@@ -60,8 +54,6 @@ class CreateServerScreenState extends State<CreateServerScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: buttonColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),

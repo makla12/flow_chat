@@ -15,13 +15,6 @@ class ChannelsScreen extends StatelessWidget {
       .doc(serverId)
       .collection('channels');
   late final Stream<QuerySnapshot> _channelsStream = channelsRef.snapshots();
-
-  final Color backgroundColor = Color(0xFF0F172A);
-  final Color appBarColor = Color(0xFF1E3A8A);
-  final Color containerColor = Color(0xFF1F2937);
-  final Color dividerColor = Color(0xFF2F3A4B);
-  final Color buttonColor = Color(0xFF3B82F6);
-
   void _showChanelAddDialog(context) {
     showDialog(
       context: context,
@@ -201,9 +194,7 @@ class ChannelsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: appBarColor,
         title: Text('Kanały'),
         actions: [
           IconButton(

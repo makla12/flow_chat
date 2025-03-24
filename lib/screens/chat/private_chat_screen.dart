@@ -46,9 +46,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0F172A),
       appBar: AppBar(
-        backgroundColor: Color(0xFF1E3A8A),
         title: Text('Chat', style: TextStyle(color: Colors.white)),
         centerTitle: false,
       ),
@@ -110,7 +108,6 @@ class ChatScreenState extends State<PrivateChatScreen> {
                           top: 5,
                         ),
                         filled: true,
-                        fillColor: Color(0xff36343b),
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(15)),
