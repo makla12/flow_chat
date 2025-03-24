@@ -55,6 +55,9 @@ class _FlowChatAppState extends State<FlowChatApp> {
           selectedItemColor: Colors.black,
           unselectedItemColor: Colors.grey,
         ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.blueGrey[200],
+        )
       ),
 
       darkTheme: ThemeData(
@@ -67,6 +70,9 @@ class _FlowChatAppState extends State<FlowChatApp> {
           backgroundColor: Color(0xFF0F172A),
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.grey,
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFF1E3A8A),
         ),
       ),
 

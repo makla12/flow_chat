@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow_chat/screens/chat/chat_screen.dart';
 import 'package:flow_chat/screens/chat/invite_to_server_screen.dart';
+import 'package:flow_chat/screens/chat/members_screen.dart';
 import 'package:flow_chat/screens/chat/server_settings_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -194,6 +195,7 @@ class ChannelsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: MembersScreen(serverId: serverId, ownerId: ownerId,),
       appBar: AppBar(
         title: Text('Kanały'),
         actions: [
@@ -231,6 +233,14 @@ class ChannelsScreen extends StatelessWidget {
           ),
         ],
       ),
+
+      floatingActionButton: Builder(builder: (context) => 
+        FloatingActionButton(
+          onPressed: () => Scaffold.of(context).openEndDrawer(),
+          child: Icon(Icons.group),
+        )
+      ,),
+
       body: StreamBuilder<QuerySnapshot>(
         stream: _channelsStream,
         builder: (context, snapshot) {
