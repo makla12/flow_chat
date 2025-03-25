@@ -242,6 +242,12 @@ class FriendsScreen extends StatelessWidget {
                               ),
                               Text(
                                 " · ${TimeUtils.convertTime(friends[index]['lastMessage']['time'])}",
+                                style:
+                                    !isReed
+                                        ? const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        )
+                                        : null,
                               ),
                             ],
                           ),
