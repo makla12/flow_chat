@@ -1,4 +1,5 @@
 import 'package:flow_chat/screens/chat/private_chat_screen.dart';
+import 'package:flow_chat/utils/time_utils.dart';
 import 'package:flow_chat/widgets/notifications_button.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +14,10 @@ class FriendsScreen extends StatelessWidget {
   final Stream<QuerySnapshot> _privateChatStream =
       FirebaseFirestore.instance
           .collection('private_chats')
-          .where('members', arrayContains: FirebaseAuth.instance.currentUser!.uid)
+          .where(
+            'members',
+            arrayContains: FirebaseAuth.instance.currentUser!.uid,
+          )
           .snapshots();
   void _showFriendDeleteDialog(context, DocumentReference chatRefrence) {
     showDialog(
@@ -50,7 +54,9 @@ class FriendsScreen extends StatelessWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            (chatSnapshot['muted'].contains(FirebaseAuth.instance.currentUser!.uid))
+            (chatSnapshot['muted'].contains(
+                  FirebaseAuth.instance.currentUser!.uid,
+                ))
                 ? ListTile(
                   title: const Text('Włącz powiadomienia'),
                   trailing: const Icon(Icons.notifications),
@@ -161,11 +167,7 @@ class FriendsScreen extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'Nie znaleziono znajomych',
-                    ),
-                  );
+                  return const Center(child: Text('Nie znaleziono znajomych'));
                 }
                 final friends = snapshot.data!.docs;
                 friends.sort((a, b) {
@@ -176,9 +178,10 @@ class FriendsScreen extends StatelessWidget {
                 return ListView.builder(
                   itemCount: friends.length,
                   itemBuilder: (context, index) {
-                    final friendId = friends[index]['members']
-                        .firstWhere((element) =>
-                            element != FirebaseAuth.instance.currentUser!.uid);
+                    final friendId = friends[index]['members'].firstWhere(
+                      (element) =>
+                          element != FirebaseAuth.instance.currentUser!.uid,
+                    );
                     final friendStream =
                         FirebaseFirestore.instance
                             .collection('users')
@@ -188,7 +191,8 @@ class FriendsScreen extends StatelessWidget {
                     return StreamBuilder<DocumentSnapshot>(
                       stream: friendStream,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(child: SizedBox());
                         }
                         if (!snapshot.hasData ||
@@ -200,25 +204,45 @@ class FriendsScreen extends StatelessWidget {
                         final friendName = friendData['username'] as String;
                         final friendAvatarUrl =
                             friendData['avatarUrl'] as String;
-                        final bool isReed = friends[index]['reed'].contains(FirebaseAuth.instance.currentUser!.uid);
+                        final bool isReed = friends[index]['reed'].contains(
+                          FirebaseAuth.instance.currentUser!.uid,
+                        );
                         return ListTile(
-                          trailing: friends[index]['muted'].contains(
-                            FirebaseAuth.instance.currentUser!.uid,
-                          )
-                              ? const Icon(Icons.notifications_off)
-                              : null,
+                          trailing:
+                              friends[index]['muted'].contains(
+                                    FirebaseAuth.instance.currentUser!.uid,
+                                  )
+                                  ? const Icon(Icons.notifications_off)
+                                  : null,
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(friendAvatarUrl),
                           ),
-                          title: Text(friendName, style: !isReed ? const TextStyle(fontWeight: FontWeight.bold) : null),
+                          title: Text(
+                            friendName,
+                            style:
+                                !isReed
+                                    ? const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    )
+                                    : null,
+                          ),
                           subtitle: Row(
                             children: [
-                              Text(friends[index]['lastMessage']['name'] == FirebaseAuth.instance.currentUser!.uid
-                                  ? 'Ty: '
-                                  : ''),
-                              Text(friends[index]['lastMessage']['message'], style: !isReed
-                                  ? const TextStyle(fontWeight: FontWeight.bold)
-                                  : null),
+                              Expanded(
+                                child: Text(
+                                  "${friends[index]['lastMessage']['name'] == FirebaseAuth.instance.currentUser!.uid ? 'Ty: ' : ''} ${friends[index]['lastMessage']['message']}",
+                                  overflow: TextOverflow.ellipsis,
+                                  style:
+                                      !isReed
+                                          ? const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          )
+                                          : null,
+                                ),
+                              ),
+                              Text(
+                                " · ${TimeUtils.convertTime(friends[index]['lastMessage']['time'])}",
+                              ),
                             ],
                           ),
                           onLongPress:
@@ -246,7 +270,7 @@ class FriendsScreen extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 1,
-        setThemeMode: setThemeMode
+        setThemeMode: setThemeMode,
       ),
     );
   }
