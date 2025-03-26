@@ -62,10 +62,10 @@ class SignUpState extends State<SignUp> {
         ),
       );
     } on FirebaseAuthException catch (e) {
+      if (!context.mounted) return;
       setState(() {
         _isLoading = false;
       });
-      if (!context.mounted) return;
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(
           context,
@@ -87,6 +87,7 @@ class SignUpState extends State<SignUp> {
       }
     } catch (e) {
       print("Error: $e");
+      if (!context.mounted) return;
       setState(() {
         _isLoading = false;
       });
