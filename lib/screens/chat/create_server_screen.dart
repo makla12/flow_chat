@@ -17,7 +17,7 @@ class CreateServerScreenState extends State<CreateServerScreen> {
     }
 
     FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentReference serverRef = FirebaseFirestore.instance.collection('teams').doc();
+      DocumentReference serverRef = FirebaseFirestore.instance.collection('servers').doc();
       transaction.set(serverRef, {
         'name': serverName,
         'members': [FirebaseAuth.instance.currentUser!.uid],

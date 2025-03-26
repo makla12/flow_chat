@@ -24,7 +24,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     if (invite['type'] == 'server') {
       final serverData =
           await FirebaseFirestore.instance
-              .collection('teams')
+              .collection('servers')
               .doc(invite['from'])
               .get();
       final server = serverData.data() as Map<String, dynamic>;
@@ -32,7 +32,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       members.add(FirebaseAuth.instance.currentUser!.uid);
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         transaction.update(
-          FirebaseFirestore.instance.collection('teams').doc(invite['from']),
+          FirebaseFirestore.instance.collection('servers').doc(invite['from']),
           {'members': members},
         );
         transaction.delete(
@@ -143,7 +143,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               ? StreamBuilder<DocumentSnapshot>(
                                 stream:
                                     FirebaseFirestore.instance
-                                        .collection('teams')
+                                        .collection('servers')
                                         .doc(invite["from"])
                                         .snapshots(),
                                 builder: (context, snapshot) {

@@ -18,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final Stream<QuerySnapshot> _serversStream =
       FirebaseFirestore.instance
-          .collection('teams')
+          .collection('servers')
           .where(
             "members",
             arrayContains: FirebaseAuth.instance.currentUser!.uid,
