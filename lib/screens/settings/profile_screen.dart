@@ -135,25 +135,28 @@ class ProfileScreenState extends State<ProfileScreen> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Wybierz awatar'),
-          content: ListView(
-            children: [
-              for (var i = 0; i < 71; i++)
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      "https://i.pravatar.cc/150?img=$i",
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView(
+              children: [
+                for (var i = 0; i < 71; i++)
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        "https://i.pravatar.cc/150?img=$i",
+                      ),
                     ),
+                    title: Text('Awatar $i'),
+                    onTap: () async {
+                      await _updateAvatarUrl("https://i.pravatar.cc/150?img=$i");
+                      setState(() {
+                        _avatarUrl = "https://i.pravatar.cc/150?img=$i";
+                      });
+                      if (context.mounted) Navigator.pop(context);
+                    },
                   ),
-                  title: Text('Awatar $i'),
-                  onTap: () async {
-                    await _updateAvatarUrl("https://i.pravatar.cc/150?img=$i");
-                    setState(() {
-                      _avatarUrl = "https://i.pravatar.cc/150?img=$i";
-                    });
-                    if (context.mounted) Navigator.pop(context);
-                  },
-                ),
-            ],
+              ],
+            ),
           ),
         );
       },

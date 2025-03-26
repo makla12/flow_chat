@@ -93,27 +93,34 @@ class ChatScreenState extends State<PrivateChatScreen> {
             Padding(
               padding: EdgeInsets.all(10),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Expanded(
-                    child: TextField(
-                      controller: textController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(
-                          left: 10,
-                          right: 10,
-                          bottom: 5,
-                          top: 5,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: 150,
+                      ),
+                      child: SizedBox(
+                        child: TextField(
+                          controller: textController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              bottom: 5,
+                              top: 5,
+                            ),
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                            ),
+                        
+                            hintText: "Wiadomość",
+                          ),
                         ),
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                        ),
-
-                        hintText: "Wiadomość",
                       ),
                     ),
                   ),

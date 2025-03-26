@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flow_chat/utils/time_utils.dart';
 import 'package:flutter/material.dart';
 
 class ChatMessage extends StatelessWidget {
@@ -28,7 +29,7 @@ class ChatMessage extends StatelessWidget {
               children: [
                 Row(
                   spacing: 5,
-                  children: [Text(name, style: TextStyle(fontSize: 16)), Text(time.toDate().toIso8601String(), style: TextStyle(fontSize: 8))],
+                  children: [Text(name, style: TextStyle(fontSize: 16)), Text(TimeUtils.convertTime(time), style: TextStyle(fontSize: 8))],
                 ),
                 Text(message, style: TextStyle(fontSize: 14)),
               ],

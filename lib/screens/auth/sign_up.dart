@@ -23,23 +23,25 @@ class SignUpState extends State<SignUp> {
 
   void _signUp(BuildContext context) async {
     if (passwordController.text != confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Hasła nie są takie same.")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Hasła nie są takie same.")));
       return;
     }
     final String email = emailController.text;
     final String password = passwordController.text;
     final String username = usernameController.text;
-    if(email.isEmpty || password.isEmpty || username.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Wszystkie pola są wymagane.")),
-      );
+    if (email.isEmpty || password.isEmpty || username.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Wszystkie pola są wymagane.")));
       return;
     }
-    if(username.length < 4) {
+    if (username.length < 4) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Nazwa użytkownika musi mieć co najmniej 3 znaki.")),
+        SnackBar(
+          content: Text("Nazwa użytkownika musi mieć co najmniej 3 znaki."),
+        ),
       );
       return;
     }
@@ -51,17 +53,19 @@ class SignUpState extends State<SignUp> {
           .createUserWithEmailAndPassword(email: email, password: password);
       await credential.user!.updateDisplayName(username);
       AuthUtils.addUserToFirestore(credential.user!.uid, email, username);
-      if(!context.mounted) return;
+      if (!context.mounted) return;
       Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen(setThemeMode: widget.setThemeMode,)),
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(setThemeMode: widget.setThemeMode),
+        ),
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
         _isLoading = false;
       });
-      if(!context.mounted) return;
+      if (!context.mounted) return;
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(
           context,
@@ -72,18 +76,14 @@ class SignUpState extends State<SignUp> {
             content: Text("Istnieje już użytkownik o podanym adresie email."),
           ),
         );
-      } else if(e.code == 'invalid-email') {
+      } else if (e.code == 'invalid-email') {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Niepoprawny format adresu email"),
-          ),
+          SnackBar(content: Text("Niepoprawny format adresu email")),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Wystąpił błąd: ${e.message}"),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Wystąpił błąd: ${e.message}")));
       }
     } catch (e) {
       print("Error: $e");
@@ -96,11 +96,7 @@ class SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0F172A),
-      appBar: AppBar(
-        backgroundColor: Color(0xFF0F172A),
-        title: Text("Zarejestruj się"),
-      ),
+      appBar: AppBar(title: Text("Zarejestruj się")),
       body:
           _isLoading
               ? const Center(child: CircularProgressIndicator())
@@ -170,10 +166,6 @@ class SignUpState extends State<SignUp> {
                         ElevatedButton(
                           style: ButtonStyle(
                             padding: WidgetStatePropertyAll(EdgeInsets.all(10)),
-                            backgroundColor: WidgetStatePropertyAll(
-                              Color(0xFF3B82F6),
-                            ),
-                            foregroundColor: WidgetStatePropertyAll(Colors.white),
                           ),
                           onPressed: () => _signUp(context),
                           child: Text("Zarejestruj się"),

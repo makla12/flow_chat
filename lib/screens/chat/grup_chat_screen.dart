@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flow_chat/widgets/notifications_button.dart';
 import 'package:flow_chat/widgets/server_reed_icon.dart';
 import 'package:flutter/material.dart';
 import 'chanels_screen.dart';
 import 'create_server_screen.dart';
-import 'notifications.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -41,15 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('FlowChat'),
         centerTitle: false,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NotificationsScreen()),
-              );
-            },
-          ),
+          NotificationsButton(userId: FirebaseAuth.instance.currentUser!.uid,),
           IconButton(
             icon: const Icon(Icons.add_home),
             onPressed: () {

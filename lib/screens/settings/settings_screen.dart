@@ -1,5 +1,5 @@
-import 'package:flow_chat/screens/chat/notifications.dart';
 import 'package:flow_chat/screens/welcome_screen.dart';
+import 'package:flow_chat/widgets/notifications_button.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import '../../widgets/menu_item_widget.dart';
@@ -26,16 +26,7 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
         title: const Text('FlowChat'),
         centerTitle: false,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed:
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const NotificationsScreen(),
-                  ),
-                ),
-          ),
+          NotificationsButton(userId: FirebaseAuth.instance.currentUser!.uid),
         ],
       ),
       body: SafeArea(
