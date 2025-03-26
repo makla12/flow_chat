@@ -75,15 +75,22 @@ class ChatScreenState extends State<PrivateChatScreen> {
                       reverse: true,
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
-                        final message = messages[messages.length - 1 - index];
+                        final messageIndex = messages.length - 1 - index;
+                        final message = messages[messageIndex];
+                        final isCompact = messageIndex == 0 ? false : messages[messageIndex - 1]['name'] == message['name'] && messages[messageIndex - 1]['time'].toDate().difference(message['time'].toDate()).inMinutes < 2;
                         return ChatMessage(
                           name: message['name'],
                           time: message['time'],
                           message: message['message'],
+                          compact: isCompact,
                         );
                       },
                       separatorBuilder:
-                          (context, index) => const SizedBox(height: 10),
+                          (context, index) {
+                            final messageIndex = messages.length - 1 - index;
+                            final isCompact = messageIndex == 0 ? false : messages[messageIndex - 1]['name'] == messages[messageIndex]['name'] && messages[messageIndex - 1]['time'].toDate().difference(messages[messageIndex]['time'].toDate()).inMinutes < 2;
+                            return isCompact ? const SizedBox(height: 0) : const SizedBox(height: 10); 
+                          },
                     );
                   },
                 ),
