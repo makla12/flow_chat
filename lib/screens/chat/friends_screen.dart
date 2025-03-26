@@ -7,10 +7,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import 'adding_friends_screen.dart';
 
-class FriendsScreen extends StatelessWidget {
+class FriendsScreen extends StatefulWidget {
   FriendsScreen({super.key, required this.setThemeMode});
   final Function(ThemeMode) setThemeMode;
 
+  @override
+  State<FriendsScreen> createState() => _FriendsScreenState();
+}
+
+class _FriendsScreenState extends State<FriendsScreen> {
   final Stream<QuerySnapshot> _privateChatStream =
       FirebaseFirestore.instance
           .collection('private_chats')
@@ -19,6 +24,9 @@ class FriendsScreen extends StatelessWidget {
             arrayContains: FirebaseAuth.instance.currentUser!.uid,
           )
           .snapshots();
+
+  String searchQuery = '';
+
   void _showFriendDeleteDialog(context, DocumentReference chatRefrence) {
     showDialog(
       context: context,
@@ -148,6 +156,10 @@ class FriendsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: TextField(
+              onChanged:
+                  (value) => setState(() {
+                    searchQuery = value.toLowerCase();
+                  }),
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 hintText: 'Szukaj',
@@ -202,6 +214,9 @@ class FriendsScreen extends StatelessWidget {
                         final friendData =
                             snapshot.data!.data()! as Map<String, dynamic>;
                         final friendName = friendData['username'] as String;
+                        if(!friendName.toLowerCase().contains(searchQuery)) {
+                          return const SizedBox();
+                        }
                         final friendAvatarUrl =
                             friendData['avatarUrl'] as String;
                         final bool isReed = friends[index]['reed'].contains(
@@ -276,7 +291,7 @@ class FriendsScreen extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 1,
-        setThemeMode: setThemeMode,
+        setThemeMode: widget.setThemeMode,
       ),
     );
   }
