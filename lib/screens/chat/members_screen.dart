@@ -7,7 +7,7 @@ class MembersScreen extends StatelessWidget {
   final String serverId;
   final String ownerId;
 
-  late final _serverStream = FirebaseFirestore.instance.collection('teams').doc(serverId).snapshots();
+  late final _serverStream = FirebaseFirestore.instance.collection('servers').doc(serverId).snapshots();
 
   void _showRemoveMemberDialog(BuildContext context, member){
     showDialog(
@@ -25,7 +25,7 @@ class MembersScreen extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                FirebaseFirestore.instance.collection('teams').doc(serverId).update(
+                FirebaseFirestore.instance.collection('servers').doc(serverId).update(
                   {
                     'members': FieldValue.arrayRemove([member])
                   }
