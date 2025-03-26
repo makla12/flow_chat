@@ -112,7 +112,7 @@ class _AddingFriendsScreenState extends State<AddingFriendsScreen> {
     });
 
     try {
-      await FirebaseFirestore.instance.collection('invites').doc().set({
+      await FirebaseFirestore.instance.collection('invites').doc("${currentUser.uid}_$friendUid").set({
         'from': currentUser.uid,
         'to': friendUid,
         'timestamp': FieldValue.serverTimestamp(),

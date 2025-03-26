@@ -42,7 +42,7 @@ class InviteToServerScreenState extends State<InviteToServerScreen> {
     if (query.isEmpty) return;
     try{
       final querySnapshot = await FirebaseFirestore.instance.collection('users').get();
-      final membersSnapshot = await FirebaseFirestore.instance.collection('teams').doc(widget.serverId).get();
+      final membersSnapshot = await FirebaseFirestore.instance.collection('servers').doc(widget.serverId).get();
       final members = membersSnapshot.data()!['members'];
       setState(() {
         searchResults = querySnapshot.docs.where((doc) {
@@ -61,7 +61,7 @@ class InviteToServerScreenState extends State<InviteToServerScreen> {
     });
 
     try {
-      await FirebaseFirestore.instance.collection('invites').doc().set({
+      await FirebaseFirestore.instance.collection('invites').doc("${widget.serverId}_$uid").set({
         'from': widget.serverId,
         'to': uid,
         'timestamp': FieldValue.serverTimestamp(),

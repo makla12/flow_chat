@@ -9,7 +9,7 @@ class ServerSettingsScreen extends StatelessWidget {
   final String ownerId;
 
   late final serverRef = FirebaseFirestore.instance
-      .collection('teams')
+      .collection('servers')
       .doc(serverId);
   late final Stream<DocumentSnapshot> _serverStream = serverRef.snapshots();
 

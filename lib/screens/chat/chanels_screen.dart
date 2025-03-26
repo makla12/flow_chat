@@ -12,7 +12,7 @@ class ChannelsScreen extends StatelessWidget {
   final String ownerId;
 
   late final channelsRef = FirebaseFirestore.instance
-      .collection('teams')
+      .collection('servers')
       .doc(serverId)
       .collection('channels');
   late final Stream<QuerySnapshot> _channelsStream = channelsRef.snapshots();

@@ -3,10 +3,11 @@ import 'package:flow_chat/utils/time_utils.dart';
 import 'package:flutter/material.dart';
 
 class ChatMessage extends StatelessWidget {
-  ChatMessage({super.key, required this.name, required this.time, required this.message});
+  ChatMessage({super.key, required this.name, required this.time, required this.message, this.compact = false});
   final String name;
   final Timestamp time;
   final String message;
+  final bool compact;
   late final _friendStream = FirebaseFirestore.instance.collection('users').doc(name).snapshots();
 
   @override
@@ -18,7 +19,7 @@ class ChatMessage extends StatelessWidget {
       final data = snapshot.data!.data()! as Map<String, dynamic>;
       final name = data['username'] as String;
       final avatarUrl = data['avatarUrl'] as String;
-      return Row(
+      return compact ? Padding(padding: EdgeInsets.only(left: 50), child: Text(message),) : Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10,
         children: [
