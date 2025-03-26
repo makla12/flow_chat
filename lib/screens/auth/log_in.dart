@@ -45,7 +45,7 @@ class LogInState extends State<LogIn> {
         ),
       );
     } on FirebaseAuthException catch (e) {
-      if (!context.mounted) return;
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -64,7 +64,7 @@ class LogInState extends State<LogIn> {
       }
     } catch (e) {
       print("Error: $e");
-      if(!context.mounted) return;
+      if(!mounted) return;
       setState(() {
         _isLoading = false;
       });

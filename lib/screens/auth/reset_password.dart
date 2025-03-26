@@ -29,7 +29,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         if(mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Wystąpił błąd')));
       }
     }
-    if(!context.mounted) return;
+    if(!mounted) return;
     setState(() {
       _isLoading = false;
     });
