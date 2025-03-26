@@ -156,9 +156,11 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
         _emailError = 'Wystąpił błąd przy aktualizacji emaila.';
       });
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (context.mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -170,8 +172,8 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
     });
 
     // Walidacja, czy nowe hasło i potwierdzenie są zgodne
-    if (_newPasswordController.text.trim() !=
-        _confirmNewPasswordController.text.trim()) {
+    if (_newPasswordController.text.trim() != _confirmNewPasswordController.text.trim()) {
+      if (!context.mounted) return;
       setState(() {
         _passwordError = 'Nowe hasło i potwierdzenie nie są zgodne.';
         _isLoading = false;
@@ -217,9 +219,11 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
         _passwordError = 'Wystąpił błąd przy aktualizacji hasła.';
       });
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if(context.mounted){
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

@@ -223,6 +223,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           FirebaseAuth.instance.currentUser!.uid,
                         );
                         return ListTile(
+                          titleAlignment: ListTileTitleAlignment.top,
                           trailing:
                               friends[index]['muted'].contains(
                                     FirebaseAuth.instance.currentUser!.uid,

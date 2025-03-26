@@ -45,10 +45,10 @@ class LogInState extends State<LogIn> {
         ),
       );
     } on FirebaseAuthException catch (e) {
+      if (!context.mounted) return;
       setState(() {
         _isLoading = false;
       });
-      if (!context.mounted) return;
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
         ScaffoldMessenger.of(
           context,
@@ -64,6 +64,7 @@ class LogInState extends State<LogIn> {
       }
     } catch (e) {
       print("Error: $e");
+      if(!context.mounted) return;
       setState(() {
         _isLoading = false;
       });
