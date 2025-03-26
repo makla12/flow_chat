@@ -71,6 +71,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         );
       });
     }
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });

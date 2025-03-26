@@ -51,6 +51,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
       );
     } catch (e) {
       print("Error: $e");
+      if(!mounted) return;
       setState(() {
         _isLoading = false;
       });
