@@ -8,7 +8,7 @@ import '../../widgets/bottom_nav_bar.dart';
 import 'adding_friends_screen.dart';
 
 class FriendsScreen extends StatefulWidget {
-  FriendsScreen({super.key, required this.setThemeMode});
+  const FriendsScreen({super.key, required this.setThemeMode});
   final Function(ThemeMode) setThemeMode;
 
   @override
@@ -214,7 +214,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         final friendData =
                             snapshot.data!.data()! as Map<String, dynamic>;
                         final friendName = friendData['username'] as String;
-                        if(!friendName.toLowerCase().contains(searchQuery)) {
+                        if (!friendName.toLowerCase().contains(searchQuery)) {
                           return const SizedBox();
                         }
                         final friendAvatarUrl =
