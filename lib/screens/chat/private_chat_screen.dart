@@ -88,7 +88,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
                       separatorBuilder:
                           (context, index) {
                             final messageIndex = messages.length - 1 - index;
-                            final isCompact = messageIndex == 0 ? false : messages[messageIndex - 1]['name'] == messages[messageIndex]['name'] && messages[messageIndex - 1]['time'].toDate().difference(messages[messageIndex]['time'].toDate()).inMinutes < 2;
+                            final isCompact = messageIndex == 0 ? false : messages[messageIndex - 1]['name'] == messages[messageIndex]['name'] && messages[messageIndex]['time'].toDate().difference(messages[messageIndex - 1]['time'].toDate()).inMinutes < 2;
                             return isCompact ? const SizedBox(height: 0) : const SizedBox(height: 10); 
                           },
                     );
