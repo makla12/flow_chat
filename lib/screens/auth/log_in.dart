@@ -96,8 +96,8 @@ class LogInState extends State<LogIn> {
                       TextField(
                         controller: passwordController,
                         decoration: InputDecoration(
-                          labelText: "Password",
-                          hintText: "Password",
+                          labelText: "Hasło",
+                          hintText: "Hasło",
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
