@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Pamiętaj o dodaniu google_sign_in do pubspec.yaml
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PrivacyAndSecurityScreen extends StatefulWidget {
   const PrivacyAndSecurityScreen({super.key});
@@ -14,12 +14,10 @@ class PrivacyAndSecurityScreen extends StatefulWidget {
 class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // -- Pola do zmiany emaila (dla użytkowników Email/Password)
   final TextEditingController _newEmailController = TextEditingController();
   final TextEditingController _emailPasswordController =
       TextEditingController();
 
-  // -- Pola do zmiany hasła (dla użytkowników Email/Password)
   final TextEditingController _currentPasswordForPasswordController =
       TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
@@ -29,14 +27,13 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
   bool _isLoading = false;
   String? _emailError;
   String? _passwordError;
-  String?
-  _loginProvider; // Zmienna do przechowywania informacji o dostawcy logowania
+  String? _loginProvider;
   bool isLightMode = false;
 
   @override
   void initState() {
     super.initState();
-    _checkLoginProvider(); // Sprawdzamy, jakim dostawcą jest użytkownik
+    _checkLoginProvider();
     _loadPreferences();
   }
 
@@ -47,22 +44,15 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
     });
   }
 
-  /// Funkcja sprawdzająca, jakim dostawcą (provider) jest zalogowany użytkownik.
   Future<void> _checkLoginProvider() async {
     final user = _auth.currentUser;
     if (user != null && user.providerData.isNotEmpty) {
       setState(() {
-        _loginProvider =
-            user.providerData.first.providerId; // 'google.com' lub 'password'
+        _loginProvider = user.providerData.first.providerId;
       });
     }
   }
 
-  /// Funkcja sprawdzająca, jakim dostawcą (provider) jest zalogowany użytkownik,
-  /// a następnie przeprowadzająca reautoryzację.
-  ///
-  /// - Dla Email/Password prosimy o hasło.
-  /// - Dla Google Sign-In wywołujemy ponowne GoogleSignIn().
   Future<void> _reauthenticateUser({String? currentPassword}) async {
     final user = _auth.currentUser;
     if (user == null) {
@@ -72,17 +62,14 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
       );
     }
 
-    // Sprawdzamy, jakim dostawcą jest zalogowany użytkownik.
     final providerId =
         user.providerData.isNotEmpty
             ? user.providerData.first.providerId
-            : 'password'; // jeśli pusto, zakładamy password
+            : 'password';
 
     if (providerId == 'google.com') {
-      // Reautoryzacja z Google
       final googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        // Użytkownik anulował logowanie w oknie Google
         throw FirebaseAuthException(
           message: 'Reautoryzacja Google nie powiodła się (anulowana).',
           code: 'google-reauth-cancelled',
@@ -95,7 +82,6 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
       );
       await user.reauthenticateWithCredential(credential);
     } else {
-      // Email/Password
       if (user.email == null) {
         throw FirebaseAuthException(
           message: 'Brak adresu email. Nie można zreautoryzować.',
@@ -110,7 +96,6 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
     }
   }
 
-  /// Zmiana emaila (bez verifyBeforeUpdateEmail)
   Future<void> _updateEmail() async {
     setState(() {
       _emailError = null;
@@ -126,16 +111,13 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
         );
       }
 
-      // Reautoryzacja (dla Email/Password - hasło z _emailPasswordController, dla Google - GoogleSignIn)
       await _reauthenticateUser(
         currentPassword: _emailPasswordController.text.trim(),
       );
 
-      // Wysyłanie maila weryfikacyjnego i aktualizacja emaila po potwierdzeniu
       await user.verifyBeforeUpdateEmail(_newEmailController.text.trim());
 
-      // Ważne! Nowy email nie jest od razu zapisany, więc użytkownik musi potwierdzić go w skrzynce pocztowej.
-      if(!mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -144,7 +126,6 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
         ),
       );
 
-      // Opróżnienie pól po sukcesie
       _newEmailController.clear();
       _emailPasswordController.clear();
     } on FirebaseAuthException catch (e) {
@@ -164,15 +145,14 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
     }
   }
 
-  /// Zmiana hasła
   Future<void> _updatePassword() async {
     setState(() {
       _passwordError = null;
       _isLoading = true;
     });
 
-    // Walidacja, czy nowe hasło i potwierdzenie są zgodne
-    if (_newPasswordController.text.trim() != _confirmNewPasswordController.text.trim()) {
+    if (_newPasswordController.text.trim() !=
+        _confirmNewPasswordController.text.trim()) {
       if (!mounted) return;
       setState(() {
         _passwordError = 'Nowe hasło i potwierdzenie nie są zgodne.';
@@ -190,23 +170,20 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
         );
       }
 
-      // Reautoryzacja
       await _reauthenticateUser(
         currentPassword: _currentPasswordForPasswordController.text.trim(),
       );
 
-      // Aktualizacja hasła
       await user.updatePassword(_newPasswordController.text.trim());
       await user.reload();
 
-      if(!mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Hasło zostało pomyślnie zaktualizowane.'),
         ),
       );
 
-      // Czyścimy pola po sukcesie
       _currentPasswordForPasswordController.clear();
       _newPasswordController.clear();
       _confirmNewPasswordController.clear();
@@ -219,7 +196,7 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
         _passwordError = 'Wystąpił błąd przy aktualizacji hasła.';
       });
     } finally {
-      if(mounted){
+      if (mounted) {
         setState(() {
           _isLoading = false;
         });
@@ -245,9 +222,7 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Prywatność i bezpieczeństwo',
-        ),
+        title: const Text('Prywatność i bezpieczeństwo'),
       ),
       body:
           _isLoading
@@ -258,16 +233,12 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (_loginProvider == 'google.com') ...[
-                      // Informacja, że nie można zmieniać emaila i hasła, jeśli użytkownik jest zalogowany przez Google
                       const Text(
                         'Nie możesz zmienić hasła ani emaila, ponieważ jesteś zalogowany przez Google.',
                         style: TextStyle(color: Colors.red),
                       ),
                       const SizedBox(height: 32),
                     ] else ...[
-                      // =========================
-                      // SEKCJA AKTUALIZACJI EMAILA
-                      // =========================
                       Text(
                         'Aktualizacja emaila',
                         style: TextStyle(
@@ -318,15 +289,11 @@ class PrivacyAndSecurityScreenState extends State<PrivacyAndSecurityScreen> {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: _updateEmail,
-                        style: ElevatedButton.styleFrom(
-                        ),
+                        style: ElevatedButton.styleFrom(),
                         child: const Text('Zmień email'),
                       ),
                       const SizedBox(height: 32),
 
-                      // =========================
-                      // SEKCJA AKTUALIZACJI HASŁA
-                      // =========================
                       Text(
                         'Aktualizacja hasła',
                         style: TextStyle(
