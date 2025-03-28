@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flow_chat/screens/chat/chanels_screen.dart';
 import 'package:flow_chat/screens/chat/chat_screen.dart';
@@ -20,9 +21,8 @@ class _NotificationControlerState extends State<NotificationControler> {
   @override
   void initState() {
     super.initState();
-    var listener = FirebaseMessaging.onMessageOpenedApp.listen((
-      RemoteMessage message,
-    ) async {
+    var listener = FirebaseMessaging.onMessageOpenedApp.listen(( RemoteMessage message,) async {
+      if(FirebaseAuth.instance.currentUser == null) return;
       var data = message.data;
       if (!mounted) return;
       Navigator.popUntil(context, (route) => route.isFirst);
