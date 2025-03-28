@@ -1,3 +1,4 @@
+import 'package:flow_chat/notification_controler.dart';
 import 'package:flow_chat/screens/chat/grup_chat_screen.dart';
 import 'package:flow_chat/utils/auth_utils.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
       Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen(setThemeMode: widget.setThemeMode,)),
+        MaterialPageRoute(builder: (context) => NotificationControler(child: HomeScreen(setThemeMode: widget.setThemeMode,))),
       );
     } catch (e) {
       print("Error: $e");

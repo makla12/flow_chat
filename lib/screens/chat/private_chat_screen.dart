@@ -77,7 +77,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
                       itemBuilder: (context, index) {
                         final messageIndex = messages.length - 1 - index;
                         final message = messages[messageIndex];
-                        final isCompact = messageIndex == 0 ? false : messages[messageIndex - 1]['name'] == message['name'] && messages[messageIndex - 1]['time'].toDate().difference(message['time'].toDate()).inMinutes < 2;
+                        final isCompact = messageIndex == 0 ? false : messages[messageIndex - 1]['name'] == message['name'] && message['time'].toDate().difference(messages[messageIndex - 1]['time'].toDate()).inMinutes < 2;
                         return ChatMessage(
                           name: message['name'],
                           time: message['time'],
@@ -88,7 +88,7 @@ class ChatScreenState extends State<PrivateChatScreen> {
                       separatorBuilder:
                           (context, index) {
                             final messageIndex = messages.length - 1 - index;
-                            final isCompact = messageIndex == 0 ? false : messages[messageIndex - 1]['name'] == messages[messageIndex]['name'] && messages[messageIndex - 1]['time'].toDate().difference(messages[messageIndex]['time'].toDate()).inMinutes < 2;
+                            final isCompact = messageIndex == 0 ? false : messages[messageIndex - 1]['name'] == messages[messageIndex]['name'] && messages[messageIndex]['time'].toDate().difference(messages[messageIndex - 1]['time'].toDate()).inMinutes < 2;
                             return isCompact ? const SizedBox(height: 0) : const SizedBox(height: 10); 
                           },
                     );

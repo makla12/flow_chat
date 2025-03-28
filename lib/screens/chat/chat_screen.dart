@@ -6,7 +6,7 @@ import 'package:flow_chat/widgets/chat_message.dart';
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.messagesRef, required this.channelSnapshot});
 
-  final QueryDocumentSnapshot channelSnapshot;
+  final DocumentSnapshot channelSnapshot;
   final CollectionReference messagesRef;
 
   @override
@@ -71,14 +71,22 @@ class ChatScreenState extends State<ChatScreen> {
                     reverse: true,
                     itemCount: messages.length,
                     itemBuilder: (context, index) {
-                      final message = messages[messages.length - 1 - index];
+                      final messageIndex = messages.length - 1 - index;
+                      final message = messages[messageIndex];
+                      final isCompact = messageIndex == 0 ? false : messages[messageIndex - 1]['name'] == message['name'] && message['time'].toDate().difference(messages[messageIndex - 1]['time'].toDate()).inMinutes < 2;
                       return ChatMessage(
                         name: message['name'],
                         time: message['time'],
                         message: message['message'],
+                        compact: isCompact,
                       );
                     },
-                    separatorBuilder: (context, index) => const SizedBox(height: 10),
+                    separatorBuilder:
+                        (context, index) {
+                          final messageIndex = messages.length - 1 - index;
+                          final isCompact = messageIndex == 0 ? false : messages[messageIndex - 1]['name'] == messages[messageIndex]['name'] && messages[messageIndex]['time'].toDate().difference(messages[messageIndex - 1]['time'].toDate()).inMinutes < 2;
+                          return isCompact ? const SizedBox(height: 0) : const SizedBox(height: 10); 
+                        },
                   );
                 }),
               ),
