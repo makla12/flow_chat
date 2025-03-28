@@ -70,7 +70,7 @@ class _FlowChatScreenState extends State<FlowChatScreen> {
         const CustomDivider(),
         MenuItemWidget(
           icon: Icons.security,
-          text: 'Prywatność i bezpieczeństwo',
+          text: 'Bezpieczeństwo konta',
           onTap: () => _navigateTo(context, const PrivacyAndSecurityScreen()),
         ),
         const CustomDivider(),
