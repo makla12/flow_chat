@@ -1,3 +1,4 @@
+import 'package:flow_chat/notification_controler.dart';
 import 'package:flow_chat/screens/chat/grup_chat_screen.dart';
 import 'package:flow_chat/screens/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder:
-                      (context) => FriendsScreen(setThemeMode: setThemeMode),
+                      (context) => NotificationControler(child: FriendsScreen(setThemeMode: setThemeMode),),
                 ),
               );
             } else if (index == 2) {
@@ -45,14 +46,15 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder:
-                      (context) => FlowChatScreen(setThemeMode: setThemeMode),
+                      (context) => NotificationControler(child: FlowChatScreen(setThemeMode: setThemeMode),),
                 ),
               );
             } else if (index == 0) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HomeScreen(setThemeMode: setThemeMode),
+                  builder: 
+                      (context) => NotificationControler(child: HomeScreen(setThemeMode: setThemeMode),),
                 ),
               );
             }

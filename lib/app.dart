@@ -1,4 +1,4 @@
-import 'package:flow_chat/utils/auth_utils.dart';
+import 'package:flow_chat/notification_controler.dart';
 import 'package:flutter/material.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/chat/grup_chat_screen.dart';
@@ -75,7 +75,6 @@ class _FlowChatAppState extends State<FlowChatApp> {
           backgroundColor: Color(0xFF1E3A8A),
         ),
       ),
-
       themeMode: themeMode,
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
@@ -83,8 +82,9 @@ class _FlowChatAppState extends State<FlowChatApp> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
           } else if (snapshot.hasData) {
-            AuthUtils.onUserLogin();
-            return HomeScreen(setThemeMode: setThemeMode);
+            return NotificationControler(
+              child: HomeScreen(setThemeMode: setThemeMode),
+            );
           } else {
             return WelcomeScreen(setThemeMode: setThemeMode);
           }

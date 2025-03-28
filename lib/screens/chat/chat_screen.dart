@@ -6,7 +6,7 @@ import 'package:flow_chat/widgets/chat_message.dart';
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.messagesRef, required this.channelSnapshot});
 
-  final QueryDocumentSnapshot channelSnapshot;
+  final DocumentSnapshot channelSnapshot;
   final CollectionReference messagesRef;
 
   @override

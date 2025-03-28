@@ -1,3 +1,4 @@
+import 'package:flow_chat/notification_controler.dart';
 import 'package:flow_chat/screens/auth/reset_password.dart';
 import 'package:flow_chat/screens/chat/grup_chat_screen.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class LogInState extends State<LogIn> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomeScreen(setThemeMode: widget.setThemeMode),
+          builder: (context) => NotificationControler(child: HomeScreen(setThemeMode: widget.setThemeMode)),
         ),
       );
     } on FirebaseAuthException catch (e) {

@@ -1,3 +1,4 @@
+import 'package:flow_chat/notification_controler.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow_chat/utils/auth_utils.dart';
@@ -58,7 +59,7 @@ class SignUpState extends State<SignUp> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomeScreen(setThemeMode: widget.setThemeMode),
+          builder: (context) => NotificationControler(child: HomeScreen(setThemeMode: widget.setThemeMode)),
         ),
       );
     } on FirebaseAuthException catch (e) {
